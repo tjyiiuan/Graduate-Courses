@@ -1,0 +1,354 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+
+\marginsize{2cm}{2cm}{0.9cm}{1.8cm}
+
+\title{EECE 5639 Computer Vision\\ [2ex] \begin{large} Homework \#1 \end{large} }
+\author{Jiyu Tian}
+\date{}
+
+\begin{document}
+\maketitle
+%%---------------------------------------------------------------
+%% Question 1
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) The equations of the image of the given line is:
+\begin{equation*}
+x = f\frac{X_0 + \lambda(X_1 - X_0)}{Z_0 + \lambda(Z_1 - Z_0)}
+\end{equation*}
+\begin{equation*}
+y = f\frac{Y_0 + \lambda(Y_1 - Y_0)}{Z_0 + \lambda(Z_1 - Z_0)}
+\end{equation*}
+\begin{equation*}
+z = f
+\end{equation*}
+\noindent(b) As $|\lambda| \to \infty$:
+\begin{equation*}
+\lim\limits_{\lambda\to\infty}x = f\frac{X_1 - X_0}{Z_1 - Z_0}
+\end{equation*}
+\begin{equation*}
+\lim\limits_{\lambda\to\infty}y = f\frac{Y_1 - Y_0}{Z_1 - Z_0}
+\end{equation*}
+\begin{equation*}
+\lim\limits_{\lambda\to\infty}z = f
+\end{equation*}
+\noindent If the 3D line is not parallel to the image plane, $Z_0 \neq Z_1$. The image of $P$ will converge to a point which depends on the relative position of $P_0$ and $P_1$.\\\\
+(c) Let $\lambda = 1/2$, the image of the midpoint of the segment $P_0P_1$ is 
+\begin{equation*}
+x_{midP_0P_1} = f\frac{X_0 + X_1}{Z_0 + Z_1}
+\end{equation*}
+\begin{equation*}
+y_{midP_0P_1} = f\frac{Y_0 + Y_1}{Z_0 + Z_1}
+\end{equation*}
+\begin{equation*}
+z_{midP_0P_1} = f
+\end{equation*}
+\noindent However the midpoint of the image segment $p_0p_1$ is
+\begin{equation*}
+x_{midp_0p_1} = \frac{f}{2}\left ( \frac{X_0}{Z_0} + \frac{X_1}{Z_1} \right )
+\end{equation*}
+\begin{equation*}
+y_{midp_0p_1} = \frac{f}{2}\left ( \frac{Y_0}{Z_0} + \frac{Y_1}{Z_1} \right )
+\end{equation*}
+\begin{equation*}
+z_{midp_0p_1} = f
+\end{equation*}
+\noindent If the 3D line is not parallel to the image plane, $Z_0 \neq Z_1$. Then $x_{midp_0p_1} \neq x_{midP_0P_1},\ y_{midp_0p_1} \neq y_{midP_0P_1}$,  the image of the midpoint of the segment $P_0P_1$ is not the midpoint of the image segment $p_0p_1$.
+
+\vfill
+\clearpage
+%%---------------------------------------------------------------
+%% Question 2
+%%---------------------------------------------------------------
+\section{Solution:}
+From the picture we have
+\begin{equation*}
+\begin{aligned}
+x_c &= - y_w + 2\\
+y_c &= z_w - 2\\
+z_c &= - x_w + 10
+\end{aligned}
+\end{equation*}
+And thus
+\begin{equation*}
+M_{ext} = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 2\\
+0 & 0 & 1 & -2\\
+-1 & 0 & 0 & 10\\
+0 & 0 & 0 & 1
+\end{array} \right ]
+\end{equation*}
+Line equation for those sides of the floor tiles parallel to the camera optical axis can be given in world coordinate:
+\begin{equation*}
+P_w = \left[ \begin{array}{c}
+-\lambda\\
+n\\
+0\\
+1
+\end{array} \right ]
+\end{equation*}
+where $n \in \{ 0,\ 0.5,\ 1,\ 1.5,\ 2,\ 2.5,\ 3,\ 3.5,\ 4 \}$ denotes each line of tiles, and $\lambda \in R$ denotes the points on line. World coordinate to camera coordinate is given by
+\begin{equation*}
+P_c = M_{ext} \cdot P_w = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 2\\
+0 & 0 & 1 & -2\\
+-1 & 0 & 0 & 10\\
+0 & 0 & 0 & 1
+\end{array} \right ]\left[ \begin{array}{c}
+-\lambda\\
+0.5n\\
+0\\
+1
+\end{array} \right ] = \left[ \begin{array}{c}
+-n+2\\
+-2\\
+\lambda + 10\\
+1
+\end{array} \right ]
+\end{equation*}
+And accordingly on the image plane,
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+z'
+\end{array} \right ] = \left[ \begin{array}{cccc}
+f & 0 & 0 & 0\\
+0 & f & 0 & 0\\
+0 & 0 & 1 & 0
+\end{array} \right ]  \left[ \begin{array}{c}
+-n+2\\
+-2\\
+\lambda + 10\\
+1
+\end{array} \right ] = \left[ \begin{array}{c}
+(-n+2)f\\
+-2f\\
+\lambda + 10
+\end{array} \right ]
+\end{equation*}
+\begin{equation*}
+P_i = \left[ \begin{array}{c}
+x\\
+y
+\end{array} \right ] = \left[ \begin{array}{c}
+x'/z'\\
+y'/z'
+\end{array} \right ] = \left[ \begin{array}{c}
+\frac{-n+2}{\lambda + 10}f\\
+-\frac{2}{\lambda + 10}f
+\end{array} \right ]
+\end{equation*}
+As $|\lambda| \to \infty$,
+\begin{equation*}
+\lim\limits_{\lambda\to\infty}P_i = \lim\limits_{\lambda\to\infty}\left[ \begin{array}{c}
+\frac{-n+2}{\lambda + 10}f\\
+-\frac{2}{\lambda + 10}f
+\end{array} \right ] = \left[ \begin{array}{c}
+0\\
+0
+\end{array} \right ]
+\end{equation*}
+Therefore, the images of the sides of the floor tiles parallel to the camera optical axis intersect at a single point $[0,\ 0]'$, i.e. the origin.
+\vfill
+\clearpage
+%%---------------------------------------------------------------
+%% Question 3
+%%---------------------------------------------------------------
+\section{Solution:}
+Suppose a point on the line is $P_0 = (x_0,\ y_0,\ z_0)$, and a vector parallel to the line is $v = (v_x\  v_y,\ v_z)$. Then the line equation in 3D under camera coordinate is 
+\begin{equation*}
+P = P_0 + \lambda v = \left[ \begin{array}{c}
+x_0 + \lambda v_x\\
+y_0 + \lambda v_y\\
+z_0 + \lambda v_z
+\end{array} \right ]
+\end{equation*}
+The image of the 3D line is 
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+z'
+\end{array} \right ] = \left[ \begin{array}{cccc}
+f & 0 & 0 & 0\\
+0 & f & 0 & 0\\
+0 & 0 & 1 & 0
+\end{array} \right ] \left[ \begin{array}{c}
+x_0 + \lambda v_x\\
+y_0 + \lambda v_y\\
+z_0 + \lambda v_z\\
+1
+\end{array} \right ] = \left[ \begin{array}{c}
+(x_0 + \lambda v_x)f\\
+(y_0 + \lambda v_y)f\\
+z_0 + \lambda v_z
+\end{array} \right ]
+\end{equation*}
+\begin{equation*}
+x = \frac{x'}{z'} = \frac{x_0 + \lambda v_x}{z_0 + \lambda v_z}f, \ y = \frac{y'}{z'} = \frac{y_0 + \lambda v_y}{z_0 + \lambda v_z}f
+\end{equation*}
+As $|\lambda| \to \infty$,
+
+\begin{equation*}
+\begin{aligned}
+\lim\limits_{\lambda\to\infty}x &= \lim\limits_{\lambda\to\infty}\frac{x_0 + \lambda v_x}{z_0 + \lambda v_z}f = \frac{v_x}{v_z}f\\
+\lim\limits_{\lambda\to\infty}y &= \lim\limits_{\lambda\to\infty}\frac{y_0 + \lambda v_y}{z_0 + \lambda v_z}f = \frac{v_y}{v_z}f
+\end{aligned}
+\end{equation*}
+Since the vanishing point under camera coordinate is $(10, 0, f)$, we have
+\begin{equation*}
+\left[ \begin{array}{c}
+\frac{v_x}{v_z}f=10\\
+\frac{v_y}{v_z}f=0
+\end{array} \right ]
+\end{equation*}
+Let $v_z = 1$, we have the orientation vector
+\begin{equation*}
+v = \left[ \begin{array}{c}
+10/f\\
+0\\
+1
+\end{array} \right ]
+\end{equation*}
+with respect to the camera coordinate system.
+%%---------------------------------------------------------------
+%% Question 4
+%%---------------------------------------------------------------
+\section{Solution:}
+\noindent Suppose $Z_{face} - Z_{nose} = \Delta Z$. When taken frontally, from the perspective equation:
+\begin{equation*}
+x_{nose} = f\frac{X_{nose}}{Z_{nose}},\ x_{face} = f\frac{X_{face}}{Z_{face}}
+\end{equation*}
+\noindent The ratio nose appears to be is 
+\begin{equation*}
+\frac{x_{nose}}{x_{face}} = \frac{X_{nose}Z_{face}}{Z_{nose}X_{face}} = \frac{X_{nose}}{X_{face}} \left(1 + \frac{\Delta Z}{Z_{nose}}\right )
+\end{equation*}
+\noindent where $X_{face},\ X_{nose}$ and $\Delta Z$ keep the same. When taken from a small distance, the nose is closer to the camera and $\Delta Z / Z_{nose}$ can be rather large. Therefore the nose appears to be much larger than the rest of the face.\\\\
+This cannot be reduced by using another focal length, because $f$ has no effect in the ratio. However this can be reduced by changing object distance, i.e. to take picture in a larger distance.
+\vfill
+\clearpage
+%%---------------------------------------------------------------
+%% Question 5
+%%---------------------------------------------------------------
+\section{Solution:}
+Person with a blue receptor deficiency cannot distinguish various blues, and thus blue and cyan appear almost the same to such person.
+%%---------------------------------------------------------------
+%% Question 6
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) CMY system\\
+\begin{equation*}
+{\left[ \begin{array}{c}
+C\\
+M\\
+Y
+\end{array} 
+\right]} = {\left[ \begin{array}{c}
+1\\
+1\\
+1
+\end{array} 
+\right]} - 
+{\left[ \begin{array}{c}
+R\\
+G\\
+B
+\end{array} 
+\right]} = 
+{\left[ \begin{array}{c}
+1\\
+1\\
+1
+\end{array} 
+\right]} - \frac{1}{255}
+{\left[ \begin{array}{c}
+200\\
+50\\
+100
+\end{array} 
+\right]} 
+={\left[ \begin{array}{c}
+0.216\\
+0.804\\
+0.608
+\end{array} 
+\right]}
+\end{equation*}
+
+\noindent(b) YIQ system
+\begin{equation*}
+{\left[ \begin{array}{c}
+Y\\
+I\\
+Q
+\end{array} 
+\right]} = {\left[ \begin{array}{ccc}
+0.299 & 0.587 & 0.114\\
+0.596 & -0.275 & -0.321\\
+0.212 & -0.532 & 0.311
+\end{array} 
+\right]}  
+{\left[ \begin{array}{c}
+R\\
+G\\
+B
+\end{array} 
+\right]} = 
+\frac{1}{255}
+{\left[ \begin{array}{ccc}
+0.299 & 0.587 & 0.114\\
+0.596 & -0.275 & -0.321\\
+0.212 & -0.532 & 0.311
+\end{array} 
+\right]} {\left[ \begin{array}{c}
+200\\
+50\\
+100
+\end{array} 
+\right]} 
+={\left[ \begin{array}{c}
+0.394\\ 
+0.288\\
+0.184
+\end{array} 
+\right]}
+\end{equation*}
+
+\noindent(c) HSI system
+\begin{equation*}
+\theta = cos^{-1}\left(\frac{[(R-G)+(R-B)]/2}{[(R-G)^2+(R-B)(G-B)]^{1/2}}\right)=cos^{-1}\frac{125}{\sqrt{17500}}=19.107
+\end{equation*}
+\begin{equation*}
+H = 360 - \theta = 340.893
+\end{equation*}
+\begin{equation*}
+S = 1-\frac{3}{R+G+B}[min(R, G, B)] = 1- \frac{3\times50}{350} = 0.571
+\end{equation*}
+
+\begin{equation*}
+I = 1-\frac{R+G+B}{3} = 1-\frac{350}{3\times255} = 0.673
+\end{equation*}
+\begin{equation*}
+{\left[ \begin{array}{c}
+H\\ 
+S\\
+I
+\end{array} 
+\right]} = {\left[ \begin{array}{c}
+340.893\\ 
+0.571\\
+0.673
+\end{array} 
+\right]}
+\end{equation*}
+
+\end{document}
