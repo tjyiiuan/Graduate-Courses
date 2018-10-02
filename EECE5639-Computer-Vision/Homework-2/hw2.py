@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pylab as plt
 plt.rcParams['figure.figsize'] = 15, 6
-plt.rcParams['figure.dpi'] = 300
+#plt.rcParams['figure.dpi'] = 300
 
 NUMBER = 10
 IMG_SHAPE = (256, 256)
@@ -71,7 +71,8 @@ class Homework2(object):
         res_matrix = np.zeros(timage.shape)
         for i in np.arange(image_shape[0]) + ovrlay:
             for j in np.arange(image_shape[1]) + ovrlay:
-                local_matrix = tmp_matrix[i - ovrlay:i + ovrlay + 1, j - ovrlay:j + ovrlay + 1]
+                local_matrix = tmp_matrix[i - ovrlay:i + ovrlay + 1, 
+                                          j - ovrlay:j + ovrlay + 1]
                 res_matrix[i - ovrlay, j - ovrlay] = sum(sum(local_matrix * bfilter))
         return res_matrix
     
@@ -98,6 +99,29 @@ class Homework2(object):
                      fontsize=12)
         fig.show()
     
+    def solve_p3(self, n=3, sigma=1.18, show=False):
+        """Solve problem #1."""
+        # 2D Gaussian
+        ovrlay = int(n / 2)
+        inds = np.arange(-ovrlay, ovrlay + 1)
+        x, y = np.meshgrid(inds, inds)
+        mask = np.exp(-(x**2 + y**2)/(2*sigma**2))
+        mask = mask/sum(sum(mask))
+        
+        # two 1D Gaussian
+        gaussian_1d = np.exp(-inds**2/(2 * sigma**2))
+        gaussian_1d = gaussian_1d /sum(gaussian_1d).reshape((-1, 1))
+        
+        if show:
+            all_image = self.images
+            filted_image = [0] * NUMBER
+            for i in np.arange(NUMBER):
+                filted_image[i] = self.apply_2d_filter(mask, all_image[i])
+            filted_image = np.array(filted_image)
+            result = self.EST_NOISE(filted_image)
+            self.plot_result(filted_image, result)
+        
+        return mask, gaussian_1d
     @staticmethod    
     def apply_1d_filter(bfilter, timage):
         """Apply given 1D filter onto an image.
@@ -121,7 +145,7 @@ class Homework2(object):
     
     @staticmethod
     def apply_1d_median_filter(n, timage):
-        """Applying a 3x3 median lter on the image I assuming that the
+        """Applying a 3x3 median flter on the image I assuming that the
         border pixels are not changed.
         
         Parameters
@@ -174,20 +198,9 @@ class Homework2(object):
 #%%
 if __name__ == "__main__":
     hw2 = Homework2()
-#    hw2.solve_p1()
+    hw2.solve_p1()
 #    hw2.solve_p2()
-#    hw2.solve_p3()
+    hw2.solve_p3(show=True)
 #    hw2.solve_p4()
-#    hw2.solve_p5()
 #    hw2.solve_p6()
 #    hw2.solve_p7()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
