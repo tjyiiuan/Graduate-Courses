@@ -101,8 +101,9 @@ class Homework2(object):
                      fontsize=12)
         fig.show()
     
-    def solve_p3(self, n=5, sigma=1.4, show=True):
+    def solve_p3(self, sigma=1.4, show=True):
         """Solve problem #1."""
+        n = int(2 * np.ceil(2 * sigma) + 1)
         # 2D Gaussian
         ovrlay = int(n / 2)
         inds = np.arange(-ovrlay, ovrlay + 1)
@@ -264,4 +265,4 @@ if __name__ == "__main__":
     hw2.solve_p5()
     hw2.solve_p6()
     hw2.solve_p7()
-    
+#    

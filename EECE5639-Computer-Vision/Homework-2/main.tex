@@ -51,7 +51,7 @@ which can also be separated into two 1D Gaussian filters:
 \begin{equation*}
     G(x) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}}, G(y) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{y^2}{2\sigma^2}}
 \end{equation*}
-With implementation in python, a $5\times 5$ 2D Gaussian filter mask with standard deviation $1.4$ can be applied onto the sample figure, as shown in Figure \ref{ouput}. Please refer to Appendix for detailed code.
+The minimum filter size is $2\times ceil(2\sigma)+1=7$. With implementation in python, a $7\times 7$ 2D Gaussian filter mask with standard deviation $1.4$ can be applied onto the sample figure, as shown in Figure \ref{ouput}. Please refer to Appendix for detailed code.
 \begin{figure}[H]
 \centering
 \includegraphics[width = 1\textwidth]{output.png}
@@ -330,8 +330,9 @@ class Homework2(object):
                      fontsize=12)
         fig.show()
     
-    def solve_p3(self, n=5, sigma=1.4, show=True):
+    def solve_p3(self, sigma=1.4, show=True):
         """Solve problem #1."""
+        n = int(2 * np.ceil(2 * sigma) + 1)
         # 2D Gaussian
         ovrlay = int(n / 2)
         inds = np.arange(-ovrlay, ovrlay + 1)
@@ -493,7 +494,7 @@ if __name__ == "__main__":
     hw2.solve_p5()
     hw2.solve_p6()
     hw2.solve_p7()
-
+    
 \end{python}
 \end{document}
 
