@@ -79,21 +79,15 @@ lter to apply
         pass
 #%%
 if __name__ == "__main__":
+#     
     frame_path = "./EnterExitCrossingPaths2cor/"
     
     frames = Load_Images(frame_path)
     Mdetector = MotionDetector(frames)
     Mdetector.Convert_Gray()
     Mdetector.Spatial_Smooth()
-    Mdetector.Temporal_Derive()
+    Mdetector.Temporal_Derive("delta")
     Mdetector.Show_Result()
-
-
-
-
-
-
-
 
 
 
