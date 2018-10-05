@@ -34,31 +34,40 @@ def Load_Images(path, imgtype="*.jpg"):
     
     return all_img
 
-
-def Gen_Gaussian_Mask(dim, n, sigma):
+def Gen_Gaussian_Filter(dim, sigma, size=0):
     """Generate 1D or 2D Gaussian filter.
     
     Parameters
     ----------
     dim: int
         Dimension of filter
+    sigma: float
+        Standard deviation    
     n: int
         Size
-    sigma: float
-        Standard deviation
     """
+    n = max(2 * np.ceil(2 * sigma) + 1, size)
     ovrlay = int(n / 2)
     inds = np.arange(-ovrlay, ovrlay + 1)
     gaussian_1d = np.exp(-inds**2/(2 * sigma**2))
     mask = gaussian_1d /sum(gaussian_1d).reshape((-1, 1))
     
-    if n == 2:
+    if dim == 2:
         mask = gaussian_1d * gaussian_1d.T
         
     return mask
 
-
-
-
+def Gen_Box_Filter(n):
+    """Generate 1D or 2D Gaussian filter.
+    
+    Parameters
+    ----------
+    n: int
+        Size
+    """
+    size = int(n)
+    box_mask = np.ones((size, size)) / (size ** 2)
+    
+    return box_mask
 
 
