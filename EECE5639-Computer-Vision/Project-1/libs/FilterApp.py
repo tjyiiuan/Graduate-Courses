@@ -13,7 +13,7 @@ class FilterApp(object):
         
         Parameters
         ----------
-        bfilter: array-like
+        bfilter: 1D array-like
             The filter
         timage: array-like
             Targeted image
@@ -22,10 +22,36 @@ class FilterApp(object):
         ovrlay = int(bfilter.shape[0] / 2)
         tmp_array = np.zeros(image_length + 2 * ovrlay)
         tmp_array[ovrlay:-ovrlay] = timage
-        res_array = np.zeros(image_length )
+        res_array = np.zeros(image_length)
         for i in np.arange(image_length) + ovrlay:
             local_matrix = tmp_array[i - ovrlay:i + ovrlay + 1]
             res_array[i - ovrlay] = sum(local_matrix * bfilter)
+        return res_array
+
+    @staticmethod    
+    def apply_1d_differential(operator, simage):
+        """Apply given 1D filter onto a series of 2D image.
+        
+        Parameters
+        ----------
+        operator: 1D array-like
+            The filter
+        simage: array-like
+            Targeted image sequence
+        """
+        image_length = simage.shape[0]
+        operator_length = operator.shape[1]
+        ovrlay = int(operator_length / 2)
+        res_array = np.zeros((image_length - 2 * ovrlay, 
+                              simage.shape[1], 
+                              simage.shape[2]))
+        for i in np.arange(image_length - 2 * ovrlay):
+            local_array = simage[i:i + 2 * ovrlay + 1, :, :]
+            temp_zip = list(zip(local_array, operator[0, :]))
+            res_array[i] = sum([j[0] * j[1] for j in temp_zip])
+
+        res_array = np.array(res_array)
+
         return res_array
 
     @staticmethod
@@ -50,7 +76,6 @@ class FilterApp(object):
                                           j - ovrlay:j + ovrlay + 1]
                 res_matrix[i - ovrlay, j - ovrlay] = sum(sum(local_matrix * bfilter))
         return res_matrix
-
 
     @staticmethod
     def apply_1d_median_filter(n, timage):

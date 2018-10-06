@@ -1,18 +1,16 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 
 import numpy as np
 import matplotlib.pylab as plt
-import matplotlib.image as mpimg
+#import matplotlib.image as mpimg
 plt.rcParams['figure.figsize'] = 15, 6
 #plt.rcParams['figure.dpi'] = 300
 
-from libs.FilterApp import FilterApp
-from libs.misc import Load_Images, Gen_Gaussian_Filter, Gen_Box_Filter
-from libs.detect_onset import detect_onset
+from .FilterApp import FilterApp
+from .misc import Gen_Gaussian_Filter, Gen_Box_Filter
 
-MASK_LIST = ["Box", "Gaussian"]
-#%%   
+
 class MotionDetector(object):
     
     def __init__(self, frames):
@@ -88,7 +86,7 @@ class MotionDetector(object):
 
         return self
     
-    def Temporal_Derive(self, op, **kwargs):
+    def Temporal_Derive_old(self, op, **kwargs):
         """Apply a 1-D differential operator at each pixel to 
         compute a temporal derivative.
         
@@ -115,6 +113,41 @@ class MotionDetector(object):
                               filtered_frames[:-order, :, :]) / order
         
             derived_index = np.arange(frame_num)[order:]
+        
+        self.derived_frames = derived_frames
+        self.derived_index = derived_index
+
+        return self
+
+    def Temporal_Derive(self, op, **kwargs):
+        """Apply a 1-D differential operator at each pixel to 
+        compute a temporal derivative.
+        
+        Parameters
+        ----------
+        operator: string
+            Differential operator to apply
+        """
+        filtered_frames = self.filtered_frames
+        frame_num = self.frame_num
+
+        try:
+            order = int(kwargs['param'])
+        except:
+            order = 1
+        derived_frames = (filtered_frames[order:, :, :] -\
+                          filtered_frames[:-order, :, :]) / order
+    
+        derived_index = np.arange(frame_num)[order:]
+
+        if "g" in op.lower():
+            operator = Gen_Gaussian_Filter(1, kwargs['param']).reshape((1, -1))[0, :]
+            new_derived_frames = np.zeros(derived_frames.shape)
+            shape = derived_frames[0].shape
+            for i in np.arange(shape[0]):
+                for j in np.arange(shape[1]):
+                    new_derived_frames[:, i, j] = self.filapp.apply_1d_filter(operator, 
+                                                                              derived_frames[:, i, j])
         
         self.derived_frames = derived_frames
         self.derived_index = derived_index
@@ -147,21 +180,41 @@ class MotionDetector(object):
         threshold = n*estimated_var
 
 #        self.mean_matrix = mean_matrix
-        self.var_matrix = var_matrix
+#        self.var_matrix = var_matrix
         self.threshold = threshold
 
-    def Show_Result(self):
-        pass
-#%%
-if __name__ == "__main__":
+    def Show_Result(self, savepath=r".\\new\\"):
+        threshold = self.threshold
+        derived_frames = self.derived_frames
+        
+        derived_index = self.derived_index
+        original_frames = self.raw_frames[derived_index]
+        filtered_frames = self.filtered_frames[derived_index]
+        
+        mask_frames = 255 * np.ones(derived_frames.shape)
+        mask_frames[np.where(derived_frames >= threshold)] = 0
+        
+        if not os.path.exists(savepath):
+            os.makedirs(savepath)
 
-    frame_path = "./test/"
-
-    raw_frames = Load_Images(frame_path)
-    Mdetector = MotionDetector(raw_frames)
-    Mdetector.Convert_Gray()
-    Mdetector.Spatial_Smooth('no', param=3)
-    Mdetector.Temporal_Derive("d", param=1.2)
-    Mdetector.Threshold_Select()
-    Mdetector.Show_Result()
+        for i in np.arange(len(derived_index)):
+            fig = plt.figure()
+            ax1 = fig.add_subplot(131)
+            ax1.imshow(original_frames[i])
+            ax1.axis('off')
+            ax1.set_title("Original", fontsize=20)
+            
+            ax2 = fig.add_subplot(132)
+            ax2.imshow(filtered_frames[i], cmap=plt.cm.gray)
+            ax2.axis('off')
+            ax2.set_title("Filtered", fontsize=20)
+            
+            ax3 = fig.add_subplot(133)
+            ax3.imshow(mask_frames[i], cmap=plt.cm.gray)
+            ax3.axis('off')
+            ax3.set_title("Mask", fontsize=20)
+            
+            fig.savefig(f"{savepath}{i}.png")
+            print(f"Saving {i} frame......")
+            plt.close("all")
 
