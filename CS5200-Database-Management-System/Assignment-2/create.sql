@@ -1,20 +1,23 @@
+DROP SCHEMA IF EXISTS `assignment2`;
+
 CREATE SCHEMA `assignment2` DEFAULT CHARACTER SET utf8 ;
 
---#####################################################--
+#####################################################
 
 CREATE TABLE `assignment2`.`person` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `first_name` VARCHAR(45) NULL,
-  `last_name` VARCHAR(45) NULL,
-  `username` VARCHAR(45) NULL,
-  `password` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
+  `first_name` VARCHAR(255) NULL,
+  `last_name` VARCHAR(255) NULL,
+  `username` VARCHAR(255) NULL,
+  `password` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL,
   `dob` DATE NULL,
   PRIMARY KEY (`id`));
 
 CREATE TABLE `assignment2`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `user_agreement` TINYINT NULL,
+  `user_agreement` TINYINT NULL DEFAULT 1,
+  `user_key` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `user_person_generalization`
     FOREIGN KEY (`id`)
@@ -24,7 +27,7 @@ CREATE TABLE `assignment2`.`user` (
 
 CREATE TABLE `assignment2`.`developer` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `developerKey` VARCHAR(45) NULL,
+  `developer_key` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `developer_person_generalization`
     FOREIGN KEY (`id`)
@@ -35,11 +38,11 @@ CREATE TABLE `assignment2`.`developer` (
 CREATE TABLE `assignment2`.`address` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `personid` INT NULL,
-  `street1` VARCHAR(45) NULL,
-  `street2` VARCHAR(45) NULL,
-  `city` VARCHAR(45) NULL,
-  `state` VARCHAR(45) NULL,
-  `zip` VARCHAR(45) NULL,
+  `street1` VARCHAR(255) NULL,
+  `street2` VARCHAR(255) NULL,
+  `city` VARCHAR(255) NULL,
+  `state` VARCHAR(255) NULL,
+  `zip` VARCHAR(255) NULL,
   `primary` TINYINT NULL,
   PRIMARY KEY (`id`),
   INDEX `address_person_composition_idx` (`personid` ASC),
@@ -52,7 +55,7 @@ CREATE TABLE `assignment2`.`address` (
 CREATE TABLE `assignment2`.`phone` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `personid` INT NULL,
-  `phone` VARCHAR(45) NULL,
+  `phone` VARCHAR(255) NULL,
   `primary` TINYINT NULL,
   PRIMARY KEY (`id`),
   INDEX `phone_person_composition_idx` (`personid` ASC),
@@ -62,12 +65,12 @@ CREATE TABLE `assignment2`.`phone` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
---#####################################################--
+#####################################################
 
 CREATE TABLE `assignment2`.`website` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `description` varchar(45) DEFAULT NULL,
+  `name` VARCHAR(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `created` date DEFAULT NULL,
   `updated` date DEFAULT NULL,
   `visits` int(11) DEFAULT NULL,
@@ -75,8 +78,8 @@ CREATE TABLE `assignment2`.`website` (
 
 CREATE TABLE `assignment2`.`page` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(45) NULL,
-  `description` VARCHAR(45) NULL,
+  `title` VARCHAR(255) NULL,
+  `description` VARCHAR(255) NULL,
   `created` DATE NULL,
   `updated` DATE NULL,
   `views` INT NULL,
@@ -90,32 +93,32 @@ CREATE TABLE `assignment2`.`page` (
     ON UPDATE CASCADE);
 
 CREATE TABLE `assignment2`.`widget_type` (
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`name`));
 
 INSERT INTO `assignment2`.`widget_type` (`name`) VALUES ('youtube'), ('image'), ('heading'), ('html');
 
 CREATE TABLE `assignment2`.`widget` (
-  `id` INT NOT NULL,
-  `name` VARCHAR(45) NULL,
-  `type` VARCHAR(45) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL,
+  `type` VARCHAR(255) NULL,
   `width` INT NULL,
   `height` INT NULL,
-  `css_class` VARCHAR(45) NULL,
-  `css_style` VARCHAR(45) NULL,
-  `text` VARCHAR(45) NULL,
+  `css_class` VARCHAR(255) NULL,
+  `css_style` VARCHAR(255) NULL,
+  `text` VARCHAR(255) NULL,
   `order` INT NULL,
-  `url` VARCHAR(45) NULL DEFAULT NULL,
+  `url` VARCHAR(255) NULL DEFAULT NULL,
   `shareble` TINYINT NULL DEFAULT NULL,
   `expandable` TINYINT NULL DEFAULT NULL,
-  `src` VARCHAR(45) NULL DEFAULT NULL,
+  `src` VARCHAR(255) NULL DEFAULT NULL,
   `size` INT NULL DEFAULT NULL,
-  `html` VARCHAR(45) NULL DEFAULT NULL,
+  `html` VARCHAR(255) NULL DEFAULT NULL,
   `page_id` INT NULL,
   PRIMARY KEY (`id`),
   INDEX `widget_type_enum_idx` (`type` ASC),
   CONSTRAINT `widget_page_composition`
-    FOREIGN KEY (`id`)
+    FOREIGN KEY (`page_id`)
     REFERENCES `assignment2`.`page` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -125,14 +128,14 @@ CREATE TABLE `assignment2`.`widget` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
---#####################################################--
+#####################################################
 
 CREATE TABLE `assignment2`.`priviledge` (
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`name`));
 
 CREATE TABLE `assignment2`.`role` (
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`name`));
 
 INSERT INTO `assignment2`.`priviledge` (`name`) VALUES ('create'), ('read'), ('update'), ('delete');
@@ -140,7 +143,7 @@ INSERT INTO `assignment2`.`role` (`name`) VALUES ('owner'), ('admin'), ('writer'
 
 CREATE TABLE `assignment2`.`website_priviledge` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `priviledge` VARCHAR(45) NULL,
+  `priviledge` VARCHAR(255) NULL,
   `developer_id` INT NULL,
   `website_id` INT NULL,
   PRIMARY KEY (`id`),
@@ -165,7 +168,7 @@ CREATE TABLE `assignment2`.`website_priviledge` (
 
 CREATE TABLE `assignment2`.`website_role` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(45) NULL,
+  `role` VARCHAR(255) NULL,
   `developer_id` INT NULL,
   `website_id` INT NULL,
   PRIMARY KEY (`id`),
@@ -190,7 +193,7 @@ CREATE TABLE `assignment2`.`website_role` (
 
 CREATE TABLE `assignment2`.`page_priviledge` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `priviledge` VARCHAR(45) NULL,
+  `priviledge` VARCHAR(255) NULL,
   `developer_id` INT NULL,
   `page_id` INT NULL,
   PRIMARY KEY (`id`),
@@ -215,7 +218,7 @@ CREATE TABLE `assignment2`.`page_priviledge` (
 
 CREATE TABLE `assignment2`.`page_role` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(45) NULL,
+  `role` VARCHAR(255) NULL,
   `developer_id` INT NULL,
   `page_id` INT NULL,
   PRIMARY KEY (`id`),
