@@ -2,12 +2,16 @@ USE `assignment2`;
 
 #####################################################
 
+#  1.a. Retrieve all developers
+
 SELECT 
     *
 FROM
     developer d
         JOIN
-    person ON person.id = d.id;
+    person p ON p.id = d.id;
+
+# 1.b. Retrieve a developer with id equal to 34 
 
 SELECT 
     *
@@ -17,6 +21,8 @@ FROM
     person p ON p.id = d.id
 WHERE
     p.id = 34;
+
+# 1.c. Retrieve all developers who have a role in Twitter other than owner
 
 SELECT 
     p.*, d.*
@@ -32,6 +38,8 @@ WHERE
     wr.role <> 'owner'
         AND w.name = 'Twitter';
 
+#. 1.d. Retrieve all developers who are page reviewers of pages with less than 300000 visits 
+
 SELECT 
     p.*, d.*
 FROM
@@ -45,6 +53,8 @@ FROM
 WHERE
     page.views < 300000
         AND pr.role = 'reviewer';
+
+# 1.e. Retrieve the writer developer who added a heading widget to CNET home page (charlie)
 
 SELECT 
     p.*, d.*
@@ -66,6 +76,8 @@ WHERE
 
 #####################################################
 
+# 2.a Retrieve the website with the least number of visits
+
 SELECT 
     w.*
 FROM
@@ -76,6 +88,8 @@ WHERE
         FROM
             website);
 
+# 2.b. Retrieve the name of a website whose id is 678 
+    
 SELECT 
     w.name
 FROM
@@ -83,6 +97,8 @@ FROM
 WHERE
     w.id = 678;
 
+# 2.c. Retrieve all websites with videos reviewed by bob
+   
 SELECT DISTINCT
     w.*
 FROM
@@ -104,6 +120,8 @@ WHERE
         AND pr.role = 'reviewer'
         AND p.username = 'bob';
 
+# 2.d. Retrieve all websites where alice is an owner
+        
 SELECT 
     w.*
 FROM
@@ -118,6 +136,8 @@ WHERE
     p.username = 'alice'
         AND wr.role = 'owner';
 
+# 2.e. Retrieve all websites where charlie is an admin and get more than 6000000 visits            
+ 
 SELECT 
     w.*
 FROM
@@ -135,6 +155,8 @@ WHERE
 
 #####################################################
 
+# 3.a. Retrieve the page with the most number of views
+
 SELECT 
     *
 FROM
@@ -145,12 +167,16 @@ WHERE
         FROM
             page);
 
+# 3.b. Retrieve the title of a page whose id is 234
+
 SELECT 
     page.title
 FROM
     page
 WHERE
     page.id = 234;
+
+# 3.c. Retrieve all pages where alice is an editor
 
 SELECT 
     page.*
@@ -166,6 +192,8 @@ WHERE
     p.username = 'alice'
         AND pr.role = 'editor';
 
+# 3.d. Retrieve the total number of pageviews in CNET
+
 SELECT 
     SUM(page.views)
 FROM
@@ -174,6 +202,8 @@ FROM
     website w ON page.website_id = w.id
 WHERE
     w.name = 'CNET';
+
+# 3.e. Retrieve the average number of page views in the Web site Wikipedia
 
 SELECT 
     AVG(page.views)
@@ -186,6 +216,8 @@ WHERE
 
 #####################################################
 
+# 4.a. Retrieve all widgets in CNET Home page
+
 SELECT 
     wd.*
 FROM
@@ -196,6 +228,8 @@ FROM
         JOIN
     website w ON page.website_id = w.id
         AND w.name = 'CNET';
+        
+# 4.b. Retrieve all youtube widgets in CNN
 
 SELECT 
     wd.*
@@ -208,6 +242,8 @@ FROM
         AND w.name = 'CNN'
 WHERE
     wd.type = 'youtube';
+
+# 4.c. Retrieve all image widgets on pages reviewed by Alice
 
 SELECT 
     wd.*
@@ -227,6 +263,8 @@ WHERE
     wd.type = 'image'
         AND pr.role = 'reviewer';
 
+# 4.d. Retrieve how many widgets are in Wikipedia    
+        
 SELECT 
     COUNT(*)
 FROM
@@ -238,6 +276,8 @@ FROM
     widget wd ON page.id = wd.page_id;
 
 #####################################################
+
+# 5.a. Retrieve the names of all the websites where Bob has DELETE privileges
 
 SELECT DISTINCT
     w.name
@@ -251,6 +291,8 @@ FROM
     person p ON d.id = p.id AND p.username = 'bob'
 WHERE
     wp.priviledge = 'delete';
+
+# 5.b. Retrieve the names of all the pages where Charlie has CREATE privileges
 
 SELECT DISTINCT
     page.title

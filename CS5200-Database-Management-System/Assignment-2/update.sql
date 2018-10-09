@@ -1,7 +1,7 @@
 USE `assignment2`;
 SET SQL_SAFE_UPDATES = 0;
 
-#####################################################
+# 1. Update developer
 
 UPDATE phone 
 SET 
@@ -15,7 +15,7 @@ WHERE
         WHERE
             p.username = 'charlie');
 
-#####################################################
+# 2. Update widget
 
 UPDATE widget 
 SET 
@@ -38,7 +38,7 @@ WHERE
             WHERE
                 widget.name = 'head345') AS target_id);
     
-#####################################################
+# 3. Update page
 
 UPDATE page
         JOIN
@@ -48,7 +48,7 @@ SET
 WHERE
     w.name = 'CNET';
 
-#####################################################
+# 4. Update roles
 
 UPDATE page_role pr1
         JOIN

@@ -1,8 +1,11 @@
+
+# 0. Create new schema
+
 DROP SCHEMA IF EXISTS `assignment2`;
 
 CREATE SCHEMA `assignment2` DEFAULT CHARACTER SET utf8 ;
 
-#####################################################
+# 1. Create tables person, developer and user
 
 CREATE TABLE `assignment2`.`person` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -62,7 +65,7 @@ CREATE TABLE `assignment2`.`phone` (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-#####################################################
+# 2. Create tables website, page, widget
 
 CREATE TABLE `assignment2`.`website` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -123,7 +126,7 @@ CREATE TABLE `assignment2`.`widget` (
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-#####################################################
+# Create other tables 
 
 CREATE TABLE `assignment2`.`priviledge` (
     `name` VARCHAR(255) NOT NULL,

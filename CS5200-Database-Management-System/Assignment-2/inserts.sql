@@ -1,5 +1,4 @@
-
-#####################################################
+# Insert developers & users
 INSERT INTO `assignment2`.`person` (`id`, `first_name`, `last_name`, `username`, `password`, `email`) VALUES 
             (12, 'Alice', 'Wonder', 'alice', 'alice', 'alice@wonder.com'), 
             (23, 'Bob', 'Marley', 'bob', 'bob', 'bob@marley.com'), 
@@ -16,7 +15,7 @@ INSERT INTO `assignment2`.`user` (`id`, `user_key`) VALUES
             (45, '7654fda'), 
             (56, '5678dfgh');
 
-#####################################################
+# Insert websites
 
 INSERT INTO `assignment2`.`website` (`id`, `name`, `description`, `created`, `updated`, `visits`) VALUES 
             (123, 'Facebook', 'an online social media and social networking service', CURDATE(), CURDATE(), 1234234), 
@@ -34,7 +33,7 @@ INSERT INTO `assignment2`.`website_role` (`role`, `developer_id`, `website_id`) 
             ('owner', 23, 567), ('editor', 34, 567), ('admin', 12, 567),
             ('owner', 34, 678), ('editor', 12, 678), ('admin', 23, 678);
 
-#####################################################
+# Insert pages
 
 INSERT INTO `assignment2`.`page` (`id`, `title`, `description`, `created`, `updated`, `views`, `website_id`) VALUES 
             (123, 'Home', 'Landing page', '2018-09-05', '2018-10-08', '123434', 567),
@@ -50,7 +49,7 @@ INSERT INTO `assignment2`.`page_role` (`role`, `developer_id`, `page_id`) VALUES
             ('editor', 12, 456), ('reviewer', 23, 456), ('writer', 34, 456),
             ('editor', 23, 567), ('reviewer', 34, 567), ('writer', 12, 567);
 
-#####################################################
+# Insert widgets
 
 INSERT INTO `assignment2`.`widget` (`id`, `name`, `type`, `width`, `height`, `text`, `order`, `url`, `page_id`) VALUES 
             (123, 'head123', 'heading', null, null, 'Welcome', 0, null, 123),
@@ -60,7 +59,7 @@ INSERT INTO `assignment2`.`widget` (`id`, `name`, `type`, `width`, `height`, `te
             (567, 'image345', 'image', 50, 100, null, 3, '/img/567.png', 345),
             (678, 'video456', 'youtube', 400, 300, null, 0, 'https://youtu.be/h67VX51QXiQ', 456);
 
-#####################################################
+# Insert phones & addresses
 
 INSERT INTO `assignment2`.`address` (`person_id`, `street1`, `city`, `zip`, `primary`) VALUES 
             (12, '123 Adam St.', 'Alton', '01234', 1),
