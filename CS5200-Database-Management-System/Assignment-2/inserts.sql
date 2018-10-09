@@ -62,7 +62,7 @@ INSERT INTO `assignment2`.`widget` (`id`, `name`, `type`, `width`, `height`, `te
 
 #####################################################
 
-INSERT INTO `assignment2`.`address` (`personid`, `street1`, `city`, `zip`, `primary`) VALUES 
+INSERT INTO `assignment2`.`address` (`person_id`, `street1`, `city`, `zip`, `primary`) VALUES 
             (12, '123 Adam St.', 'Alton', '01234', 1),
             (12, '234 Birch St.', 'Boston', '02345', 0),
             (23, '345 Charles St.', 'Chelms', '03455', 1),
@@ -70,7 +70,7 @@ INSERT INTO `assignment2`.`address` (`personid`, `street1`, `city`, `zip`, `prim
             (23, '543 East St.', 'Everett', '01112', 0), 
             (34, '654 Frank St.', 'Foulton', '04322', 1);
             
-INSERT INTO `assignment2`.`phone` (`personid`, `phone`, `primary`) VALUES 
+INSERT INTO `assignment2`.`phone` (`person_id`, `phone`, `primary`) VALUES 
             (12, '123-234-3456', 1),
             (12, '234-345-4566', 0),
             (23, '345-456-5677', 1),
