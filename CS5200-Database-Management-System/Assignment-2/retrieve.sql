@@ -1,6 +1,8 @@
 USE `assignment2`;
 
 #####################################################
+# 1. Retrieve developers
+#####################################################
 
 #  1.a. Retrieve all developers
 
@@ -72,8 +74,10 @@ WHERE
     pr.role = 'writer'
         AND page.title = 'Home'
         AND w.name = 'CNET';
-                                 
 
+
+#####################################################
+# 2. Retrieve websites
 #####################################################
 
 # 2.a Retrieve the website with the least number of visits
@@ -154,6 +158,8 @@ WHERE
         AND w.visits > 6000000;
 
 #####################################################
+# 3. Retrieve pages
+#####################################################
 
 # 3.a. Retrieve the page with the most number of views
 
@@ -203,7 +209,7 @@ FROM
 WHERE
     w.name = 'CNET';
 
-# 3.e. Retrieve the average number of page views in the Web site Wikipedia
+# 3.e. Retrieve the average number of page views in the website Wikipedia
 
 SELECT 
     AVG(page.views)
@@ -215,6 +221,8 @@ WHERE
     w.name = 'Wikipedia';
 
 #####################################################
+# 4. Retrieve widgets
+#####################################################
 
 # 4.a. Retrieve all widgets in CNET Home page
 
@@ -224,10 +232,10 @@ FROM
     widget wd
         JOIN
     page ON wd.page_id = page.id
-        AND page.title = 'Home'
         JOIN
     website w ON page.website_id = w.id
-        AND w.name = 'CNET';
+WHERE
+    page.title = 'Home' AND w.name = 'CNET';
         
 # 4.b. Retrieve all youtube widgets in CNN
 
@@ -239,9 +247,8 @@ FROM
     page ON wd.page_id = page.id
         JOIN
     website w ON page.website_id = w.id
-        AND w.name = 'CNN'
 WHERE
-    wd.type = 'youtube';
+    wd.type = 'youtube' AND w.name = 'CNN';
 
 # 4.c. Retrieve all image widgets on pages reviewed by Alice
 
@@ -258,10 +265,11 @@ FROM
         JOIN
     developer d ON pr.developer_id = d.id
         JOIN
-    person p ON d.id = p.id AND p.username = 'alice'
+    person p ON d.id = p.id
 WHERE
     wd.type = 'image'
-        AND pr.role = 'reviewer';
+        AND pr.role = 'reviewer'
+        AND p.username = 'alice';
 
 # 4.d. Retrieve how many widgets are in Wikipedia    
         
@@ -271,10 +279,13 @@ FROM
     website w
         JOIN
     page ON w.id = page.website_id
-        AND w.name = 'Wikipedia'
         JOIN
-    widget wd ON page.id = wd.page_id;
+    widget wd ON page.id = wd.page_id
+WHERE
+    w.name = 'Wikipedia';
 
+#####################################################
+# 5. Verification
 #####################################################
 
 # 5.a. Retrieve the names of all the websites where Bob has DELETE privileges
@@ -288,9 +299,10 @@ FROM
         JOIN
     developer d ON wp.developer_id = d.id
         JOIN
-    person p ON d.id = p.id AND p.username = 'bob'
+    person p ON d.id = p.id
 WHERE
-    wp.priviledge = 'delete';
+    wp.priviledge = 'delete'
+        AND p.username = 'bob';
 
 # 5.b. Retrieve the names of all the pages where Charlie has CREATE privileges
 
@@ -303,8 +315,9 @@ FROM
         JOIN
     developer d ON pp.developer_id = d.id
         JOIN
-    person p ON d.id = p.id AND p.username = 'charlie'
+    person p ON d.id = p.id
 WHERE
-    pp.priviledge = 'create';
+    pp.priviledge = 'create'
+        AND p.username = 'charlie';
 
 

@@ -1,11 +1,14 @@
-
-# 0. Create new schema
+#####################################################
+# 1. Create new schema
+#####################################################
 
 DROP SCHEMA IF EXISTS `assignment2`;
 
 CREATE SCHEMA `assignment2` DEFAULT CHARACTER SET utf8 ;
 
-# 1. Create tables person, developer and user
+#####################################################
+# 2. Create tables person, developer and user
+#####################################################
 
 CREATE TABLE `assignment2`.`person` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -65,7 +68,9 @@ CREATE TABLE `assignment2`.`phone` (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-# 2. Create tables website, page, widget
+#####################################################
+# 3. Create tables website, page, widget
+#####################################################
 
 CREATE TABLE `assignment2`.`website` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -126,7 +131,23 @@ CREATE TABLE `assignment2`.`widget` (
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-# Create other tables 
+# Default heading size to be 2
+
+DROP TRIGGER IF EXISTS `assignment2`.`widget_BEFORE_INSERT`;
+
+DELIMITER $$
+USE `assignment2`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `assignment2`.`widget_AFTER_INSERT` BEFORE INSERT ON `widget` FOR EACH ROW
+BEGIN
+IF NEW.type = 'heading' THEN
+	SET NEW.size = 2;
+END IF;
+END$$
+DELIMITER ;
+
+#####################################################
+# 4. Create other tables 
+#####################################################
 
 CREATE TABLE `assignment2`.`priviledge` (
     `name` VARCHAR(255) NOT NULL,

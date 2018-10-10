@@ -1,7 +1,4 @@
 USE `assignment2`;
-
-#####################################################
-
 DROP VIEW IF EXISTS `developer_roles_and_priviledges`;
 
 CREATE VIEW `developer_roles_and_priviledges` AS
