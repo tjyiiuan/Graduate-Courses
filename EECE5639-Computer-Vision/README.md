@@ -8,7 +8,8 @@ Fall 2018 taken with Prof. Octavia Camps
 |[Project 2][5]               |Image Mosaicing                      |
 |[Homework 1][1]              |                                     |
 |[Homework 2][2]              |                                     |
-|[Homework 3][4]              |                                     |
+|[Homework 3][4]              |Image Features and Image Segmentation|
+|[Homework 3][6]              |Homographies                         |
 
 
 [1]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-1
@@ -16,3 +17,4 @@ Fall 2018 taken with Prof. Octavia Camps
 [3]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Project-1
 [4]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-3
 [5]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Project-2
+[6]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-4

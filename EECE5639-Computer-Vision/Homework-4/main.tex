@@ -1,0 +1,100 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{pythonhighlight}
+
+\marginsize{2cm}{2cm}{0.9cm}{1.8cm}
+
+\title{EECE 5639 Computer Vision\\ [2ex] \begin{large} Homework \#4 \end{large} }
+\author{Jiyu Tian}
+\date{}
+
+\begin{document}
+\maketitle
+\pagestyle{empty}
+%%---------------------------------------------------------------
+%% Question 1
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) Since $Z=0$, it is a similarity transformation:
+\begin{equation*}
+\left[ \begin{array}{c}
+u\\
+v\\
+1
+\end{array} \right] \sim \left[ \begin{array}{ccc}
+fcos\theta & -fsin\theta & ft_x\\
+fsin\theta & fcos\theta & ft_y\\
+0 & 0 & t_z
+\end{array} \right]\left[ \begin{array}{c}
+X\\
+Y\\
+1
+\end{array} \right]
+\end{equation*}
+(b) It has 4 degree of freedom.\\
+(c) 4 points are needed since it is a 2D to 2D transformation.\\
+(d) Yes, more correspondences will be helpful for a more robust solution:
+\begin{itemize}
+    \item 4 correspondences may be collinear
+    \item points may be inaccurate because of noise
+\end{itemize}
+(e) Cross ratio of collinear points.\\
+(f) Parallellism.\\
+(g) The building plane is parallel to the image plane if and only if:
+\begin{itemize}
+    \item lines of building parallel to $X$ axes are also parallel to each other on the image
+    \item lines of building parallel to $Y$ axes are also parallel to each other on the image
+\end{itemize}
+
+%%---------------------------------------------------------------
+%% Question 2
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) SSD
+\begin{equation*}
+SSD = \left[ \begin{array}{cccccccc}
+\times & \times& \times& \times& \times &\times &\times & \times \\
+\times &  24 & 28 & 24 & 12 & 8 & 8 & \times \\
+\times &  16 & 12 & 16 & 8 & 12 & 8 & \times \\
+\times &  8 & 8 & 12 & 8 & 16 & 8 & \times \\
+\times &  10 & 7 & 9 & 12 & 28 & 20 & \times \\
+\times &  9 & 12 & 9 & 12 & 24 & 20 & \times \\
+\times &  0 & 7 & 7 & 8 & 12 & 8 & \times \\
+\times & \times& \times& \times& \times &\times &\times & \times 
+\end{array} \right]
+\end{equation*}
+(b) Cross-Correlation
+\begin{equation*}
+C_fg = \left[ \begin{array}{cccccccc}
+\times & \times& \times& \times& \times &\times &\times & \times \\
+\times &  4 & 4 & 2 & 0 & 0 & 0 & \times \\
+\times &  10 & 14 & 8 & 2 & 0 & 2 & \times \\
+\times &  4 & 4 & 0 & 0 & 0 & 4 & \times \\
+\times &  4 & 5 & 2 & 0 & 4 & 10 & \times \\
+\times &  3 & 1 & 0 & 0 & 4 & 8 & \times \\
+\times &  8 & 4 & 1 & 2 & 8 & 12 & \times \\ 
+\times & \times& \times& \times& \times &\times &\times & \times
+\end{array} \right]
+\end{equation*}
+(c) Normalized Cross-Correlation
+\begin{equation*}
+N_fg = \left[ \begin{array}{cccccccc}
+\times & \times& \times& \times& \times &\times &\times & \times \\
+\times &  0.0208 & 0.0179 & 0.0125 & 0 & 0 & 0 & \times \\
+\times &  0.0446&  0.0547 & 0.0417 & 0.0625&  0 & 0.0625& \times \\
+\times &  0.0625  &0.0625 & 0 & 0 & 0 & 0.0625 &\times \\
+\times &  0.05 & 0.0694 & 0.05 & 0 & 0.0179 & 0.0391& \times \\
+\times &  0.0536 & 0.0208 & 0 & 0 & 0.0208 & 0.0357& \times \\
+\times &  0.125 & 0.0714 & 0.125 & 0.0625&  0.05 & 0.0625 &\times \\
+\times & \times& \times& \times& \times &\times &\times & \times 
+\end{array} \right]
+\end{equation*}
+
+\end{document}
