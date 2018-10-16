@@ -48,6 +48,7 @@ class Harris_Corner_Detector(object):
             window_func = Gen_Gaussian_Filter(2, sigma, size=neighbor)
         else:
             window_func = np.ones((neighbor, neighbor))
+            window_func = window_func / sum(sum(window_func))
 
         return window_func
 
@@ -129,8 +130,8 @@ class Harris_Corner_Detector(object):
         offset = int(win / 2)
         ovrlay += offset
 
-        for i in np.arange(ishape[0])[ovrlay + 1:- ovrlay - 1]:
-            for j in np.arange(ishape[1])[ovrlay + 1:- ovrlay - 1]:
+        for i in np.arange(ishape[0])[ovrlay:- ovrlay]:
+            for j in np.arange(ishape[1])[ovrlay:- ovrlay]:
                 local_matrix = R[i - offset:i + offset + 1, 
                                  j - offset:j + offset + 1]
                 local_max = max(local_matrix.reshape((1, -1))[0, :])
