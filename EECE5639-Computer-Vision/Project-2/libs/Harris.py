@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from .misc import Gen_Gaussian_Filter, apply_2d_filter
+from .misc import Gen_Gaussian_Filter, apply_2d_filter, calculate_gradient
 
 
 class Harris_Corner_Detector(object):
@@ -84,16 +84,17 @@ class Harris_Corner_Detector(object):
         R = det - self.k * (trace)**2
         
         return R
+    
+    @staticmethod
+    def _calculate_gradient_old(image, method):
+        if "s" in method.lower():
+            factor = 2
+        else:
+            factor = 1
         
-    def harris_r_matrix(self):
-        """Compute Harris R function over the image."""
-        image = self.image
-        neighbor = self.neighbor
-        window = self.window_func
-
         ishape = image.shape
-        xmask = np.array([[-1, 0, 1]]) * np.array([[1], [1], [1]])
-        ymask = np.array([[1, 1, 1]]) * np.array([[-1], [0], [1]])
+        xmask = np.array([[-1, 0, 1]]) * np.array([[1], [factor], [1]])
+        ymask = np.array([[1, factor, 1]]) * np.array([[-1], [0], [1]])
         Ix = np.zeros(ishape)
         Iy = np.zeros(ishape)
         Ex = apply_2d_filter(xmask, image)
@@ -101,6 +102,18 @@ class Harris_Corner_Detector(object):
         
         Ix[1:-1, 1:-1] = np.copy(Ex[1:-1, 1:-1])
         Iy[1:-1, 1:-1] = np.copy(Ey[1:-1, 1:-1])
+        
+        return Ix, Iy
+
+    def harris_r_matrix(self):
+        """Compute Harris R function over the image."""
+        image = self.image
+        neighbor = self.neighbor
+        window = self.window_func
+        ishape = self.image_shpae
+
+#        Ix, Iy = self._calculate_gradient_old(image, "Sobel")
+        Ix, Iy = calculate_gradient(image, method="Sobel")
         Ixy = Ix * Iy
         Ixx = Ix ** 2
         Iyy = Iy ** 2
@@ -118,7 +131,7 @@ class Harris_Corner_Detector(object):
 
         return self
         
-    def nonmax_Supression(self):
+    def nonmax_Supression_old(self):
         """Do non-maimum suppression to get a sparse set of corner features."""
         threshold = self.thresold
         r_matrix = self.r_matrix
@@ -141,22 +154,39 @@ class Harris_Corner_Detector(object):
         
         return self
 
+    def nonmax_Supression(self):
+        """Do non-maimum suppression to get a sparse set of corner features."""
+        threshold = self.thresold
+        r_matrix = self.r_matrix
+        ovrlay = self.ovrlay
+        ishape = self.image_shpae
+        win = self.nonmax_window
+
+        R = r_matrix * (r_matrix > threshold)
+        offset = int(win / 2)
+        ovrlay += offset
+        nonmax_r = np.zeros(ishape)
         
+        matrix0 = R[ovrlay - 1:- ovrlay - 1, ovrlay - 1:- ovrlay - 1]
+        matrix1 = R[ovrlay - 1:- ovrlay - 1, ovrlay:- ovrlay]
+        matrix2 = R[ovrlay - 1:- ovrlay - 1, ovrlay + 1:- ovrlay + 1]
+        matrix3 = R[ovrlay:- ovrlay, ovrlay - 1:- ovrlay - 1]
+        matrix4 = R[ovrlay:- ovrlay, ovrlay:- ovrlay]
+        matrix5 = R[ovrlay:- ovrlay, ovrlay + 1:- ovrlay + 1]
+        matrix6 = R[ovrlay + 1:- ovrlay + 1, ovrlay - 1:- ovrlay - 1]
+        matrix7 = R[ovrlay + 1:- ovrlay + 1, ovrlay:- ovrlay]
+        matrix8 = R[ovrlay + 1:- ovrlay + 1, ovrlay + 1:- ovrlay + 1]
+
+        matrix_array = np.array([matrix0, matrix1, matrix2, matrix3, 
+                                 matrix5, matrix6, matrix7, matrix8])
+        matrix_diff = matrix4 - matrix_array
+        matrix_diff[np.where(matrix_diff > 0)] = 1
+        matrix_diff[np.where(matrix_diff < 0)] = 0
+        matrix_sum = sum(matrix_diff)
+        peaks_inds = np.where(matrix_sum == 8) 
+        nonmax_r[peaks_inds[0] + ovrlay, peaks_inds[1] + ovrlay] = 1
         
+        self.nonmax_r = nonmax_r
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        return self
+

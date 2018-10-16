@@ -81,3 +81,28 @@ def apply_2d_filter(bfilter, timage):
                                       j - ovrlay:j + ovrlay + 1]
             res_matrix[i - ovrlay, j - ovrlay] = sum(sum(local_matrix * bfilter))
     return res_matrix
+
+def calculate_gradient(matrix, method='Prewitt'):
+    mshape = np.shape(matrix)
+    
+    if "s" in method.lower():
+        factor = 2
+    else:
+        factor = 1
+    
+    # x-axis
+    x_gradient = np.zeros(mshape)
+    matrix_x = matrix[:, 2:] - matrix[:, :-2]
+    matrix_x0 = matrix_x[:-2, :]
+    matrix_x1 = matrix_x[1:-1, :] * factor
+    matrix_x2 = matrix_x[2:, :]
+    x_gradient[1:-1, 1:-1] = matrix_x0 + matrix_x1 + matrix_x2 
+    # y-axis
+    y_gradient = np.zeros(mshape)
+    matrix_y = matrix[2:, :] - matrix[:-2, :]
+    matrix_y0 = matrix_y[:, :-2]
+    matrix_y1 = matrix_y[:, 1:-1] * factor
+    matrix_y2 = matrix_y[:, 2:]
+    y_gradient[1:-1, 1:-1] = matrix_y0 + matrix_y1 + matrix_y2 
+    
+    return x_gradient, y_gradient

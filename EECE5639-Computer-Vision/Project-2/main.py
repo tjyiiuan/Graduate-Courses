@@ -12,17 +12,20 @@ from libs.Mosaic import Image_Mosaicing
 
 image_path = r".\\DanaHallWay1\\"
 neighbor = 7
-avg = "Gaussian"
+avg = "aussian"
 sigma = 1
-thresold = 1e6
+corner_thresold = 1e5
 k = 0.05
-nonmax_window = 3
+nonmax_window = 5
 
 #%%
 if __name__ == "__main__":
     raw_images = Load_Images(image_path)
     mosaic = Image_Mosaicing(raw_images[0], raw_images[1], neighbor=neighbor, 
-                             avg=avg, sigma=sigma, thresold=thresold, 
-                             k=k, nonmax_window=nonmax_window)
+                             avg=avg, sigma=sigma, nonmax_window=nonmax_window,
+                             corner_thresold=corner_thresold, k=k)
     mosaic.corner_detect()
-    
+#    mosaic.correspondences()
+#    mosaic.homography_estimate()
+#    mosaic.image_warp()
+

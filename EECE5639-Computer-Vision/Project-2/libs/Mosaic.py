@@ -27,7 +27,7 @@ class Image_Mosaicing(object):
         self.neighbor = kargs["neighbor"]
         self.avg = kargs["avg"]
         self.sigma = kargs["sigma"]
-        self.thresold = kargs["thresold"]
+        self.corner_thresold = kargs["corner_thresold"]
         self.k = kargs["k"]
         self.nonmax_window = kargs["nonmax_window"]
 
@@ -35,12 +35,13 @@ class Image_Mosaicing(object):
         neighbor = self.neighbor
         avg = self.avg
         sigma = self.sigma
-        thresold = self.thresold
+        corner_thresold = self.corner_thresold
         k = self.k
         nonmax_window = self.nonmax_window
         
         detector = Harris_Corner_Detector(image, neighbor=neighbor, avg=avg, 
-                                          sigma=sigma, thresold=thresold, k=k, 
+                                          sigma=sigma, k=k, 
+                                          thresold=corner_thresold,
                                           nonmax_window=nonmax_window)
         detector.harris_r_matrix()
         detector.nonmax_Supression()
@@ -56,17 +57,18 @@ class Image_Mosaicing(object):
         r2 = self._apply_harris_corner_detector(image2)
         self.corner1 = r1
         self.corner2 = r2
-
+        print(len(np.where(r1)[0]), len(np.where(r1)[1]))
+        print(len(np.where(r2)[0]), len(np.where(r2)[1]))
         if show:
             fig = plt.figure()
             ax1 = fig.add_subplot(121)
             ax1.axis('off')
             ax1.imshow(self.raw_image1)
-            ax1.scatter(np.where(r1)[1], np.where(r1)[0], c='r')
+            ax1.scatter(np.where(r1)[1], np.where(r1)[0], c="r")
             ax2 = fig.add_subplot(122)
             ax2.axis('off')
             ax2.imshow(self.raw_image2)
-            ax2.scatter(np.where(r2)[1], np.where(r2)[0], c='r')
+            ax2.scatter(np.where(r2)[1], np.where(r2)[0], c="r")
             plt.show()
 
         return self
@@ -79,7 +81,7 @@ class Image_Mosaicing(object):
         """Estimate homography."""
         return self
     
-    def image_warpping(self):
+    def image_warp(self):
         """Warp images."""
         return self
 
