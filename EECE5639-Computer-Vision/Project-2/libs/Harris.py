@@ -48,7 +48,7 @@ class Harris_Corner_Detector(object):
             window_func = Gen_Gaussian_Filter(2, sigma, size=neighbor)
         else:
             window_func = np.ones((neighbor, neighbor))
-            window_func = window_func / sum(sum(window_func))
+            window_func = window_func / window_func.sum()
 
         return window_func
 
@@ -65,8 +65,8 @@ class Harris_Corner_Detector(object):
         Iyy = window * Gyy
         Ixy = window * Gxy
 
-        M = np.array([[sum(sum(Ixx)), sum(sum(Ixy))], 
-                      [sum(sum(Ixy)), sum(sum(Iyy))]])
+        M = np.array([[Ixx.sum(), Ixy.sum()], 
+                      [Ixy.sum(), Iyy.sum()]])
 
         return M
     

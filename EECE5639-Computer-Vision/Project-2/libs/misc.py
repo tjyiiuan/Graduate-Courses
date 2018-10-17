@@ -4,7 +4,8 @@ import numpy as np
 import matplotlib.image as mpimg
 
 
-__all__ = ["Gen_Gaussian_Filter", "Load_Images", "rgb2gray"]
+__all__ = ["Gen_Gaussian_Filter", "Load_Images", "rgb2gray", 
+           "calculate_gradient", "compute_normalized_correlation"]
 
 
 def Gen_Gaussian_Filter(dim, sigma, size=0):
@@ -106,3 +107,37 @@ def calculate_gradient(matrix, method='Prewitt'):
     y_gradient[1:-1, 1:-1] = matrix_y0 + matrix_y1 + matrix_y2 
     
     return x_gradient, y_gradient
+
+
+def normalize(matrix):
+    """Compute normailized form.
+    
+    Parameters
+    ----------
+    matrix: array-like
+        The target matrix
+    """
+    msum = sum(sum(matrix**2))
+    if msum:
+        res = matrix / msum
+    else:
+       res = matrix
+    
+    return res    
+    
+def compute_normalized_correlation(image, template):
+    """Compute cross-correlation between image and template.
+    
+    Parameters
+    ----------
+    image: array-like
+        The target image
+    template: array-like
+        Template image
+    """
+    nimage = np.array([normalize(i) for i in image])
+    ntemplate = normalize(template)
+    mask_array = nimage * ntemplate
+    ncc_array = mask_array.sum(axis = -1).sum(axis=1)
+    
+    return ncc_array
