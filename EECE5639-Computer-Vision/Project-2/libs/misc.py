@@ -145,7 +145,7 @@ def normalized_correlation(image, template):
 def homo_project(trans_matrix, point):
     """Project a point using given trnasformation matrix."""
     x, y = point
-    homo_point = np.array([[x], [y], 1])
+    homo_point = np.array([[x], [y], [1]])
     unor_point = np.matmul(trans_matrix, homo_point)
     z = unor_point[-1, 0]
     if z:

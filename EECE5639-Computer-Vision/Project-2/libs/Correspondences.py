@@ -109,11 +109,11 @@ class Correspond(object):
         return self
 
     @staticmethod
-    def _solve_homograph_matrix(*args):
+    def solve_homograph_matrix(*args):
         """Solve homography matrix with 4 points, non-colinear."""
         co_matrix = []
         b_array = []
-        for points_pair in args:
+        for points_pair in args[0]:
             p0, p1 = points_pair
             x0, y0 = p0
             x1, y1 = p1
@@ -128,14 +128,24 @@ class Correspond(object):
 
         h_array = np.append(np.matmul(co_matrix_inv, 
                                       np.matmul(co_matrix.T, b_array)), 1)
-        logging.debug(h_array.shape)
-        h_array.reshape((3, 3))
         
-        return h_array
-    
-    def ransac(self):
-        points_pair = self.points_pair
+        h_array = h_array.reshape((3, 3))
+        logging.debug(h_array)
 
-        return self
-    
+        return h_array
+
+    @staticmethod
+    def ransac(zip_points_pair, homo_matrix, distance):
+        """Copmute distance_array given points pairs and projection matrix."""
+        pair_length = len(zip_points_pair)
+        distance_array = - np.ones(pair_length)
+        for i in np.arange(pair_length):
+            p0, p1 = zip_points_pair[i]
+            pro_p0 = homo_project(homo_matrix, p0)
+            temp_dis = euclidean_disance(pro_p0, p1)
+            distance_array[i] = temp_dis
         
+        inds = np.where(distance_array <= distance)
+        new_points_pair = list(np.array(zip_points_pair)[inds])
+        
+        return new_points_pair
