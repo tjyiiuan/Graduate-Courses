@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import numpy as np
 
-from .misc import compute_normalized_correlation
+from .misc import normalized_correlation, homo_project, euclidean_disance
 
 
 class Correspond(object):
@@ -40,7 +42,7 @@ class Correspond(object):
         ncc_matrix = np.zeros((len1, len2))
         for i in np.arange(len1):
             template = matrix_array_1[i]
-            ncc_row_i = compute_normalized_correlation(matrix_array_2, template)
+            ncc_row_i = normalized_correlation(matrix_array_2, template)
             ncc_matrix[i, :] = ncc_row_i
         
         self.matrix_array_1 = matrix_array_1
@@ -54,7 +56,7 @@ class Correspond(object):
     def find_cor_pair(self):
         """Find correspondence points pairs."""
         threshold = self.threshold
-        ncc_matrix = self.ncc_matrix
+        ncc_matrix = np.copy(self.ncc_matrix)
 #        matrix_array_1 = self.matrix_array_1
 #        matrix_array_2 = self.matrix_array_2
         points_inds_1 = self.points_inds_1
@@ -83,39 +85,53 @@ class Correspond(object):
 
         return self
     
+    def find_cor_pair_new(self):
+        """Find correspondence points pairs."""
+        threshold = self.threshold
+        ncc_matrix = np.copy(self.ncc_matrix)
+#        matrix_array_1 = self.matrix_array_1
+#        matrix_array_2 = self.matrix_array_2
+        points_inds_1 = self.points_inds_1
+        points_inds_2 = self.points_inds_2
+        
+        ncc_matrix[np.where(ncc_matrix < threshold)] = 0
+        pair_length = len(points_inds_1)
+        ipoints_array_1 = [(0, 0)] * pair_length 
+        ipoints_array_2 = [(0, 0)] * pair_length 
+        
+        for i in np.arange(pair_length):
+            j = np.argmax(ncc_matrix[i, :])
+            ipoints_array_1[i] = points_inds_1[i]
+            ipoints_array_2[i] = points_inds_2[j]
+        
+        self.points_pair = (ipoints_array_1, ipoints_array_2)
+
+        return self
+
     @staticmethod
-    def _solve_homograph_matrix(pair1, pair2, pair3, pair4):
+    def _solve_homograph_matrix(*args):
         """Solve homography matrix with 4 points, non-colinear."""
-        p10, p11 = pair1
-        p20, p21 = pair2
-        p30, p31 = pair3
-        p40, p41 = pair4
+        co_matrix = []
+        b_array = []
+        for points_pair in args:
+            p0, p1 = points_pair
+            x0, y0 = p0
+            x1, y1 = p1
+            co_matrix += [[x0, y0, 1, 0, 0, 0, -x0 * x1, -y0 * x1], 
+                          [0, 0, 0, x0, y0, 1, -x0 * y1, -y0 * y1]]
+            b_array += [x1, y1]
+
+        co_matrix = np.vstack(co_matrix)
+        b_array = np.vstack(b_array)
         
-        x10, y10 = p10
-        x20, y20 = p20
-        x30, y30 = p30
-        x40, y40 = p40
-        
-        x11, y11 = p11
-        x21, y21 = p21
-        x31, y31 = p31
-        x41, y41 = p41
-        
-        co_matrix = np.array([[x10, y10, 1, 0, 0, 0, -x10 * x11, -y10 * x11],
-                              [0, 0, 0, x10, y10, 1, -x10 * y11, -y10 * y11],
-                              [x20, y20, 1, 0, 0, 0, -x20 * x21, -y20 * x21],
-                              [0, 0, 0, x20, y20, 1, -x20 * y21, -y20 * y21],
-                              [x30, y40, 1, 0, 0, 0, -x30 * x31, -y30 * x31],
-                              [0, 0, 0, x30, y30, 1, -x30 * y31, -y30 * y31],
-                              [x40, y40, 1, 0, 0, 0, -x40 * x41, -y40 * x41],
-                              [0, 0, 0, x40, y40, 1, -x40 * y41, -y40 * y41]])
-        
-        b_array = np.array([x11, y11, x21, y21, x31, y31, x41, y41])
-        
-        co_matrix_inv = np.linalg.inv(co_matrix)
+        co_matrix_inv = np.linalg.inv(np.matmul(co_matrix.T, co_matrix))
+
         h_array = np.append(np.matmul(co_matrix_inv, 
-                                      b_array), 1).reshape((3, 3))
-    
+                                      np.matmul(co_matrix.T, b_array)), 1)
+        logging.debug(h_array.shape)
+        h_array.reshape((3, 3))
+        
+        return h_array
     
     def ransac(self):
         points_pair = self.points_pair

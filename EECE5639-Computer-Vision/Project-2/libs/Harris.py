@@ -25,12 +25,13 @@ class Harris_Corner_Detector(object):
         Window size for non-maimum suppression.
     """
 
-    def __init__(self, image, neighbor=7, avg="box", sigma=1, 
+    def __init__(self, image, method="Sobel", neighbor=7, avg="box", sigma=1, 
                  thresold=1e5, k=0.05, nonmax_window=3):
         ishape = image.shape
 
         self.image = image
         self.image_shpae = ishape
+        self.method = method
         self.neighbor = neighbor
         self.avg = avg
         self.win_sigma = sigma
@@ -113,7 +114,7 @@ class Harris_Corner_Detector(object):
         ishape = self.image_shpae
 
 #        Ix, Iy = self._calculate_gradient_old(image, "Sobel")
-        Ix, Iy = calculate_gradient(image, method="Sobel")
+        Ix, Iy = calculate_gradient(image, method=self.method)
         Ixy = Ix * Iy
         Ixx = Ix ** 2
         Iyy = Iy ** 2
@@ -179,6 +180,7 @@ class Harris_Corner_Detector(object):
 
         matrix_array = np.array([matrix0, matrix1, matrix2, matrix3, 
                                  matrix5, matrix6, matrix7, matrix8])
+
         matrix_diff = matrix4 - matrix_array
         matrix_diff[np.where(matrix_diff > 0)] = 1
         matrix_diff[np.where(matrix_diff < 0)] = 0

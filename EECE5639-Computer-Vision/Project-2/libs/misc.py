@@ -5,7 +5,7 @@ import matplotlib.image as mpimg
 
 
 __all__ = ["Gen_Gaussian_Filter", "Load_Images", "rgb2gray", 
-           "calculate_gradient", "compute_normalized_correlation"]
+           "calculate_gradient", "normalized_correlation"]
 
 
 def Gen_Gaussian_Filter(dim, sigma, size=0):
@@ -125,7 +125,7 @@ def normalize(matrix):
     
     return res    
     
-def compute_normalized_correlation(image, template):
+def normalized_correlation(image, template):
     """Compute cross-correlation between image and template.
     
     Parameters
@@ -141,3 +141,25 @@ def compute_normalized_correlation(image, template):
     ncc_array = mask_array.sum(axis = -1).sum(axis=1)
     
     return ncc_array
+
+def homo_project(trans_matrix, point):
+    """Project a point using given trnasformation matrix."""
+    x, y = point
+    homo_point = np.array([[x], [y], 1])
+    unor_point = np.matmul(trans_matrix, homo_point)
+    z = unor_point[-1, 0]
+    if z:
+        point = tuple(unor_point[:2, 0] / z)
+    else:
+        point = (np.inf, np.inf)
+    
+    return point
+
+def euclidean_disance(p0, p1):
+    """Calculate Euclidean disance."""
+    x0, y0 = p0
+    x1, y1 = p1
+    dis = np.sqrt((x0 - x1)**2 + (y0 - y1)**2)
+    
+    return dis
+    

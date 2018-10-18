@@ -26,6 +26,7 @@ class Image_Mosaicing(object):
         self.raw_image2 = rawimg2
         self.gray_image1 = rgb2gray(rawimg1)
         self.gray_image2 = rgb2gray(rawimg2)
+        self.grad_method = params["method"]
         self.neighbor = params["corner_neighbor"]
         self.avg = params["avg"]
         self.sigma = params["sigma"]
@@ -34,6 +35,9 @@ class Image_Mosaicing(object):
         self.nonmax_window = params["nonmax_window"]
         self.ncc_threshold = params["ncc_threshold"]
         self.ncc_neighbor = params["ncc_neighbor"]
+        self.ransac_ratio = params["ransac_ratio"]
+        self.ransac_distance = params["ransac_distance"]
+        self.ransac_iteration = params["ransac_iteration"]
 
         self.correspond = None
 
@@ -51,7 +55,7 @@ class Image_Mosaicing(object):
                                           thresold=corner_thresold,
                                           nonmax_window=nonmax_window)
         detector.harris_r_matrix()
-        detector.nonmax_Supression()
+        detector.nonmax_Supression_old()
         r = detector.nonmax_r
         
         return r
@@ -117,11 +121,14 @@ class Image_Mosaicing(object):
 
         return self
     
-    def homography_estimate(self):
+    def homography_estimate(self, show=True):
         """Estimate homography."""
         return self
-    
-    def image_warp(self):
+
+
+
+
+    def image_warp(self, show=True):
         """Warp images."""
         return self
 
