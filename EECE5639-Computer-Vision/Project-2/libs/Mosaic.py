@@ -55,7 +55,7 @@ class Image_Mosaicing(object):
                                           thresold=corner_thresold,
                                           nonmax_window=nonmax_window)
         detector.harris_r_matrix()
-        detector.nonmax_Supression_old()
+        detector.nonmax_Supression()
         r = detector.nonmax_r
         
         return r
@@ -178,6 +178,28 @@ class Image_Mosaicing(object):
         homo_matrix = self.homo_projection_matrix
         
         print(homo_project(homo_matrix, (0, 0)))
+        
+        wraped_image = np.zeros(raw_image2.shape)
+        
+        if show:
+            fig = plt.figure()
+            
+            ax1 = fig.add_subplot(221)
+            ax1.axis('off')
+            ax1.imshow(raw_image1)
+            ax1.set_title("Raw Image 1", fontsize=14)
+            
+            ax2 = fig.add_subplot(222)
+            ax2.axis('off')
+            ax2.imshow(raw_image2)
+            ax2.set_title("Raw Image 2", fontsize=14)
+            
+            ax3 = fig.add_subplot(212)
+            ax3.axis('off')
+            ax3.imshow(wraped_image)
+            ax3.set_title("Wrapped Image", fontsize=14)
+            
+            plt.show()
 
 
 
