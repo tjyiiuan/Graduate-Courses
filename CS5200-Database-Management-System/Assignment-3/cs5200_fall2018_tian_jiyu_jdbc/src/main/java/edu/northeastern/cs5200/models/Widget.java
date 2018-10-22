@@ -4,7 +4,6 @@ public class Widget {
 	
 	private int id;
 	private String name;
-	private String type;
 	private int width;
 	private int height;
 	private String cssStyle;
@@ -17,10 +16,9 @@ public class Widget {
 		super();
 	}
 	
-	public Widget(String name, String type, int width, int height, String text, int order, int pageId) {
+	public Widget(String name, int width, int height, String text, int order, int pageId) {
 		super();
 		this.setName(name);
-		this.setType(type);
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setCssStyle("undefined");
@@ -30,11 +28,10 @@ public class Widget {
 		this.setPageId(pageId);
 	}
 	
-	public Widget(int id, String name, String type, int width, int height, String cssStyle, String cssClass, String text, int order) {
+	public Widget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order) {
 		super();
 		this.setId(id);
 		this.setName(name);
-		this.setType(type);
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setCssStyle(cssStyle);
@@ -57,14 +54,6 @@ public class Widget {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public int getWidth() {

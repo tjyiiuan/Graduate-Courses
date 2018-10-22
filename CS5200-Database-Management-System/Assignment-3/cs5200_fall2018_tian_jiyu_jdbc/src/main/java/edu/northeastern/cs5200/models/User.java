@@ -32,6 +32,7 @@ public class User extends Person {
 	public String getUserKey() {
 		return userKey;
 	}
+	
 	public void setUserKey(String userKey) {
 		this.userKey = userKey;
 	}

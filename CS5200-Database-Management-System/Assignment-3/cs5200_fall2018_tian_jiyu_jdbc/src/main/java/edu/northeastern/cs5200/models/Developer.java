@@ -28,6 +28,7 @@ public class Developer extends Person {
 	public String getDeveloperKey() {
 		return developerKey;
 	}
+	
 	public void setDeveloperKey(String developerKey) {
 		this.developerKey = developerKey;
 	}

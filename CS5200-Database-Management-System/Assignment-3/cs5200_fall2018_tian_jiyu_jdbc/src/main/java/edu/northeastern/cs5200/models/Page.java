@@ -12,12 +12,13 @@ public class Page {
 	private Date updated;
 	private int views;
     private Collection<Widget> widgets;
+    private int WebsiteId;
 	
 	public Page() {
 		super();
 	}
 	
-	public Page(int id, String title, String description, Date created, Date updated, int views) {
+	public Page(int id, String title, String description, Date created, Date updated, int views, int WebsiteId) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -25,7 +26,9 @@ public class Page {
 		this.created = created;
 		this.updated = updated;
 		this.views = views;
+		this.WebsiteId = WebsiteId;
 	}
+	
 	public Page(int id, String title, String description, int views) {
 		super();
 		this.title = title;
@@ -36,43 +39,64 @@ public class Page {
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	public String getTitle() {
 		return title;
 	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	public Date getCreated() {
 		return created;
 	}
+	
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+	
 	public Date getUpdated() {
 		return updated;
 	}
+	
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
+	
 	public int getViews() {
 		return views;
 	}
+	
 	public void setViews(int views) {
 		this.views = views;
 	}
+	
 	public Collection<Widget> getWidgets() {
 		return widgets;
 	}
+	
 	public void setWidgets(Collection<Widget> widgets) {
 		this.widgets = widgets;
+	}
+
+	public int getWebsiteId() {
+		return WebsiteId;
+	}
+
+	public void setWebsiteId(int websiteId) {
+		WebsiteId = websiteId;
 	}
 }
