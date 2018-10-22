@@ -7,6 +7,10 @@ public class User extends Person {
 	private String userKey;
 	private boolean userAgreement;
 	
+	public User() {
+		super();
+	}
+			
 	public User(int id, String firstName, String lastName, String username, String password, String email, Date dob, String userKey, boolean userAgreement) {
 		super(id, firstName, lastName, username, password, email, dob);
 		this.userKey = userKey;

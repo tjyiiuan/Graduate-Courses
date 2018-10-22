@@ -6,6 +6,10 @@ public class Developer extends Person {
 	
 	private String developerKey;
 
+	public Developer() {
+		super();
+	}
+	
 	public Developer(int id, String firstName, String lastName, String username, String password, String email, Date dob, String developerKey) {
 		super(id, firstName, lastName, username, password, email, dob);
 		this.developerKey = developerKey;
