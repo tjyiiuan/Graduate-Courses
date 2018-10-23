@@ -44,7 +44,6 @@ And the response $R$
 R=det(M) - k\times trace(M)^2
 \end{equation}
 
-A threshold of $R = 1\times 10^8$ is set to filtered pixels with low response. Then we compute non-maximum suppression to find local peaks in $3\times3$ neighbors.
 \subsection{Correspondences}
 Given two set of corners from the two images, we compute normalized cross correlation ($NCC$) of image patches centered at each corner. 
 \begin{equation}
@@ -53,14 +52,6 @@ N_{fg} = \sum_{[i, j]\in R}\hat{f}(i, j)\hat{g}(i, j),\ \ \hat{f} = \frac{f}{||f
 
 We choose potential corner matches by finding pair of corners (one from each image) such that they have the highest $NCC$ value. We also set a threshold of $0.5$ to keep only matches pairs that have a large $NCC$ score.
 \subsection{Homography Estimation}
-We use RANSAC to robustly estimate the homography from the noisy correspondences:
-\begin{itemize}
-\item Repeatedly sample 4 random points
-\item Compute a homography from these four points
-\item Map all points using the homagraphy and comparing distances between predicted and observed locations to determine the number of inliers
-\item At the end, compute a least-squares homgraphy from \textbf{all} the inliers in the largest set of inliers.
-\end{itemize}
-
 Given a set of 4 points pairs $(x,y), (x', y')$, we can compute the homography from
 \begin{equation}
 \left[ \begin{array}{c}
@@ -77,6 +68,16 @@ y\\
 1
 \end{array} \right] 
 \end{equation}
+
+We use RANSAC to robustly estimate the homography from the noisy correspondences:
+\begin{itemize}
+\item Repeatedly sample 4 random points
+\item Compute a homography from these four points
+\item Map all points using the homagraphy and comparing distances between predicted and observed locations to determine the number of inliers
+\item At the end, compute a least-squares homgraphy from \textbf{all} the inliers in the largest set of inliers.
+\end{itemize}
+
+
 \subsection{Image Warp}
 After generating the homography, we can warp one image onto the other one, blending overlapping pixels together to create a single image that shows the union of all pixels from both input images. 
 
@@ -89,25 +90,76 @@ The steps are as follows:
 \end{itemize}
 %-------------------------------------------------------------------------
 \section{EXPERIMENTAL RESULTS}
-\subsection{}
-%-------------------------------------------------------------------------
-\subsection{Limitation}
-
-
-%-------------------------------------------------------------------------
-\section{CONCLUSION}
-
-
-
-\end{document}
-
+The two raw images we utilized for report are shown in Fig \ref{raw}. They are converted into grayscale for the following steps.
+\begin{figure}[thpb]
+\centering
+\includegraphics[width=0.5\textwidth]{raw.png}
+\caption{Raw Images}
+\label{raw}
+\end{figure}
+%--------------------------------------
+\subsection{Corner Detection}
+After applied by Harris corner detector, the corner features within two images are shown in Fig \ref{corner}.
 
 \begin{figure}[thpb]
 \centering
-\includegraphics[width=0.46\textwidth]{margin.png}
-\caption{Boundaries}
-\label{bound}
+\includegraphics[width=0.5\textwidth]{corner.png}
+\caption{Corner Detection Result}
+\label{corner}
+\end{figure}
+
+The gradient is computed with Sobel mask, and a threshold of $R = 1\times 10^8$ is set to filtered pixels with low response. We utilize a $7\times7$ Gaussian averaging window with $\sigma=1.4$ to find matrix $M$ at each pixel, and $k$ is set to $0.05$.
+
+We compute non-maximum suppression to find local peaks within $3\times3$ neighbors.
+
+%--------------------------------------
+\subsection{Correspondences}
+For each pair of corners from two images, we compute their $NCC$ in a $3\time3$ window. We find the potential corner pairs from the highest to the lowest $NCC$ score larger than $0.5$.
+
+The corresponding pairs with outliers are shown in Fig \ref{corr}. There are $340$ pairs in total.
+
+\begin{figure}[thpb]
+\centering
+\includegraphics[width=0.5\textwidth]{correspondence.png}
+\caption{Corresponding Pairs with Outliers}
+\label{corr}
 \end{figure}
 
 
+%--------------------------------------
+\subsection{Homography Estimation}
+We run RANSAC to find final point correspondences. A total of $1\times10^4$ iterations are executed. A projected point is considered to be inlier if its Euclidien distance from matched point is less than $2$.
 
+\newpage
+
+In a iteration, if $10\%$ of total points pairs are inliers, this homography is good enough; or a new set of four random point pairs is selected to compute homography.
+
+\begin{figure}[thpb]
+\centering
+\includegraphics[width=0.5\textwidth]{ransac.png}
+\caption{Cleaned Corresponding Pairs}
+\label{clean}
+\end{figure}
+
+%--------------------------------------
+\subsection{Final Mosaic}
+As shown in Fig \ref{mosaic}, image $1$ is wrapped into image 2 utilizing homography computed.
+
+\begin{figure}[thpb]
+\centering
+\includegraphics[width=0.5\textwidth]{mosaic.png}
+\caption{Final Mosaic}
+\label{mosaic}
+\end{figure}
+
+%--------------------------------------
+\subsection{Limitation}
+One key limitation of our algorithm is its high computing consumption. Plenty of time is spent on corner detection and correspondences computing, since the are $O(n^2)$ complexity.
+
+We also notice that RANSAC process depends on the initial selection of point pairs. If luckily enough, iteration time can be reduced significantly.
+
+%-------------------------------------------------------------------------
+\section{CONCLUSION}
+In this project, we explored various application of feature matching, and creatively applied them to image mosaicing. This is a very useful technique for constructing panoramic image mosaics from sequences of images.
+
+\end{document}

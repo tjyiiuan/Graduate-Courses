@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from cv2 import warpPerspective
 import numpy as np
 import matplotlib.pylab as plt
 plt.rcParams['figure.figsize'] = 15, 6
@@ -26,6 +27,7 @@ class Image_Mosaicing(object):
         self.raw_image2 = rawimg2
         self.gray_image1 = rgb2gray(rawimg1)
         self.gray_image2 = rgb2gray(rawimg2)
+        
         self.grad_method = params["method"]
         self.neighbor = params["corner_neighbor"]
         self.avg = params["avg"]
@@ -39,8 +41,11 @@ class Image_Mosaicing(object):
         self.ransac_distance = params["ransac_distance"]
         self.ransac_iteration = params["ransac_iteration"]
         self.homo_num = params["homo_num"]
+        
         self.correspond = None
-
+        self.final_zip_points_pair = None
+        self.homography = None
+    
     def _apply_harris_corner_detector(self, image):
         """Apply Harris corner detector."""
         neighbor = self.neighbor
@@ -72,6 +77,14 @@ class Image_Mosaicing(object):
         logging.debug(f"R2 size:\t{len(np.where(r2)[0])}")
 
         if show:
+            fig = plt.figure()
+            ax1 = fig.add_subplot(121)
+            ax1.axis('off')
+            ax1.imshow(self.raw_image1)
+            ax2 = fig.add_subplot(122)
+            ax2.axis('off')
+            ax2.imshow(self.raw_image2)
+            
             fig = plt.figure()
             ax1 = fig.add_subplot(121)
             ax1.axis('off')
@@ -167,7 +180,7 @@ class Image_Mosaicing(object):
             plt.show()
 
         self.final_zip_points_pair = new_zip_points_pair
-        self.homo_projection_matrix = homo_matrix
+        self.homography = homo_matrix
 
         return self
 
@@ -175,11 +188,29 @@ class Image_Mosaicing(object):
         """Warp images."""
         raw_image1 = self.raw_image1
         raw_image2 = self.raw_image2
-        homo_matrix = self.homo_projection_matrix
+        homography = self.homography
         
-        print(homo_project(homo_matrix, (0, 0)))
+        row, col = raw_image1.shape[:2]
+        after_homo = np.vstack([homo_project(homography, (0, 0)),
+                                homo_project(homography, (0, col)),
+                                homo_project(homography, (row, 0)),
+                                homo_project(homography, (row, col))])
+        min_row = min(min(after_homo[:, 0]), 0)
+        max_row = max(max(after_homo[:, 0]), row)
+        min_col = min(min(after_homo[:, 1]), 0)
+        max_col = max(max(after_homo[:, 1]), col)
+        warp_size = (int(np.ceil(max_row - min_row)), 
+                     int(np.ceil(max_col - min_col)))
         
-        wraped_image = np.zeros(raw_image2.shape)
+        
+        wraped_image = warpPerspective(raw_image1, homography, 
+                                       warp_size, raw_image2)
+        
+        logging.debug(homo_project(homography, (0, 0)))
+        logging.debug(homo_project(homography, (0, col)))
+        logging.debug(homo_project(homography, (row, 0)))
+        logging.debug(homo_project(homography, (row, col)))
+        logging.debug(warp_size)
         
         if show:
             fig = plt.figure()
@@ -200,7 +231,10 @@ class Image_Mosaicing(object):
             ax3.set_title("Wrapped Image", fontsize=14)
             
             plt.show()
-
+            
+        self.warp_size = warp_size
+        
+        return self
 
 
 
