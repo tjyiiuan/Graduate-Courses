@@ -28,9 +28,9 @@ After reading in two images, we first make them grayscale.We apply the conversio
 Gray = 0.299 \times R + 0.587 \times G + 0.114 \times B
 \end{equation}
 
-If, in the worst case, some input frames do not have all the three channels, we simply regard the first channel as its grayscale value.
+If, in the worst case, input images do not have all the three $RGB$ channels, we simply regard the first channel as its grayscale value.
 \subsection{Harris Corner Detector}
-The image gradient $I_x$ and $I_y$ is computed using horizontal and vertical components of Prewitt/Sobel mask. Then at each pixel we compute products of derivatives $I^2_x$, $I^2_y$ and $I^2_{xy}$. A $7\times7$ window centering at the pixel is selected for averaging the sums of the products $S^2_x$, $S^2_y$ and $S^2_{xy}$.
+The image gradient $I_x$ and $I_y$ is computed using horizontal and vertical components of Prewitt/Sobel mask. Then at each pixel we compute products of derivatives $I^2_x$, $I^2_y$ and $I^2_{xy}$. A window centering at the pixel is selected for averaging the sums of the products $S^2_x$, $S^2_y$ and $S^2_{xy}$.
 At each pixel, a matrix $M$ is defined as 
 \begin{equation}
 M=\left[ \begin{array}{cc}
@@ -39,7 +39,7 @@ S^2_{xy} & S^2_y
 \end{array} \right]
 \end{equation}
 
-And the response $R$
+And the response $R$ can be computed as
 \begin{equation}
 R=det(M) - k\times trace(M)^2
 \end{equation}
@@ -50,9 +50,9 @@ Given two set of corners from the two images, we compute normalized cross correl
 N_{fg} = \sum_{[i, j]\in R}\hat{f}(i, j)\hat{g}(i, j),\ \ \hat{f} = \frac{f}{||f||}, \ \  \hat{g} = \frac{g}{||g||}
 \end{equation}
 
-We choose potential corner matches by finding pair of corners (one from each image) such that they have the highest $NCC$ value. We also set a threshold of $0.5$ to keep only matches pairs that have a large $NCC$ score.
+We choose potential corner matches by finding pair of corners (one from each image) such that they have the highest $NCC$ value. We also set a threshold to keep only matches pairs that have a large $NCC$ score.
 \subsection{Homography Estimation}
-Given a set of 4 points pairs $(x,y), (x', y')$, we can compute the homography from
+Given a set of 4 points pairs $(x,y)\ (x', y')$, we can compute the homography from
 \begin{equation}
 \left[ \begin{array}{c}
 x'\\
@@ -86,11 +86,11 @@ The steps are as follows:
     \item Determine how big to make the final output image so that it contains the union of all pixels in the two images
     \item Copy the image that does not have to be warped into the appropriate location in the output
     \item Warp the other image into the output image based on the estimated homography
-    \item blend pixels in the area of overlap between both images
+    \item Blend pixels in the area of overlap between both images
 \end{itemize}
 %-------------------------------------------------------------------------
 \section{EXPERIMENTAL RESULTS}
-The two raw images we utilized for report are shown in Fig \ref{raw}. They are converted into grayscale for the following steps.
+The two raw images we adopt for report are shown in Fig \ref{raw}. They are converted into grayscale for the following steps. Please refer to the Appendix A for a complete flowchart.
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=0.5\textwidth]{raw.png}
@@ -101,6 +101,8 @@ The two raw images we utilized for report are shown in Fig \ref{raw}. They are c
 \subsection{Corner Detection}
 After applied by Harris corner detector, the corner features within two images are shown in Fig \ref{corner}.
 
+The gradient is computed with Sobel mask. We utilize a $7\times7$ Gaussian averaging window with $\sigma=1.4$ to find matrix $M$ at each pixel. A threshold of $R = 1\times 10^8$ is set to filtered pixels with low response, and $k$ is set to $0.05$.
+
 \begin{figure}[thpb]
 \centering
 \includegraphics[width=0.5\textwidth]{corner.png}
@@ -108,15 +110,13 @@ After applied by Harris corner detector, the corner features within two images a
 \label{corner}
 \end{figure}
 
-The gradient is computed with Sobel mask, and a threshold of $R = 1\times 10^8$ is set to filtered pixels with low response. We utilize a $7\times7$ Gaussian averaging window with $\sigma=1.4$ to find matrix $M$ at each pixel, and $k$ is set to $0.05$.
-
 We compute non-maximum suppression to find local peaks within $3\times3$ neighbors.
 
 %--------------------------------------
 \subsection{Correspondences}
 For each pair of corners from two images, we compute their $NCC$ in a $3\time3$ window. We find the potential corner pairs from the highest to the lowest $NCC$ score larger than $0.5$.
 
-The corresponding pairs with outliers are shown in Fig \ref{corr}. There are $340$ pairs in total.
+The corresponding pairs with outliers are shown in Fig \ref{corr}. There are over $100$ pairs in total.
 
 \begin{figure}[thpb]
 \centering
@@ -130,9 +130,10 @@ The corresponding pairs with outliers are shown in Fig \ref{corr}. There are $34
 \subsection{Homography Estimation}
 We run RANSAC to find final point correspondences. A total of $1\times10^4$ iterations are executed. A projected point is considered to be inlier if its Euclidien distance from matched point is less than $2$.
 
+In a iteration, if $10\%$ of total points pairs are inliers, this
 \newpage
+\noindent homography is good enough; or a new set of four random point pairs is selected to compute homography.
 
-In a iteration, if $10\%$ of total points pairs are inliers, this homography is good enough; or a new set of four random point pairs is selected to compute homography.
 
 \begin{figure}[thpb]
 \centering
@@ -143,11 +144,11 @@ In a iteration, if $10\%$ of total points pairs are inliers, this homography is 
 
 %--------------------------------------
 \subsection{Final Mosaic}
-As shown in Fig \ref{mosaic}, image $1$ is wrapped into image 2 utilizing homography computed.
+As shown in Fig \ref{mosaic}, image $1$ is wrapped into image 2 with homography computed. In this part we utilize OpenCV for implementation.
 
 \begin{figure}[thpb]
 \centering
-\includegraphics[width=0.5\textwidth]{mosaic.png}
+\includegraphics[width=0.4\textwidth]{mosaic.png}
 \caption{Final Mosaic}
 \label{mosaic}
 \end{figure}
@@ -161,5 +162,6 @@ We also notice that RANSAC process depends on the initial selection of point pai
 %-------------------------------------------------------------------------
 \section{CONCLUSION}
 In this project, we explored various application of feature matching, and creatively applied them to image mosaicing. This is a very useful technique for constructing panoramic image mosaics from sequences of images.
+\vfill
 
 \end{document}
