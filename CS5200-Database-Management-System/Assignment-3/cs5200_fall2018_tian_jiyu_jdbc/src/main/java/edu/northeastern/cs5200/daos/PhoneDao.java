@@ -35,40 +35,44 @@ public class PhoneDao implements PhoneImpl {
         	pStatement.setString(1, phone.getPhone());
         	pStatement.setBoolean(2, phone.isPrimary());
         	pStatement.setInt(3, personId);
+        	
             int res= pStatement.executeUpdate();
+            		
         } catch(ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-            	pStatement.close();
-                Connection.closeConnection();
-            }
-            catch(SQLException e) {
-                e.printStackTrace();
-                }
-            }
+        	e.printStackTrace();
+        	} finally {
+        		try {
+        			pStatement.close();
+        			Connection.closeConnection();
+        			}
+        		catch(SQLException e) {
+        			e.printStackTrace();
+        			}
+        		}
         }
 
     @Override
     public void updatePrimaryPhone(int personId, Phone phone) {
     	
         try {
+        	
             pStatement = Connection.getConnection().prepareStatement(UPDATE_PHONE);
             pStatement.setString(1, phone.getPhone());
             pStatement.setBoolean(2, true);
             pStatement.setInt(3, personId);
+            
             int res = pStatement.executeUpdate();
-        } catch(ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-            	pStatement.close();
-                Connection.closeConnection();
-            }
-            catch(SQLException e) {
-                e.printStackTrace();
-                }
-            }
+            } catch(ClassNotFoundException | SQLException e) {
+            	e.printStackTrace();
+            	} finally {
+	            try {
+	            	pStatement.close();
+	                Connection.closeConnection();
+	            }
+	            catch(SQLException e) {
+	                e.printStackTrace();
+	                }
+	            }
         }
 
 
@@ -76,20 +80,22 @@ public class PhoneDao implements PhoneImpl {
     public void deletePrimaryPhone(int personId, Phone phone) {
     	
         try {
+        	
         	pStatement = Connection.getConnection().prepareStatement(DELETE_PHONE);
         	pStatement.setBoolean(1, true);
         	pStatement.setInt(2, personId);
+        	
             int res= pStatement.executeUpdate();
-        } catch(ClassNotFoundException | SQLException e) {
+            } catch(ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-            	pStatement.close();
-                Connection.closeConnection();
-            }
-            catch(SQLException e) {
-                e.printStackTrace();
-                }
-            }
-        }
+	        } finally {
+	            try {
+	            	pStatement.close();
+	                Connection.closeConnection();
+	            }
+	            catch(SQLException e) {
+	                e.printStackTrace();
+	                }
+	            }
+	        }
     }

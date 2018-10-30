@@ -1,6 +1,7 @@
 package edu.northeastern.cs5200.models;
 
 public class Priviledge {
+	
 	private int id;
 	private String priviledge;
 

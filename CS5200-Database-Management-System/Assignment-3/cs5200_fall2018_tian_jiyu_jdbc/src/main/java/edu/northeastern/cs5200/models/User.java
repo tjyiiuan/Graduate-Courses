@@ -23,6 +23,11 @@ public class User extends Person {
 		this.userAgreement= userAgreement;
 	}
 	
+	public User(String firstName, String lastName, String username, String password, String email, boolean userAgreement) {
+		super(firstName, lastName, username, password, email);
+		this.userAgreement= userAgreement;
+	}
+	
 	public User(int id, String firstName, String lastName) {
 		super(id, firstName, lastName);
 		this.userKey = "undefined";

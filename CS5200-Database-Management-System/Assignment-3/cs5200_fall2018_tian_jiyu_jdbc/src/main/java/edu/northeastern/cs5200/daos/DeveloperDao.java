@@ -30,8 +30,6 @@ public class DeveloperDao implements DeveloperImpl{
     
 	private final String CREATE_PERSON = "INSERT INTO person (id, firstName, lastName, username, password, email, dob) VALUES(?,?,?,?,?,?,?)";
 	private final String CREATE_DEVELOPER = "INSERT INTO developer (id, developerKey) VALUES(?,?)";
-	private final String CREATE_PHONE = "INSERT INTO phone (phone, `primary`, person_id) VALUES(?,?,?)";
-	private final String CREATE_ADDRESS = "INSERT INTO address (street1, street2, city, state, zip, `primary`, person_id) VALUES(?,?,?,?,?,?,?)";
 	
 	private final String FIND_ALL_DEVELOPERS = "SELECT * FROM person, developer WHERE person.id = developer.id";
 	private final String FIND_DEVELOPER_BY_ID = "SELECT * FROM person, developer WHERE person.id = ? AND person.id = developer.id";
@@ -40,12 +38,8 @@ public class DeveloperDao implements DeveloperImpl{
 
 	private final String UPDATE_PERSON = "UPDATE person SET firstName = ?, lastName = ?, username = ?, password = ?, email = ?, dob = ? WHERE person.id = ?";
 	private final String UPDATE_DEVELOPER = "UPDATE developer SET developer.developerkey = ? WHERE developer.id = ?";
-	private final String UPDATE_PHONE = "UPDATE phone SET phone = ? WHERE person_id = ? AND `primary` = ?";
-	private final String UPDATE_ADDRESS = "UPDATE address SET street1 = ?, street2 = ?,city= ?, state = ?, zip =?, `primary` = ?, person_id = ? Where person_id = ? and `primary` = ? ";
 	
 	private final String DELETE_DEVELOPER = "DELETE FROM person WHERE person.id = ?";
-	private final String DELETE_ADDRESS = "DELETE FROM address WHERE person_id = ? AND `primary` = ?";
-	private final String DELETE_PHONE = "DELETE FROM phone WHERE person_id = ? AND `primary` = ?";
 	
 	@Override
     public void createDeveloper(Developer developer) {
@@ -58,7 +52,7 @@ public class DeveloperDao implements DeveloperImpl{
             pStatement1.setString(4,developer.getUserName());
             pStatement1.setString(5,developer.getPassword());
             pStatement1.setString(6,developer.getEmail());
-            pStatement1.setDate(7, null);
+            pStatement1.setDate(7,null);
 
             int keys = pStatement1.executeUpdate();
             
@@ -101,8 +95,8 @@ public class DeveloperDao implements DeveloperImpl{
             while(rSet.next())
             {
                 int id = rSet.getInt("id");
-                String firstName = rSet.getString("firstname");
-                String lastName = rSet.getString("lastname");
+                String firstName = rSet.getString("firstName");
+                String lastName = rSet.getString("lastName");
                 String userName = rSet.getString("username");
                 String password = rSet.getString("password");
                 String email = rSet.getString("email");
@@ -138,8 +132,8 @@ public class DeveloperDao implements DeveloperImpl{
 	            while(rSet.next())
 	            {
 	                int id = rSet.getInt("id");
-	                String firstName = rSet.getString("firstname");
-	                String lastName = rSet.getString("lastname");
+	                String firstName = rSet.getString("firstName");
+	                String lastName = rSet.getString("lastName");
 	                String userName = rSet.getString("username");
 	                String password = rSet.getString("password");
 	                String email = rSet.getString("email");
@@ -173,8 +167,8 @@ public class DeveloperDao implements DeveloperImpl{
 	            while(rSet.next())
 	            {
 	                int id = rSet.getInt("id");
-	                String firstName = rSet.getString("firstname");
-	                String lastName = rSet.getString("lastname");
+	                String firstName = rSet.getString("firstName");
+	                String lastName = rSet.getString("lastName");
 	                String userName = rSet.getString("username");
 	                String password = rSet.getString("password");
 	                String email = rSet.getString("email");
@@ -208,8 +202,8 @@ public class DeveloperDao implements DeveloperImpl{
             while(rSet.next())
             {
                 int id = rSet.getInt("id");
-                String firstName = rSet.getString("firstname");
-                String lastName = rSet.getString("lastname");
+                String firstName = rSet.getString("firstName");
+                String lastName = rSet.getString("lastName");
                 username = rSet.getString("username");
                 password = rSet.getString("password");
                 String email = rSet.getString("email");
@@ -236,10 +230,11 @@ public class DeveloperDao implements DeveloperImpl{
         int res = 0;
         
         try{
-            pStatement1 = Connection.getConnection().prepareStatement(UPDATE_DEVELOPER);
+            pStatement1 = Connection.getConnection().prepareStatement(UPDATE_DEVELOPER, Statement.RETURN_GENERATED_KEYS);
             pStatement1.setString(1,developer.getDeveloperKey());
             pStatement1.setInt(2,developerId);
             int res1 = pStatement1.executeUpdate();
+            
             if(res1==1)
             {
             	pStatement2 = Connection.getConnection().prepareStatement(UPDATE_PERSON);
@@ -248,7 +243,7 @@ public class DeveloperDao implements DeveloperImpl{
             	pStatement2.setString(3,developer.getUserName());
             	pStatement2.setString(4,developer.getPassword());
             	pStatement2.setString(5,developer.getEmail());
-            	pStatement2.setDate(6,null);
+            	pStatement2.setDate(6,developer.getDob());
             	pStatement2.setInt(7,developerId);
                 int res2 = pStatement2.executeUpdate();
 

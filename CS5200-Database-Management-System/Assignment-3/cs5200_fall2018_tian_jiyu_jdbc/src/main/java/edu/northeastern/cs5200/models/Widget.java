@@ -18,28 +18,39 @@ public class Widget {
 	
 	public Widget(String name, int width, int height, String text, int order, int pageId) {
 		super();
-		this.setName(name);
-		this.setWidth(width);
-		this.setHeight(height);
-		this.setCssStyle("undefined");
-		this.setCssClass("undefined");
-		this.setText(text);
-		this.setOrder(order);
-		this.setPageId(pageId);
+		this.name = name;
+		this.width = width;
+		this.height = height;
+		this.cssStyle = "undefined";
+		this.cssClass = "undefined";
+		this.text = text;
+		this.order = order;
+		this.pageId = pageId;
 	}
 	
 	public Widget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order) {
 		super();
-		this.setId(id);
-		this.setName(name);
-		this.setWidth(width);
-		this.setHeight(height);
-		this.setCssStyle(cssStyle);
-		this.setCssClass(cssClass);
-		this.setText(text);
-		this.setOrder(order);
+		this.name = name;
+		this.width = width;
+		this.height = height;
+		this.cssStyle = "undefined";
+		this.cssClass = "undefined";
+		this.text = text;
+		this.order = order;
 	}
 
+	public Widget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order, int pageId) {
+		super();
+		this.name = name;
+		this.width = width;
+		this.height = height;
+		this.cssStyle = "undefined";
+		this.cssClass = "undefined";
+		this.text = text;
+		this.order = order;
+		this.pageId = pageId;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -111,5 +122,6 @@ public class Widget {
 	public void setPageId(int pageId) {
 		this.pageId = pageId;
 	}
+
 	
 }

@@ -12,7 +12,7 @@ public class Page {
 	private Date updated;
 	private int views;
     private Collection<Widget> widgets;
-    private int WebsiteId;
+    private int websiteId;
 	
 	public Page() {
 		super();
@@ -26,7 +26,17 @@ public class Page {
 		this.created = created;
 		this.updated = updated;
 		this.views = views;
-		this.WebsiteId = WebsiteId;
+		this.setWebsiteId(WebsiteId);
+	}
+	
+	public Page(int id, String title, String description, Date created, Date updated, int views) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.created = created;
+		this.updated = updated;
+		this.views = views;
 	}
 	
 	public Page(int id, String title, String description, int views) {
@@ -93,10 +103,10 @@ public class Page {
 	}
 
 	public int getWebsiteId() {
-		return WebsiteId;
+		return websiteId;
 	}
 
 	public void setWebsiteId(int websiteId) {
-		WebsiteId = websiteId;
+		this.websiteId = websiteId;
 	}
 }

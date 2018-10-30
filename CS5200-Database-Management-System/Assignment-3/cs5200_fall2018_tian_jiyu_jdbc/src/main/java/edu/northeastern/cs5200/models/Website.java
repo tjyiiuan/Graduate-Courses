@@ -11,6 +11,7 @@ public class Website {
 	private Date created;
 	private Date updated;
 	private int visits;
+	private int developerId;
     private Collection<Page> pages;
 	
 	public Website() {
@@ -26,6 +27,30 @@ public class Website {
 		this.updated = updated;
 		this.visits = visits;
 	}
+	
+	public Website(int id, String name, String description, Date created, Date updated, int visits, int developerId) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.created = created;
+		this.updated = updated;
+		this.visits = visits;
+		this.developerId = developerId;
+	}
+	
+	public Website(int id, String name, String description, Date created, Date updated, int visits, int developerId, Collection<Page> pages) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.created = created;
+		this.updated = updated;
+		this.visits = visits;
+		this.developerId = developerId;
+		this.pages = pages;
+	}
+	
 	
 	public Website(int id, String name, String description, int visits) {
 		super();
@@ -89,5 +114,13 @@ public class Website {
 
 	public void setPages(Collection<Page> pages) {
 		this.pages = pages;
+	}
+
+	public int getDeveloperId() {
+		return developerId;
+	}
+
+	public void setDeveloperId(int developerId) {
+		this.developerId = developerId;
 	}
 }

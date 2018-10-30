@@ -1,8 +1,6 @@
 package edu.northeastern.cs5200.models;
 
 import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 public class Person {

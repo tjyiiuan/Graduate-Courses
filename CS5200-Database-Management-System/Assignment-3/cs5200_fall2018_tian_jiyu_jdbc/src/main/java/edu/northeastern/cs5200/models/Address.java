@@ -8,13 +8,13 @@ public class Address {
 	private String state;
 	private String zip;
 	private boolean primary;
-	private int person_id;
+	private int personId;
 	
 	public Address() {
 		super();
 	}
 	
-	public Address(String street1, String street2, String city, String state, String zip, boolean primary, int person_id) {
+	public Address(String street1, String street2, String city, String state, String zip, boolean primary, int personId) {
 		super();
 		this.street1 = street1;
 		this.street2 = street2;
@@ -22,7 +22,7 @@ public class Address {
 		this.state = state;
 		this.zip = zip;
 		this.primary = primary;
-		this.person_id = person_id;
+		this.personId = personId;
 	}
 
 	public String getStreet1() {
@@ -73,11 +73,12 @@ public class Address {
 		this.zip = zip;
 	}
 
-	public int getPerson_id() {
-		return person_id;
+	public int getPersonId() {
+		return personId;
 	}
 
-	public void setPerson_id(int person_id) {
-		this.person_id = person_id;
+	public void setPersonId(int personId) {
+		this.personId = personId;
 	}
+
 }

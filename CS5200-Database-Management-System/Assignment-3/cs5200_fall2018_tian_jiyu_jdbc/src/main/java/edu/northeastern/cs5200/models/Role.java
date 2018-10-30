@@ -12,7 +12,7 @@ public class Role {
     public Role(int id, String role) {
     	super();
         this.id = id;
-        this.setRole(role);
+        this.role = role;
     }
 
     public int getId() {
