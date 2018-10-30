@@ -1,6 +1,9 @@
 package edu.northeastern.cs5200.models;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 
 public class Person {
 	
@@ -12,6 +15,9 @@ public class Person {
 	private String email;
 	private Date dob;
 	
+    Collection<Phone> phoneNumbers;
+    Collection<Address> addresses;
+    
 	public Person() {
 		super();
 	}
@@ -20,6 +26,16 @@ public class Person {
 			Date dob) {
 		super();
 		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.dob = dob;
+	}
+	
+	public Person(String firstName, String lastName, String username, String password, String email, Date dob) {
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
@@ -45,6 +61,18 @@ public class Person {
 		this.email = lastName + firstName + "@email.com";
 	}
 	
+	public Person(int id, String firstName, String lastName, String username, String password, String email, Date dob, Collection<Address> addresses, Collection<Phone> phoneNumbers) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.dob = dob;
+		this.addresses = addresses;
+		this.phoneNumbers = phoneNumbers;
+		}
+
 	public int getId() {
 		return id;
 	}
@@ -69,11 +97,11 @@ public class Person {
 		this.lastName = lastName;
 	}
 	
-	public String getUsername() {
+	public String getUserName() {
 		return username;
 	}
 	
-	public void setUsername(String username) {
+	public void setUserName(String username) {
 		this.username = username;
 	}
 	
@@ -100,4 +128,21 @@ public class Person {
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
+	
+	public Collection<Phone> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(Collection<Phone> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    public Collection<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Collection<Address> addresses) {
+        this.addresses = addresses;
+    }
+    
 }
