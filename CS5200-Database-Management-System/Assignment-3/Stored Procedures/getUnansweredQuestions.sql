@@ -15,13 +15,13 @@ FROM
         q.text AS qtext,
             q.id AS qid,
             COUNT(a.id) AS an,
-            SUM(correct_answer) AS ca,
+            SUM(correctAnswer) AS ca,
             q.module
     FROM
         question q
-    LEFT JOIN answer a ON q.id = a.question_id
+    LEFT JOIN answer a ON q.id = a.questionID
     GROUP BY q.id
-    HAVING ca = 0 OR MAX(a.correct_answer) IS NULL) AS qa
+    HAVING ca = 0 OR MAX(a.correctAnswer) IS NULL) AS qa
 GROUP BY module;
 END$$
 
