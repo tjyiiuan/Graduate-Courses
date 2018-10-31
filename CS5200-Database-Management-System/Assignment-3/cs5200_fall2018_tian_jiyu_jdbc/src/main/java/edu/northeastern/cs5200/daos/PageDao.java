@@ -22,7 +22,6 @@ public class PageDao implements PageImpl {
 	}
 	
     private PreparedStatement pStatement1 = null;
-    private PreparedStatement pStatement2 = null;
     private ResultSet rSet = null;
     
 	private final String CREATE_PAGE = "INSERT INTO page (id, title, description, created, updated, views, websiteId) VALUES (?,?,?,?,?,?,?)";
