@@ -1,6 +1,6 @@
 package edu.northeastern.cs5200.models;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Collection;
 
 public class Website {
@@ -50,7 +50,6 @@ public class Website {
 		this.developerId = developerId;
 		this.pages = pages;
 	}
-	
 	
 	public Website(int id, String name, String description, int visits) {
 		super();

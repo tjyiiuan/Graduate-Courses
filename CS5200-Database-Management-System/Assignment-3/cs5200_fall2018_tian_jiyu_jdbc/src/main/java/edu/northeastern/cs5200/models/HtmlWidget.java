@@ -13,6 +13,11 @@ public class HtmlWidget extends Widget{
 		this.html = html;
 	}
 	
+	public HtmlWidget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order, int pageId, String html) {
+		super(id, name, width, height, cssStyle, cssClass, text, order, pageId);
+		this.html = html;
+	}
+	
 	public String getHtml() {
 		return html;
 	}

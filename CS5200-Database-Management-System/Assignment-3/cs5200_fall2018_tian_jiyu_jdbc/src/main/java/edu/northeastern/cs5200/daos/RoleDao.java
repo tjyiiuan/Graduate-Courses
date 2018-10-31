@@ -29,14 +29,14 @@ public class RoleDao implements RoleImpl {
 		private final String DELETE_PAGE_Role = "DELETE from pageRole where Role = ? and developerId =? and pageId = ?";
 		
 		@Override
-		public void assignWebsiteRole(int developerId, int websiteId, String Role) {
+		public void assignWebsiteRole(int developerId, int websiteId, int Role) {
 			
 			int res = 0;
 			
 			try {
 				
 				pStatement = Connection.getConnection().prepareStatement(CREATE_WEB_Role);
-				pStatement.setString(1, Role);
+				pStatement.setInt(1, Role);
 				pStatement.setInt(2, developerId);
 				pStatement.setInt(3, websiteId);
 				res = pStatement.executeUpdate();
@@ -53,14 +53,14 @@ public class RoleDao implements RoleImpl {
 			}
 			
 		@Override
-		public void assignPageRole(int developerId, int pageId, String Role){
+		public void assignPageRole(int developerId, int pageId, int Role){
 
 			int res = 0;
 			
 			try {
 				
 				pStatement = Connection.getConnection().prepareStatement(CREATE_PAGE_Role);
-				pStatement.setString(1, Role);
+				pStatement.setInt(1, Role);
 				pStatement.setInt(2, developerId);
 				pStatement.setInt(3, pageId);
 				
@@ -78,14 +78,14 @@ public class RoleDao implements RoleImpl {
 			}
 		
 		@Override
-		public void deleteWebsiteRole(int developerId, int websiteId, String Role) {
+		public void deleteWebsiteRole(int developerId, int websiteId, int Role) {
 
 			int res = 0;
 			
 			try {
 				
 				pStatement = Connection.getConnection().prepareStatement(DELETE_WEB_Role);
-				pStatement.setString(1, Role);
+				pStatement.setInt(1, Role);
 				pStatement.setInt(2, developerId);
 				pStatement.setInt(3, websiteId);
 				
@@ -103,14 +103,14 @@ public class RoleDao implements RoleImpl {
 			}
 
 		@Override
-		public void deletePageRole(int developerId, int pageId, String Role) {
+		public void deletePageRole(int developerId, int pageId, int Role) {
 
 			int res = 0;
 			
 			try {
 				
 				pStatement = Connection.getConnection().prepareStatement(DELETE_PAGE_Role);
-				pStatement.setString(1, Role);
+				pStatement.setInt(1, Role);
 				pStatement.setInt(2, developerId);
 				pStatement.setInt(3, pageId);
 				

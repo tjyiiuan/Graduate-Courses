@@ -69,7 +69,7 @@ public class Person {
 		this.dob = dob;
 		this.addresses = addresses;
 		this.phoneNumbers = phoneNumbers;
-		}
+		}   
 
 	public int getId() {
 		return id;

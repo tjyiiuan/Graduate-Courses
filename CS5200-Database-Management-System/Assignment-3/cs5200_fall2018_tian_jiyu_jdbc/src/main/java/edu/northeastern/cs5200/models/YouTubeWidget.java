@@ -17,6 +17,20 @@ public class YouTubeWidget extends Widget {
         this.expandable = expandable;
     }
 
+	public YouTubeWidget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order, int pageId, String url, boolean shareable, boolean expandable) {
+		super(id, name, width, height, cssStyle, cssClass, text, order, pageId);
+        this.url = url;
+        this.shareable = shareable;
+        this.expandable = expandable;
+    }
+	
+	public YouTubeWidget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order, int pageId, String url) {
+		super(id, name, width, height, cssStyle, cssClass, text, order, pageId);
+        this.url = url;
+        this.shareable = false;
+        this.expandable = false;
+    }
+	
     public String getUrl() {
         return url;
     }

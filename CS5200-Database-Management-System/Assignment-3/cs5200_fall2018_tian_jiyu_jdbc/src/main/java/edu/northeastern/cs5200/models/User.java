@@ -28,6 +28,12 @@ public class User extends Person {
 		this.userAgreement= userAgreement;
 	}
 	
+	public User(int id, String firstName, String lastName, String username, String password, String email) {
+		super(id, firstName, lastName, username, password, email, null);
+		this.userAgreement= false;
+	}
+	
+	
 	public User(int id, String firstName, String lastName) {
 		super(id, firstName, lastName);
 		this.userKey = "undefined";

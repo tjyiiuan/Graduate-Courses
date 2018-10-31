@@ -12,6 +12,12 @@ public class ImageWidget extends Widget{
 		super(id, name, width, height, cssStyle, cssClass, text, order);
 		this.src = src;
 	}
+	
+	public ImageWidget(int id, String name, int width, int height, String cssStyle, String cssClass, String text, int order, int pageId, String src) {
+		super(id, name, width, height, cssStyle, cssClass, text, order, pageId);
+		this.src = src;
+	}
+
 
 	public String getSrc() {
 		return src;
