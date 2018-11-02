@@ -1,0 +1,200 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{pythonhighlight}
+
+\marginsize{2cm}{2cm}{0.9cm}{1.8cm}
+
+\title{EECE 5639 Computer Vision\\ [2ex] \begin{large} Homework \#3 \end{large} }
+\author{Jiyu Tian}
+\date{}
+
+\begin{document}
+\maketitle
+\pagestyle{empty}
+%%---------------------------------------------------------------
+%% Question 1
+%%---------------------------------------------------------------
+\section{Solution:}
+In the simple stereo system,
+\begin{equation*}
+    Z = f\frac{T}{d},\ d= x_r - x_l
+\end{equation*}
+Since the only source of noise is the localization of corresponding points in the two images, i.e. the disparity $d$, we have the error estimation as:
+\begin{equation*}
+    \Delta Z = \sqrt{\left( \frac{\partial Z}{\partial d}\Delta d\right)^2+ \left( \frac{\partial Z}{\partial f}\Delta f\right)^2 + \left( \frac{\partial Z}{\partial T}\Delta T\right)^2} = |\frac{\partial Z}{\partial d}|\Delta d = \frac{fT}{d^2}\Delta d
+\end{equation*}
+The error in depth is directly proportional to the baseline $T$, focal length $f$, error in disparity $\Delta d$, and $\frac{1}{d^2}$. So in order to have less error in depth we should have more disparity, small baseline and focal length, and small error in disparity.
+
+%%---------------------------------------------------------------
+%% Question 2
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) 
+\begin{equation*}
+T = \left[ \begin{array}{cccc}
+1 & 0 & 0 & -7\\
+0 & 1 & 0 & -1\\
+0 & 0 & 1 & -2\\
+0 & 0 & 0 & 1
+\end{array} \right],\ R_{Y90}  = \left[ \begin{array}{cccc}
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0\\
+-1 & 0 & 0 & 0\\
+0 & 0 & 0 & 1
+\end{array} \right],\ R_{Z90}  = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+\end{array} \right]
+\end{equation*}
+
+\begin{equation*}
+M_1 =  R_{Z90} R_{Y90} T = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 1\\
+0 & 0 & 1 & -3\\
+-1 & 0 & 0 & 10\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+
+\noindent (b) 
+\begin{equation*}
+T = \left[ \begin{array}{cccc}
+1 & 0 & 0 & -10\\
+0 & 1 & 0 & -1\\
+0 & 0 & 1 & -3\\
+0 & 0 & 0 & 1
+\end{array} \right],\ R_{Y90}  = \left[ \begin{array}{cccc}
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0\\
+-1 & 0 & 0 & 0\\
+0 & 0 & 0 & 1
+\end{array} \right],\ R_{Z90}  = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+\end{array} \right]
+\end{equation*}
+
+\begin{equation*}
+M_2 =  R_{Z90} R_{Y90} T = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 1\\
+0 & 0 & 1 & -2\\
+-1 & 0 & 0 & 7\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+
+\noindent (c) Consider the homogeneous coordinates of $p_1$ and $p_2$ in camera 1 and 2 coordinates are:
+
+\begin{equation*}
+p_1 = \left[ \begin{array}{c}
+-\frac{3}{10}k\\
+\frac{1}{10}k\\
+k\\
+1
+\end{array} \right],\ p_2 = \left[ \begin{array}{c}
+-\frac{3}{7}l\\
+\frac{2}{7}l\\
+l\\
+1
+\end{array} \right]
+\end{equation*}
+
+\noindent The world coordinates will be:
+\begin{equation*}
+p_1' = M_1^{-1}p1 = \left[ \begin{array}{c}
+10 - k\\
+1 + \frac{3}{10}k\\
+3 + \frac{1}{10}k\\
+1
+\end{array} \right],\ p_2' = M_2^{-1}p_2 = \left[ \begin{array}{c}
+7 - l\\
+1 + \frac{3}{7}l\\
+2 + \frac{2}{7}l\\
+1
+\end{array} \right]
+\end{equation*}
+Letting $p_1' = p_2'$ we have $k = 10$ and $l = 7$, and thus the world coordinate of $p$ is $(0, 4, 4)$.
+
+%%---------------------------------------------------------------
+%% Question 3
+%%---------------------------------------------------------------
+\section{Solution:}
+(a) 
+\begin{equation*}
+    x = f\frac{X}{Z} = 3, \ y = f\frac{Y}{Z} = 6,\ z = f = 1
+\end{equation*}
+The location of the object at time $t = 0$ is (3, 6).\\
+(b)
+
+\begin{equation*}
+    p_0  = \left[ \begin{array}{c}
+f\frac{T_x}{T_z}\\
+f\frac{T_y}{T_z}\\
+f
+\end{array} \right] = \left[ \begin{array}{c}
+5\\
+10\\
+1
+\end{array} \right] 
+\end{equation*}
+The image coordinates of the focus of expansion is $(5, 10)$.\\
+(c) Time to collision
+\begin{equation*}
+    \tau = \frac{Z}{w} = 10
+\end{equation*}
+
+%%---------------------------------------------------------------
+%% Question 4
+%%---------------------------------------------------------------
+\section{Solution:}
+The acceleration of object is 
+\begin{equation*}
+    a = \frac{2\Delta S}{t^2} = \left[ \begin{array}{c}
+20\\
+40\\
+10
+\end{array} \right]
+\end{equation*}
+The location of object at time $t$ is 
+\begin{equation*}
+P_t = P_0 + \frac{1}{2}at^2 = \left[ \begin{array}{c}
+10 +10t^2\\
+20 + 20t^2\\
+5t^2
+\end{array} \right]
+\end{equation*}
+Its image coordinates
+\begin{equation*}
+p_t = \left[ \begin{array}{c}
+f\frac{X}{Z}\\
+f\frac{Y}{Z}\\
+\end{array} \right]=\left[ \begin{array}{c}
+\frac{10 +10t^2}{5t^2}\\
+\frac{20 + 20t^2}{5t^2}\\
+\end{array} \right]
+\end{equation*}
+The focus of expansion is
+\begin{equation*}
+p_0= \lim\limits_{t\to\infty}p_t = \lim\limits_{t\to\infty}\left[ \begin{array}{c}
+\frac{10 +10t^2}{5t^2}\\
+\frac{20 + 20t^2}{5t^2}\\
+\end{array} \right] = \left[ \begin{array}{c}
+2\\
+4
+\end{array} \right ]
+\end{equation*}
+
+\end{document}
