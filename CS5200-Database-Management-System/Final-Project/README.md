@@ -14,6 +14,7 @@ Potential domain objects include:
 * Course
 * Discussion
 * Reply
+
 The institution can be regarded as the main forum, which contains a number of deparments as subforums.
 Each deparment may have several courses as topics.
 Within a course, new discussions can be started as threads, and can be replied to.
@@ -25,6 +26,7 @@ We have 4 kinds of potential users, plus system Admin.
 * Professor
 * Department Manager
 * Admin
+
 As the basic registered user, student may enroll in any course from its department as instructed.
 They can start new discussion under each course, and can give reply to any discussion.
 Student can share their ideas and get possible answers via discussion with each other. 
@@ -45,7 +47,12 @@ We assign limited access to anonymous visitors.
 They can only view the department or course list, but are restricted from discussions and replies.
 
 ### API Usage
-We embed [Google Custom Search][cse] to increase site search experience of our users.
+User may search for specific discussions with key words. 
+A summary of the search results will return and user can navigate to a detail page.
+We embed [Google Custom Search Engine][cse](cse) to accomplish such goal.
+CSE enables admins to create a search engine for the entire system, and to use their expertise to narrow users' searching results.
+CSE uses search features such as refinements, autocomplete, and promotions to enhance users' search experience.
+With CSE API, students can search discussions of their interests, and join discussion efficiently without scrorlling down and looking for topics one by one.
 
 ## Project Design
 - A class diagram that captures users, domain objects, and relations between users, between users and domain objects, and between domain objects.
