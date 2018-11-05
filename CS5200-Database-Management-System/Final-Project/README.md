@@ -11,26 +11,38 @@ Very similar to that of the discussion forum, our system is hierarchical in stru
 Potential domain objects include:
 * Institution
 * Department
-* Courses
+* Course
 * Discussion
+* Reply
+The institution can be regarded as the main forum, which contains a number of deparments as subforums.
+Each deparment may have several courses as topics.
+Within a course, new discussions can be started as threads, and can be replied to.
 
- 
-### User
+### User Groups
 We have 4 kinds of potential users, plus system Admin.
 * Student
 * TA
 * Professor
 * Department Manager
 * Admin
+As the basic registered user, student may enroll in any course from its department as instructed.
+They can start new discussion under each course, and can give reply to any discussion.
+Student can share their ideas and get possible answers via discussion with each other. 
+Users may also follow other users and get informed of the latest updates from the followees.
+
+Instructors, i.e. professor and TA, are the moderators of the course.
+Besides the basic privilege as basic user, they are granted access to the threads of all students for the purpose of moderating discussion.
+Instructors can delete/merge discussions, provide official solution to student's doubts.
+TAs are also students but are promoted within specific courses.
+
+Department managers take control of courses under department. 
+They may add/delete courses, promote/demote users.
+They can monitor the whole teaching process, modify courses offered by department, and moderate instructors of a course.
+
+Administrator can administer all types of users, all domain objects, and all relationships in between.
 
 We assign limited access to anonymous visitors. 
-They can only view the department or course list, but are restricted from posts/replies.
-
-- 3 goals the user could accomplish
-- 2 relations user with other users
-- 2 relations user with domain objects
-- 2 relations object with other domain objects
-
+They can only view the department or course list, but are restricted from discussions and replies.
 
 ### API Usage
 We embed [Google Custom Search][cse] to increase site search experience of our users.
@@ -55,7 +67,7 @@ $ source venv/bin/activate
 $ pip install -r requirement.txt
 ```
 ### Visit
-Navigate to http://localhost:5000/
+Navigate to http://localhost:5000/ .
 
 
 
