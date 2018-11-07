@@ -56,8 +56,8 @@ With CSE API, students can search discussions of their interests, and join discu
 Moderators can also use searching features to avoid improper discussions.
 
 ## Project Design
-- A class diagram that captures users, domain objects, and relations between users, between users and domain objects, and between domain objects.
-
+### Class Diagram
+![](/CS5200-Database-Management-System/Final-Project/Design/Design.png)
 
 ## Quickstart
 ### Virtual Environment
