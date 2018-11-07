@@ -49,7 +49,7 @@ They can only view the department or course list, but are restricted from discus
 ### API Usage
 User may search for specific discussions with key words. 
 A summary of the search results will return and user can navigate to a detail page.
-We embed [Google Custom Search Engine][cse](CSE) to accomplish such goal.
+We embed [Google Custom Search Engine][cse](CSE) into the system to accomplish such goal.
 CSE enables admins to create a search engine for the entire system, and to use their expertise to narrow users' searching results.
 CSE uses search features such as refinements, autocomplete, and promotions to enhance users' search experience.
 With CSE API, students can search discussions of their interests, and join discussion efficiently with no need of scrolling down and looking for topics one by one.
