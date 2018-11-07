@@ -20,13 +20,14 @@ class Dense_Optical_Flow(object):
     def __init__(self, rawimg1, rawimg2, params):
         self.raw_image1 = rawimg1
         self.raw_image2 = rawimg2
+        self.scale = params["scale"]
         self.smooth = params["smooth"]
         self.sigma = params["sigma"]        
         self.grad_method = params["method"]
         self.neighbor = params["neighbor"]
         
-        self.gray_image1 = rgb2gray(rawimg1)
-        self.gray_image2 = rgb2gray(rawimg2)
+        self.gray_image1 = rgb2gray(rawimg1)[::self.scale]
+        self.gray_image2 = rgb2gray(rawimg2)[::self.scale]
         self.smoother = self._gen_smoother(self.smooth, self.sigma)
         self.smooth_image1 = None
         self.smooth_image2 = None

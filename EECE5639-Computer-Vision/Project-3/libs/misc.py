@@ -53,11 +53,13 @@ def Load_Images(path, imgtype="*.gif"):
 
 def rgb2gray(img):
     """Convert a RGB image to gray scale."""
-    if img.shape[-1] == 3:
+    if len(img.shape) == 2:
+        grayimg = img[:, :]
+    elif img.shape[-1] >= 3:
         grayimg = 0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] + 0.114 * img[:, :, 2]
     else:
-        grayimg = img[:, :]
-
+        grayimg = img[:, :, 0]
+        
     return grayimg
 
 def apply_2d_filter(bfilter, timage):
