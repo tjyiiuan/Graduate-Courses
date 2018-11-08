@@ -20,18 +20,19 @@ class Dense_Optical_Flow(object):
     def __init__(self, rawimg1, rawimg2, params):
         self.raw_image1 = rawimg1
         self.raw_image2 = rawimg2
-        self.scale = params["scale"]
         self.smooth = params["smooth"]
         self.sigma = params["sigma"]        
         self.grad_method = params["method"]
         self.neighbor = params["neighbor"]
         
-        self.gray_image1 = rgb2gray(rawimg1)[::self.scale]
-        self.gray_image2 = rgb2gray(rawimg2)[::self.scale]
+        self.gray_image1 = rgb2gray(rawimg1)
+        self.gray_image2 = rgb2gray(rawimg2)
         self.smoother = self._gen_smoother(self.smooth, self.sigma)
         self.smooth_image1 = None
         self.smooth_image2 = None
-        self.image_shape = np.shape(self.gray_image1)
+        self.vx_matrix = None
+        self.vy_matrix = None
+        self.ovrlay = None
         
     @staticmethod
     def _gen_smoother(smooth, sigma):
@@ -56,21 +57,20 @@ class Dense_Optical_Flow(object):
         
         A = np.array([[Ixx.sum(), Ixy.sum()], 
                       [Ixy.sum(), Iyy.sum()]])
-        B = np.array([[Ixt.sum()], [Iyt.sum()]])
+        B = - np.array([[Ixt.sum()], [Iyt.sum()]])
 
         return A, B
     
-    def LKMethod(self, show=True):
+    def LKMethod(self, scale=1, show=True):
         """Detect corners."""
         smoother = self.smoother
         image1 = self.gray_image1
         image2 = self.gray_image2
         neighbor = self.neighbor
-        ishape = self.image_shape
         
-        smooth_image1 = apply_2d_filter(smoother, image1)
-        smooth_image2 = apply_2d_filter(smoother, image2)
-        
+        smooth_image1 = apply_2d_filter(smoother, image1)[::scale, ::scale]
+        smooth_image2 = apply_2d_filter(smoother, image2)[::scale, ::scale]
+        ishape = np.shape(smooth_image2)
         Ix, Iy = gradient(smooth_image2)
         It = smooth_image2 - smooth_image1
         
@@ -92,21 +92,18 @@ class Dense_Optical_Flow(object):
                 vx_matrix[i, j] = vx
                 vy_matrix[i, j] = vy
 #                v_matrix[i, j] = complex(vx, vy)
-                
+        
+        if show:
+            fig, ax = plt.subplots()
+            ax.axis('off')
+            ax.imshow(smooth_image2, cmap=plt.cm.gray)
+            ax.quiver(vx_matrix, vy_matrix, color='green')
+            ax.set_title(f"$scale = {scale}, window = {self.neighbor}$", 
+                         fontsize=14)
+            plt.show()
+        
         self.vx_matrix = vx_matrix
         self.vy_matrix = vy_matrix
         self.ovrlay = ovrlay
         
         return self
-    
-    def show_result(self):
-        vx_matrix = self.vx_matrix
-        vy_matrix = self.vy_matrix
-        fig, ax = plt.subplots()
-        ax.axis('off')
-        ax.quiver(vx_matrix, vy_matrix)
-        plt.show()
-
-
-
-
