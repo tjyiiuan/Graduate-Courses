@@ -112,7 +112,7 @@ def gradient(matrix, method='Prewitt'):
 
 def solve_mateq(A, b):
     try:
-        x = np.matmul(np.matmul(np.linalg.inv(np.matmul(A.T, A)), A.T), b)
+        x = np.matmul(np.linalg.inv(A), b)
     except:
         x = np.array([[0], [0]])
         

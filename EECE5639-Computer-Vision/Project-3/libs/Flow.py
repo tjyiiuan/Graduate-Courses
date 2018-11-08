@@ -23,7 +23,6 @@ class Dense_Optical_Flow(object):
         self.smooth = params["smooth"]
         self.sigma = params["sigma"]        
         self.grad_method = params["method"]
-        self.neighbor = params["neighbor"]
         
         self.gray_image1 = rgb2gray(rawimg1)
         self.gray_image2 = rgb2gray(rawimg2)
@@ -46,7 +45,7 @@ class Dense_Optical_Flow(object):
     
     @staticmethod
     def _findAB(x2, y2, xy, xt, yt, ind, neigh):
-        """Find C matrix of gven gradient."""
+        """Find matrix components of given gradient."""
         x, y = ind
         n = int(neigh / 2)
         Ixx = x2[x - n:x + n + 1, y - n:y + n + 1]
@@ -61,12 +60,19 @@ class Dense_Optical_Flow(object):
 
         return A, B
     
-    def LKMethod(self, scale=1, show=True):
-        """Detect corners."""
+    def LKMethod(self, scale=1, window=5, show=True):
+        """Lucas-Kanade method.
+    
+        Parameters
+        ----------
+        scale: int, default 1
+            Scale level of origin image.
+        window: int, default 5
+            Window size.
+        """
         smoother = self.smoother
         image1 = self.gray_image1
         image2 = self.gray_image2
-        neighbor = self.neighbor
         
         smooth_image1 = apply_2d_filter(smoother, image1)[::scale, ::scale]
         smooth_image2 = apply_2d_filter(smoother, image2)[::scale, ::scale]
@@ -79,14 +85,14 @@ class Dense_Optical_Flow(object):
         Iyy = Iy ** 2
         Ixt = Ix * It
         Iyt = Iy * It
-        ovrlay = int(neighbor / 2) + 1
+        ovrlay = int(window / 2) + 1
 #        v_matrix = np.zeros(ishape, dtype=complex)
         vx_matrix = np.zeros(ishape)
         vy_matrix = np.zeros(ishape)
         
         for i in np.arange(ishape[0])[ovrlay:-ovrlay]:
             for j in np.arange(ishape[1])[ovrlay:-ovrlay]:
-                a, b = self._findAB(Ixx, Iyy, Ixy, Ixt, Iyt, [i, j], neighbor)
+                a, b = self._findAB(Ixx, Iyy, Ixy, Ixt, Iyt, [i, j], window)
                 v = solve_mateq(a, b)
                 vx, vy = v[:, 0]
                 vx_matrix[i, j] = vx
@@ -98,8 +104,8 @@ class Dense_Optical_Flow(object):
             ax.axis('off')
             ax.imshow(smooth_image2, cmap=plt.cm.gray)
             ax.quiver(vx_matrix, vy_matrix, color='green')
-            ax.set_title(f"$scale = {scale}, window = {self.neighbor}$", 
-                         fontsize=14)
+            ax.set_title(f"$scale = {scale}, window = {window}$", 
+                         fontsize=18)
             plt.show()
         
         self.vx_matrix = vx_matrix
@@ -107,3 +113,21 @@ class Dense_Optical_Flow(object):
         self.ovrlay = ovrlay
         
         return self
+    
+    def show_origin(self):
+        """Plot original images."""
+        image1 = self.gray_image1
+        image2 = self.gray_image2
+ 
+        fig = plt.figure()
+        ax1 = fig.add_subplot(121)
+        ax1.axis('off')
+        ax1.imshow(image1, cmap=plt.cm.gray)
+        ax1.set_title("Raw image 1", fontsize=18)
+        
+        ax2 = fig.add_subplot(122, sharex=ax1, sharey=ax1)
+        ax2.axis('off')
+        ax2.imshow(image2, cmap=plt.cm.gray)
+        ax2.set_title("Raw image 2", fontsize=18)
+        plt.show()
+    

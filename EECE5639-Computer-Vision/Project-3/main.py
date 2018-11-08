@@ -8,8 +8,7 @@ from libs.Flow import Dense_Optical_Flow
 image_path = r".\\toys\\"
 parameters = {"smooth": "Gaussian",
               "sigma": 1.4, 
-              "method": "Prewitt",
-              "neighbor": 5}
+              "method": "Prewitt"}
 
 
 if __name__ == "__main__":
@@ -19,3 +18,6 @@ if __name__ == "__main__":
     flow.LKMethod(scale=1)
     flow.LKMethod(scale=2)
     flow.LKMethod(scale=4)
+    flow.LKMethod(scale=2, window=3)
+    flow.LKMethod(scale=2, window=7)
+    flow.show_origin()
