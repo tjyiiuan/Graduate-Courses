@@ -8,13 +8,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import edu.northeastern.cs5200.daos.CourseDao;
+import edu.northeastern.cs5200.daos.EnrollmentDao;
+import edu.northeastern.cs5200.daos.FacultyDao;
+import edu.northeastern.cs5200.daos.SectionDao;
+import edu.northeastern.cs5200.daos.StudentDao;
 import edu.northeastern.cs5200.models.*;
 import edu.northeastern.cs5200.repositories.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ValidateData {
-
+	
+	@Autowired
+	FacultyDao facultydao;
+	
+	@Autowired
+	StudentDao studentdao;
+	
+	@Autowired
+	CourseDao coursedao;
+	
+	@Autowired
+	SectionDao sectiondao;
+	
+	@Autowired
+	EnrollmentDao enrollmentdao;
+	
+	
     @Autowired
 	PersonRepository pr;
     

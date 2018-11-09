@@ -11,4 +11,6 @@ public interface StudentRepository extends CrudRepository<Student, Integer>{
 	@Query("SELECT student FROM Student student WHERE student.username = :username")
 	public Student findStudentByUsername(@Param("username") String username);
 
+	@Query("SELECT student FROM Student student WHERE student.username=:username AND student.password=:password")
+	public Student findStudentByCredentials(@Param("username") String username, @Param("password") String password);
 }
