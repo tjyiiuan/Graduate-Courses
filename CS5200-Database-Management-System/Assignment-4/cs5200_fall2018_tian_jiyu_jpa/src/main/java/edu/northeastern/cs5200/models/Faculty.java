@@ -8,9 +8,9 @@ public class Faculty extends Person {
 	
 	private String office;
 	private Boolean tenure;
-
 	@OneToMany(mappedBy="author")
 	private List<Course> authoredCourses;
+	
 	
 	public Faculty() {}
 	
@@ -18,6 +18,12 @@ public class Faculty extends Person {
 		super(username, password, firstName, lastName);
 		this.office = office;
 		this.tenure = tenure;
+	}
+	
+	public Faculty (String username, String password, String firstName, String lastName) {
+		super(username, password, firstName, lastName);
+		this.office = "None";
+		this.tenure = false;
 	}
 	
 	public String getOffice() {

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: cs5200_fall2018_tian_jiyu_jpa
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: jerry
+Implementation-Vendor-Id: edu.northeastern.cs5200
+Build-Jdk: 1.8.0_181
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/cs5200_fall2018_tian_jiyu_jpa
+Created-By: Maven Integration for Eclipse
+

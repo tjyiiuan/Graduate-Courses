@@ -11,22 +11,22 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Course {
+	
 	@Id  
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String label;
-	
 	@ManyToOne
 	private Faculty author;
-	
 	@OneToMany(mappedBy="course")
 	private List<Section> courseSections;
 	
 	
 	public Course() {}
 	
-	public Course(String label) {
+	public Course(String label, Faculty faculty) {
 		this.label = label;
+		this.author = faculty;
 	}
 	
 	public int getId() {
@@ -46,5 +46,17 @@ public class Course {
 	}
 	public void setAuthor(Faculty author) {
 		this.author = author;
+	}
+	public List<Section> getCourseSections() {
+		return courseSections;
+	}
+	public void setCourseSections(List<Section> courseSections) {
+		this.courseSections = courseSections;
+	}
+	public void addSection(Section section) {
+		this.courseSections.add(section);
+	}
+	public void removeSection(Section section) {
+		this.courseSections.remove(section);
 	}
 }
