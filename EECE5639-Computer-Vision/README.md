@@ -14,11 +14,11 @@ Fall 2018 taken with Prof. Octavia Camps
 |[Homework 5][hw5]            |Stereo & Motion                      |
 
 
-[hw1]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-1
-[hw2]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-2
-[hw3]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-3
-[hw4]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-4
-[hw5]: https://github.com/tjyiiuan/Graduate-Courses/tree/master/EECE5639-Computer-Vision/Homework-5
+[hw1]: ./Homework-1
+[hw2]: ./Homework-2
+[hw3]: ./Homework-3
+[hw4]: ./Homework-4
+[hw5]: ./Homework-5
 [p1]: ./Project-1
 [p2]: ./Project-2
 [p3]: ./Project-3
