@@ -60,12 +60,6 @@ public class EnrollmentDao {
 		
 		return students;
 	}
-
-	
-	public int numSeatsLeftInSection(Section section) {
-		
-		return section.getSeats() - this.findStudentsInSection(section).size();
-	}
 	
 	public List<Section> findSectionsForStudent(Student student) {
 		
@@ -78,10 +72,20 @@ public class EnrollmentDao {
 		
 		return sections;
 	}
+
+	
+	public int numSeatsLeftInSection(Section section) {
+		
+		return section.getSeats() - this.findStudentsInSection(section).size();
+	}
 	
 	public Enrollment findOneEnrollment(Student student, Section section) {
 		
 		return er.findOneEnrollment(student, section);
 	}
 
+	public void emptyEnrollmentTable() {
+		er.deleteAll();
+	}
+	
 }

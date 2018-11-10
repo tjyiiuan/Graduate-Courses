@@ -10,7 +10,7 @@ public class Student extends Person {
 	
 	private int gradYear;
 	private Long scholarship;
-	@OneToMany(mappedBy="student")
+	@OneToMany(mappedBy="student", orphanRemoval=true)
 	private List<Enrollment> enrollments;
 	
 	public Student() {}

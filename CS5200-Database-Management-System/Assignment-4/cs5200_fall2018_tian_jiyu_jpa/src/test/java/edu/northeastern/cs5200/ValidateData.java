@@ -8,17 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.northeastern.cs5200.daos.CourseDao;
-import edu.northeastern.cs5200.daos.EnrollmentDao;
-import edu.northeastern.cs5200.daos.FacultyDao;
-import edu.northeastern.cs5200.daos.SectionDao;
-import edu.northeastern.cs5200.daos.StudentDao;
+import edu.northeastern.cs5200.daos.*;
 import edu.northeastern.cs5200.models.*;
-import edu.northeastern.cs5200.repositories.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ValidateData {
+	
+	@Autowired
+	PersonDao persondao;
 	
 	@Autowired
 	FacultyDao facultydao;
@@ -34,45 +32,26 @@ public class ValidateData {
 	
 	@Autowired
 	EnrollmentDao enrollmentdao;
-	
-	
-    @Autowired
-	PersonRepository pr;
-    
-    @Autowired
-	FacultyRepository fr;
-    
-    @Autowired
-	StudentRepository stur;
-	
-	@Autowired
-	CourseRepository cr;
-	
-	@Autowired
-	SectionRepository secr;
-	
-	@Autowired
-	EnrollmentRepository er;
-	
 
+	
 	@Test
 	public void validatePersons() {
 		
-		System.out.println(pr.count());
+		System.out.println(persondao.findAllPersons().size());
 		
 	}
 	
 	@Test
 	public void validateFaculties() {
 		
-		System.out.println(fr.count());
+		System.out.println(facultydao.findAllFaculties().size());
 		
 	}
 	
 	@Test
 	public void validateStudents() {
 		
-		System.out.println(stur.count());
+		System.out.println(studentdao.findAllStudents().size());
 		
 	}
 	
@@ -80,45 +59,67 @@ public class ValidateData {
 	@Test
 	public void validateCourses() {
 		
-		System.out.println(cr.count());
+		System.out.println(coursedao.findAllCourses().size());
 		
 	}
 	
 	@Test
 	public void validateSections() {
 		
-		System.out.println(secr.count());
+		System.out.println(sectiondao.findAllSections().size());
 		
 	}
 	
 	@Test
 	public void validateCourseAuthorship() {
 		
-		List<Faculty> faculties = (List<Faculty>) fr.findAll();
+		List<Faculty> faculties = facultydao.findAllFaculties();
 		
 		for(Faculty faculty: faculties) {
 			List<Course> courses = faculty.getAuthoredCourses();
-			System.out.println(faculty.getFirstName());
-			System.out.println(courses.size());
+			System.out.println(faculty.getFirstName() + " " + courses.size());
 		}
 	}
-	
 	
 	@Test
 	public void validateSectionPerCourse() {
 		
-		List<Course> courses = (List<Course>) cr.findAll();
+		List<Course> courses = coursedao.findAllCourses();
 		
 		for(Course course: courses) {
 			List<Section> sections = course.getCourseSections();
-			System.out.println(course.getLabel());
-			System.out.println(sections.size());
+			System.out.println(course.getLabel() + " " + sections.size());
 		}
 	}
 	
 	@Test
 	public void validateSectionEnrollments() {
 		
+		List<Section> sections = sectiondao.findAllSections();
+		for(Section section: sections) {
+			int numStudents = enrollmentdao.findStudentsInSection(section).size();
+			System.out.println(section.getTitle() + " " + numStudents);
+		}
+	}
+		
+	@Test
+	public void validateStudentEnrollments() {
+		
+		List<Student> students = studentdao.findAllStudents();
+		for(Student student: students) {
+			int numSections = enrollmentdao.findSectionsForStudent(student).size();
+			System.out.println(student.getFirstName() + " " + numSections);
+		}
+	}
+	
+	@Test
+	public void validateSectionSeats() {
+		
+		List<Section> sections = sectiondao.findAllSections();
+		for(Section section: sections) {
+			int numleft = enrollmentdao.numSeatsLeftInSection(section);
+			System.out.println(section.getTitle() + " " + numleft);
+		}
 	}
 		
 

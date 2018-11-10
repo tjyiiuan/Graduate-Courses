@@ -18,7 +18,7 @@ public class Course {
 	private String label;
 	@ManyToOne
 	private Faculty author;
-	@OneToMany(mappedBy="course")
+	@OneToMany(mappedBy="course", orphanRemoval=true)
 	private List<Section> courseSections;
 	
 	

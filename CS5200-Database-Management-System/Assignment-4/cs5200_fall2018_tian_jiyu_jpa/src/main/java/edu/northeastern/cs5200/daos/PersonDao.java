@@ -40,6 +40,9 @@ public class PersonDao {
 		return pr.findPersonByCredentials(username, password);
 	}
 	
+	public void emptyPersonTable() {
+		pr.deleteAll();
+	}
 	
 
 }

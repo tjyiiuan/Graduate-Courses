@@ -1,7 +1,9 @@
 package edu.northeastern.cs5200;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -11,7 +13,11 @@ import edu.northeastern.cs5200.models.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InsertDataDao {
+	
+	@Autowired
+	PersonDao persondao;
 	
 	@Autowired
 	FacultyDao facultydao;
@@ -28,9 +34,18 @@ public class InsertDataDao {
 	@Autowired
 	EnrollmentDao enrollmentdao;
 	
+	@Test
+	public void emptyDatabase() {
+		persondao.emptyPersonTable();
+		coursedao.emptyCourseTable();
+		sectiondao.emptySectionTable();
+		enrollmentdao.emptyEnrollmentTable();
+	}
+	
+	
 	
 	@Test
-	public void testCreateFaculties() {
+	public void testACreateFaculties() {
 		Faculty alan = new Faculty("alan", "password", "Alan", "Turin", "123A", true);
 		Faculty ada = new Faculty("ada", "password", "Ada", "Lovelace", "123B", true);
 		facultydao.createFaculty(alan);
@@ -75,7 +90,7 @@ public class InsertDataDao {
 	}
 	
 	@Test
-	public void testCreateSections() {
+	public void testDCreateSections() {
 		
 		Course c1 = (Course) coursedao.findCourseByLabel("CS1234");
 		Course c2 = (Course) coursedao.findCourseByLabel("CS2345");

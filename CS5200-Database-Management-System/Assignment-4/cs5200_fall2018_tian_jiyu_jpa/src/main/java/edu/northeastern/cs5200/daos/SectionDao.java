@@ -30,7 +30,6 @@ public class SectionDao {
 	
 	
 	
-	
 	public void createSection(Section section) {
 		if (this.findSectionByTitle(section.getTitle()) == null) {
 			sr.save(section);
@@ -38,6 +37,13 @@ public class SectionDao {
 			System.out.println("Entity already exists.");
 		}
 	}
+	
+	public void addSectionToCourse(Section section, Course course) {
+		
+		section.setCourse(course);
+		sr.save(section);
+	}
+	
     
 	public List<Section> findAllSections() {
 		
@@ -52,6 +58,9 @@ public class SectionDao {
 	public Section findSectionByTitle(String title) {
 		return sr.findSectionByTitle(title);
 	}
-	
+
+	public void emptySectionTable() {
+		sr.deleteAll();
+	}
 	
 }

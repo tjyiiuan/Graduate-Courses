@@ -13,7 +13,7 @@ public class Section {
 	private int seats;
 	@ManyToOne
 	private Course course;
-	@OneToMany(mappedBy="section")
+	@OneToMany(mappedBy="section", orphanRemoval=true)
 	private List<Enrollment> enrollments;
 	
 	public Section() {}

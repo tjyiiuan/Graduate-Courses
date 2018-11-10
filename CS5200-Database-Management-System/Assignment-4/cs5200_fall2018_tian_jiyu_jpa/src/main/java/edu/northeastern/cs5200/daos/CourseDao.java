@@ -59,5 +59,9 @@ public class CourseDao {
 		return cr.findCourseByLabel(label);
 	}
 	
+	public void emptyCourseTable() {
+		cr.deleteAll();
+	}
+	
 	
 }

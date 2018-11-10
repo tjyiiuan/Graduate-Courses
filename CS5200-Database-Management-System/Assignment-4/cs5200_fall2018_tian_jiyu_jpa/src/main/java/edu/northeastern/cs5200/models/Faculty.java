@@ -8,7 +8,7 @@ public class Faculty extends Person {
 	
 	private String office;
 	private Boolean tenure;
-	@OneToMany(mappedBy="author")
+	@OneToMany(mappedBy="author", orphanRemoval=true)
 	private List<Course> authoredCourses;
 	
 	
