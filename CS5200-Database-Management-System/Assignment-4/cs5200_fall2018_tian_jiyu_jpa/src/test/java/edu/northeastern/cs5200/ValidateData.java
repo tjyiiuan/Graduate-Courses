@@ -117,8 +117,7 @@ public class ValidateData {
 		
 		List<Section> sections = sectiondao.findAllSections();
 		for(Section section: sections) {
-			int numleft = enrollmentdao.numSeatsLeftInSection(section);
-			System.out.println(section.getTitle() + " " + numleft);
+			System.out.println(section.getTitle() + " " + section.getSeats());
 		}
 	}
 		

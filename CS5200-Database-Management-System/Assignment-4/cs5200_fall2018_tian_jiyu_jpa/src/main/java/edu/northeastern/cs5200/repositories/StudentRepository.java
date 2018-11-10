@@ -8,7 +8,7 @@ import edu.northeastern.cs5200.models.Student;
 
 public interface StudentRepository extends CrudRepository<Student, Integer>{
 	
-	@Query("SELECT student FROM Student student WHERE student.username = :username")
+	@Query("SELECT student FROM Student student WHERE student.username=:username")
 	public Student findStudentByUsername(@Param("username") String username);
 
 	@Query("SELECT student FROM Student student WHERE student.username=:username AND student.password=:password")

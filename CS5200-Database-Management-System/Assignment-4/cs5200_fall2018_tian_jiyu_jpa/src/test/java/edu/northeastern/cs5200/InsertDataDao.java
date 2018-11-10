@@ -42,8 +42,6 @@ public class InsertDataDao {
 		enrollmentdao.emptyEnrollmentTable();
 	}
 	
-	
-	
 	@Test
 	public void testACreateFaculties() {
 		Faculty alan = new Faculty("alan", "password", "Alan", "Turin", "123A", true);

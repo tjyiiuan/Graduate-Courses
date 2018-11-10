@@ -35,18 +35,26 @@ public class EnrollmentDao {
 	
 	
 	
-	public void createEnrollment(Enrollment enrollment) {
+	public boolean createEnrollment(Enrollment enrollment) {
 		
 		Section section = enrollment.getSection();
+		int seats = section.getSeats();
 		if (this.findOneEnrollment(enrollment.getStudent(), section) == null) {
-			if (this.numSeatsLeftInSection(section) > 0) {
+			if (seats > 0) {
+				seats -= 1;
+				section.setSeats(seats);
 				er.save(enrollment);
+				secr.save(section);
 			} else {
 				System.out.println("No seats left.");
+				return false;
 			}
 		} else {
 			System.out.println("Entity already exists.");
+			return false;
 		}
+		
+		return true;
 	}
 
 	public List<Student> findStudentsInSection(Section section) {
@@ -73,15 +81,23 @@ public class EnrollmentDao {
 		return sections;
 	}
 
-	
-	public int numSeatsLeftInSection(Section section) {
-		
-		return section.getSeats() - this.findStudentsInSection(section).size();
-	}
-	
 	public Enrollment findOneEnrollment(Student student, Section section) {
 		
 		return er.findOneEnrollment(student, section);
+	}
+	
+	public void removeOneEnrollment(Student student, Section section) {
+		
+		Enrollment enrollment = this.findOneEnrollment(student, section);
+		if (enrollment != null) {
+			
+			int seats = section.getSeats();
+			er.delete(enrollment);
+			seats += 1;
+			section.setSeats(seats);
+			secr.save(section);
+		}
+
 	}
 
 	public void emptyEnrollmentTable() {
