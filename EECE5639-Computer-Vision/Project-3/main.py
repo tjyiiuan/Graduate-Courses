@@ -20,4 +20,6 @@ if __name__ == "__main__":
     flow.LKMethod(scale=4)
     flow.LKMethod(scale=2, window=3)
     flow.LKMethod(scale=2, window=7)
+    flow.LKMethod(scale=4, window=7)
+    flow.LKMethod(scale=1, window=7)
     flow.show_origin()

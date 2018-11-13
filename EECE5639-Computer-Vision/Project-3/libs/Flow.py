@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import cv2
 import numpy as np
 import matplotlib.pylab as plt
 plt.rcParams['figure.figsize'] = 9, 9
 
-from .misc import rgb2gray, Gen_Gaussian_Filter, apply_2d_filter, gradient, solve_mateq
+from .misc import rgb2gray, Gen_Gaussian_Filter, apply_2d_filter, gradient, solve_mateq, norm_minmax
 
 
 class Dense_Optical_Flow(object):
@@ -100,12 +101,28 @@ class Dense_Optical_Flow(object):
 #                v_matrix[i, j] = complex(vx, vy)
         
         if show:
-            fig, ax = plt.subplots()
-            ax.axis('off')
-            ax.imshow(smooth_image2, cmap=plt.cm.gray)
-            ax.quiver(vx_matrix, vy_matrix, color='green')
-            ax.set_title(f"$scale = {scale}, window = {window}$", 
-                         fontsize=18)
+            fig = plt.figure()
+            ax1 = fig.add_subplot(121)
+            ax1.axis('off')
+            ax1.imshow(smooth_image2, cmap=plt.cm.gray)
+            ax1.quiver(vx_matrix, vy_matrix, color='green')
+            ax1.set_title(f"$scale = {scale}, window = {window}$", 
+                          fontsize=18)
+            
+            ax2 = fig.add_subplot(122, sharex=ax1, sharey=ax1)
+            ax2.axis('off')
+            hs_matrix = np.copy(self.raw_image1[::scale, ::scale, :3])
+#            hs_matrix = np.zeros([ishape[0], ishape[1], 3])
+            direct = self._find_direction(vx_matrix, vy_matrix)
+            length = np.sqrt(vx_matrix**2 + vy_matrix**2)
+            
+            hs_matrix[:, :, 0] = direct
+            hs_matrix[:, :, 1] = length * 255 / length.max()
+            hs_matrix[:, :, 2] = 255 * np.ones(ishape)
+            rgb = cv2.cvtColor(hs_matrix, cv2.COLOR_HSV2BGR)
+            ax2.imshow(rgb)
+            ax2.set_title(f"$scale = {scale}, window = {window}$", 
+                          fontsize=18)
             plt.show()
         
         self.vx_matrix = vx_matrix
@@ -130,4 +147,15 @@ class Dense_Optical_Flow(object):
         ax2.imshow(image2, cmap=plt.cm.gray)
         ax2.set_title("Raw image 2", fontsize=18)
         plt.show()
+        
+    @staticmethod
+    def _find_direction(vx, vy):
+        alpha = np.degrees(np.arctan(vy / vx))
+        vx_sign = np.sign(vx)
+        vy_sign = np.sign(vy)
+        direct = np.zeros(vx.shape)
+        direct[np.where(vy_sign < 0)] += 180
+        direct[np.where(vy_sign * vx_sign < 0)] += 180
+        
+        return direct + alpha        
     

@@ -22,11 +22,13 @@ def Gen_Gaussian_Filter(dim, sigma, size=0):
     n = max(2 * np.ceil(2 * sigma) + 1, size)
     ovrlay = int(n / 2)
     inds = np.arange(-ovrlay, ovrlay + 1)
-    gaussian_1d = np.exp(-inds**2/(2 * sigma**2))
-    mask = gaussian_1d /sum(gaussian_1d).reshape((-1, 1))
+    gaussian_1d = np.array([np.exp(-inds**2/(2 * sigma**2))])
     
     if dim == 2:
         mask = gaussian_1d * gaussian_1d.T
+        mask = mask / mask.sum()
+    else:
+        mask = gaussian_1d /gaussian_1d.sum()
         
     return mask
 
@@ -117,3 +119,11 @@ def solve_mateq(A, b):
         x = np.array([[0], [0]])
         
     return x
+
+def norm_minmax(matrix):
+    
+    vmax = matrix.max()
+    vmin = matrix.min()
+    norm_matrix = (matrix - vmin) / (vmax - vmin)
+    
+    return norm_matrix
