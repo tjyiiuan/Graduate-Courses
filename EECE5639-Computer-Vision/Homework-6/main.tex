@@ -1,0 +1,394 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{pythonhighlight}
+
+\marginsize{2cm}{2cm}{0.9cm}{1.8cm}
+
+\title{EECE 5639 Computer Vision\\ [2ex] \begin{large} Homework \#6 \end{large} }
+\author{Jiyu Tian}
+\date{}
+
+\begin{document}
+\maketitle
+\pagestyle{empty}
+%%---------------------------------------------------------------
+%% Question 1
+%%---------------------------------------------------------------
+\section{Solution:}
+
+%%---------------------------------------------------------------
+%% Question 2
+%%---------------------------------------------------------------
+\section{Solution:}
+If two cameras have parallel optical axes and the line through the two centers of projection is perpendicular to the optical axes, the corresponding epipoles are at infinity.
+
+%%---------------------------------------------------------------
+%% Question 3
+%%---------------------------------------------------------------
+\section{Solution:}
+
+
+When an affine transform is applied to two parallel lines, the transformed lines will also be parallel.
+%%---------------------------------------------------------------
+%% Question 4
+%%---------------------------------------------------------------
+\section{Solution:}
+Let $O_{i1}$, $O_{i2}$ be the origin of image plane 1 and 2 respectively, we have $O_{i1}(0,9)$, $O_{i1}(0, -9)$.
+\begin{equation*}  
+\begin{aligned}
+\left.  
+     \begin{array}{cc}  
+        \text{Line } PO_1: y = \frac{1}{5}x + 12\\
+        \text{Line } p_1O_{i1}: y = 10x + 9\\  
+     \end{array}  
+\right\}&\to  p_1(\frac{15}{49}, \frac{591}{49})\\
+\left.  
+     \begin{array}{cc}  
+        \text{Line } PO_2: y = \frac{3}{5}x -4 \\
+        \text{Line } p_2O_{i2}: y = -10x - 9\\  
+     \end{array}  
+\right\}&\to  p_2(-\frac{25}{53}, -\frac{227}{53})
+\end{aligned}
+\end{equation*}  
+
+Disparity
+\begin{equation*}
+\begin{aligned}
+    p_1O_{i1} &= \sqrt{(\frac{15}{49})^2 + (\frac{591}{49} - 9)^2} = \frac{15}{49}\sqrt{101}\\
+    p_2O_{i2} &= \sqrt{(-\frac{25}{53})^2 + (-\frac{227}{53} + 9)^2} = \frac{25}{53}\sqrt{101}\\
+    d &= p_1O_{i1} - p_2O_{i2} = \frac{430}{2597}\sqrt{101}
+\end{aligned}
+\end{equation*}
+
+%%---------------------------------------------------------------
+%% Question 5
+%%---------------------------------------------------------------
+\section{Solution:}
+
+
+
+
+
+%%---------------------------------------------------------------
+%% Question 6
+%%---------------------------------------------------------------
+\section{Solution:}
+The planar affine transformation is given by
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+1
+\end{array} \right] = \left[ \begin{array}{ccc}
+h_{11} & h_{12} & h_{13} \\
+h_{21} & h_{22} & h_{23} \\
+0 & 0 & 1
+\end{array} \right]\left[ \begin{array}{c}
+x\\
+y\\
+1
+\end{array} \right] 
+\end{equation*}
+Since there are 6 $D.O.F.$, 3 points pairs are needed for solution. Given the map relation from $(x_1, y_1)$, $(x_2, y_2)$, $(x_3, y_3)$ to $(x'_1, y'_1)$, $(x'_2, y'_2)$, $(x'_3, y'_3)$, we obtain
+
+\begin{equation*}
+    Ax = b
+\end{equation*}
+where
+\begin{equation*}
+A = \left[ \begin{array}{cccccc}
+x_1 & y_1 & 1 & 0 & 0 & 0\\
+0 & 0 & 0 & x_1 & y_1 & 1\\
+x_2 & y_2 & 1 & 0 & 0 & 0\\
+0 & 0 & 0 & x_2 & y_2 & 1\\
+x_3 & y_3 & 1 & 0 & 0 & 0\\
+0 & 0 & 0 & x_3 & y_3 & 1
+\end{array} \right],\  x= \left[ \begin{array}{c}
+h_{11} \\
+h_{12} \\
+h_{13} \\
+h_{21} \\
+h_{22} \\
+h_{23} 
+\end{array} \right],\  b= \left[ \begin{array}{c}
+x'_1\\
+y'_1\\
+x'_2\\
+y'_2\\
+x'_3\\
+y'_3
+\end{array} \right] 
+\end{equation*}
+To solve via least squares 
+\begin{equation*}
+    X = \arg\max_{x}||Ax-b||^2 = (A^TA)^{-1}A^Tb
+\end{equation*}
+Here we can separate the $6\times6$ system into $2$ sub-equations:
+\begin{equation*}
+A_1x_1 = b_1, A_1 = \left[ \begin{array}{ccc}
+x_1 & y_1 & 1\\
+x_2 & y_2 & 1\\
+x_3 & y_3 & 1
+\end{array} \right],\  x_1= \left[ \begin{array}{c}
+h_{11} \\
+h_{12} \\
+h_{13}
+\end{array} \right],\  b_1= \left[ \begin{array}{c}
+x'_1\\
+x'_2\\
+x'_3
+\end{array} \right] 
+\end{equation*}
+\begin{equation*}
+A_2x_2 = b_2, A_2 = \left[ \begin{array}{cccccc}
+x_1 & y_1 & 1\\
+x_2 & y_2 & 1\\
+x_3 & y_3 & 1
+\end{array} \right],\  x_2 = \left[ \begin{array}{c}
+h_{21} \\
+h_{22} \\
+h_{23} 
+\end{array} \right],\  b_2 = \left[ \begin{array}{c}
+y'_1\\
+y'_2\\
+y'_3
+\end{array} \right] 
+\end{equation*}
+which can be solved via
+\begin{equation*}
+    X_1 = \arg\max_{x_1}||A_1x_1-b_1||^2 = (A_1^TA_1)^{-1}A_1^Tb_1
+\end{equation*}
+\begin{equation*}
+    X_2 = \arg\max_{x_2}||A_2x_2-b_2||^2 = (A_2^TA_2)^{-1}A_2^Tb_2
+\end{equation*}
+
+\begin{equation*}
+X = \left[ \begin{array}{c}
+X_1\\
+X_2
+\end{array} \right]
+\end{equation*}
+%%---------------------------------------------------------------
+%% Question 7
+%%---------------------------------------------------------------
+\section{Solution:}
+\begin{equation*}
+T_1 = \left[ \begin{array}{cccc}
+1 & 0 & 0 & -2\\
+0 & 1 & 0 & -2\\
+0 & 0 & 1 & -4\\
+0 & 0 & 0 & 1
+\end{array} \right],\ T_2 = \left[ \begin{array}{cccc}
+1 & 0 & 0 & -4\\
+0 & 1 & 0 & -3\\
+0 & 0 & 1 & -3\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+
+\begin{equation*}
+R_{Z90}  = \left[ \begin{array}{cccc}
+0 & -1 & 0 & 0\\
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1\\
+\end{array} \right],\ R_{Y180}  = \left[ \begin{array}{cccc}
+-1& 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & -1& 0\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+\begin{equation*}
+M_1 = R_{Y180} R_{Z90} T_1 = \left[ \begin{array}{cccc}
+0 & 1 & 0 & -2\\
+1 & 0 & 0 & -2\\
+0 & 0 & -1 & 4\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+\begin{equation*}
+M_2 = R_{Y180} R_{Z90} T_2 = \left[ \begin{array}{cccc}
+0 & 1 & 0 & -3\\
+1 & 0 & 0 & -4\\
+0 & 0 & -1 & 3\\
+0 & 0 & 0 & 1
+\end{array} \right]
+\end{equation*}
+
+\noindent (a) 
+\begin{equation*}
+C_2^1 = M_1C_2 = \left[ \begin{array}{cccc}
+0 & 1 & 0 & -2\\
+1 & 0 & 0 & -2\\
+0 & 0 & -1 & 4\\
+0 & 0 & 0 & 1
+\end{array} \right] \left[ \begin{array}{c}
+4\\
+3\\
+3\\
+1
+\end{array} \right] = \left[ \begin{array}{c}
+1\\
+2\\
+1\\
+1
+\end{array} \right], \ E_1^1 = \left[ \begin{array}{c}
+f\frac{x}{z}\\
+f\frac{y}{z}\\
+f
+\end{array} \right]  = \left[ \begin{array}{c}
+1\\
+2\\
+1
+\end{array} \right]
+\end{equation*}
+
+
+\begin{equation*}
+C_1^2 = M_2C_1 = \left[ \begin{array}{cccc}
+0 & 1 & 0 & -3\\
+1 & 0 & 0 & -4\\
+0 & 0 & -1 & 3\\
+0 & 0 & 0 & 1
+\end{array} \right] \left[ \begin{array}{c}
+2\\
+2\\
+4\\
+1
+\end{array} \right] = \left[ \begin{array}{c}
+-1\\
+-2\\
+-1\\
+1
+\end{array} \right], \ E_2^2 = \left[ \begin{array}{c}
+f\frac{x}{z}\\
+f\frac{y}{z}\\
+f
+\end{array} \right]  = \left[ \begin{array}{c}
+1\\
+2\\
+1
+\end{array} \right]
+\end{equation*}
+
+
+\noindent (b) The camera 1 coordinates of fly are 
+\begin{equation*}
+f^1 =  \left[ \begin{array}{c}
+0\\
+2k\\
+k\\
+1
+\end{array} \right]
+\end{equation*}
+The camera 2 coordinates of fly are 
+
+\begin{equation*}
+f^2 = M_2M_1^{-1}f^1 = \left[ \begin{array}{cccc}
+1 & 0 & 0 & -1\\
+0 & 1 & 0 & -2\\
+0 & 0 & 1 & -1\\
+0 & 0 & 0 & 1
+\end{array} \right] \left[ \begin{array}{c}
+0\\
+2k\\
+k\\
+1
+\end{array} \right] = \left[ \begin{array}{c}
+-1\\
+2k-2\\
+k-1\\
+1
+\end{array} \right] 
+\end{equation*}
+The camera 2 coordinates of the image in the second camera
+are 
+\begin{equation*}
+f_2^2 = \left[ \begin{array}{c}
+\frac{1}{1-k}\\
+2\\
+1
+\end{array} \right] 
+\end{equation*}
+Note that this is the epipolar line of fly in camera 2 coordinates
+
+\begin{equation*}  
+\left\{  
+     \begin{array}{cc}  
+    y = 2\\
+    z = 1
+     \end{array}  
+\right.  
+\end{equation*}  
+The epipolar plane also passes through origin $(0,0,0)$, and thus we have its expression:
+\begin{equation*}  
+y-2z = 0
+\end{equation*} 
+
+\noindent (c) The camera 1 coordinates of fly at $t$ are  
+\begin{equation*}
+f_{1t}^1 = M_1 \left ( M_1^{-1}f^1 + vt \right ) = \left[ \begin{array}{cccc}
+0 & 1 & 0 & -2\\
+1 & 0 & 0 & -2\\
+0 & 0 & -1 & 4\\
+0 & 0 & 0 & 1
+\end{array} \right] \left[ \begin{array}{c}
+2 + 2k - 3t\\
+2 - 2t\\
+4 - k - t\\
+1
+\end{array} \right] = \left[ \begin{array}{c}
+-2t\\
+2k-3t\\
+k+t\\
+1
+\end{array} \right]
+\end{equation*}
+The camera 1 coordinates of its image are 
+\begin{equation*}
+p_{1t}^1 = \left[ \begin{array}{c}
+f\frac{x}{z}\\
+f\frac{y}{z}\\
+f
+\end{array} \right]  = \left[ \begin{array}{c}
+\frac{-2t}{k+t}\\
+\frac{2k-3t}{k+t}\\
+1
+\end{array} \right]
+\end{equation*}
+FOE is 
+\begin{equation*}
+p^1_0 = \lim\limits_{t\to\infty}p_{1t}^1 = \lim\limits_{t\to\infty} \left[ \begin{array}{c}
+\frac{-2t}{k+t}\\
+\frac{2k-3t}{k+t}\\
+1
+\end{array} \right] = \left[ \begin{array}{c}
+-2\\
+-3\\
+1
+\end{array} \right]
+\end{equation*}
+Therefore the camera coordinates of the FOE in camera 1 are $(-2, -3, 1)$.
+
+
+%%---------------------------------------------------------------
+%% Question 8
+%%---------------------------------------------------------------
+\section{Solution:}
+
+
+
+
+
+\end{document}

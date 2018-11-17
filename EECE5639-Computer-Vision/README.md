@@ -12,6 +12,7 @@ Fall 2018 taken with Prof. Octavia Camps
 |[Homework 3][hw3]            |Image Features and Image Segmentation|
 |[Homework 4][hw4]            |Homographies                         |
 |[Homework 5][hw5]            |Stereo & Motion                      |
+|[Homework 6][hw6]            |Homographies, Stereo and Motion      |
 
 
 [hw1]: ./Homework-1
@@ -19,6 +20,7 @@ Fall 2018 taken with Prof. Octavia Camps
 [hw3]: ./Homework-3
 [hw4]: ./Homework-4
 [hw5]: ./Homework-5
+[hw6]: ./Homework-6
 [p1]: ./Project-1
 [p2]: ./Project-2
 [p3]: ./Project-3
