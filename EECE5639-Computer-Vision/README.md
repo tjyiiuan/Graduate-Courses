@@ -7,6 +7,8 @@ Fall 2018 taken with Prof. Octavia Camps
 |[Project 1][p1]              |Motion Detection                     |
 |[Project 2][p2]              |Image Mosaicing                      |
 |[Project 3][p3]              |Dense Optical Flow                   |
+|[Project 4][p4]              |Target Tracking                      |
+|[Extra Credit Project][exp]  |                                     |
 |[Homework 1][hw1]            |                                     |
 |[Homework 2][hw2]            |                                     |
 |[Homework 3][hw3]            |Image Features and Image Segmentation|
@@ -24,3 +26,5 @@ Fall 2018 taken with Prof. Octavia Camps
 [p1]: ./Project-1
 [p2]: ./Project-2
 [p3]: ./Project-3
+[p4]: ./Project-4
+[exp]: ./Project-Extra
