@@ -1,0 +1,258 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{mathrsfs}
+
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+% Turn off header and footer
+\pagestyle{empty}
+ 
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{Computer Vision Midterm2}} \\
+\end{center}
+
+%------------------------------
+\section{Stereo Vision}
+The ability to infer information on the 3D structure and distance of a scene from two or more images taken from different viewpoints.
+%------------------------------
+%------------------------------
+\subsection{A simple stereo system}
+\begin{equation*}
+    \frac{T+x_l-x_r}{Z-f} = \frac{T}{Z},\ Z = f\frac{T}{x_r-x_l}, \ Z = f\frac{T}{d}
+\end{equation*}
+\textbf{Disparity}: $d=x_r-x_l$
+
+
+
+%------------------------------
+%------------------------------
+\subsection{Epipolar Geometry}
+Epipoles:
+\begin{itemize}
+    \item  $e_l$: left image of $O_r$
+    \item  $e_r$: right image of $O_l$
+\end{itemize}
+
+Epipolar plane:
+\begin{itemize}
+    \item Three points: $O_l$, $O_r$, and $P$ define an epipolar plane
+\end{itemize}
+
+Epipolar lines and epipolar constraint:
+\begin{itemize}
+    \item Intersections of epipolar plane with the image planes
+    \item Corresponding points are on ``conjugate'' epipolar lines 
+\end{itemize}
+
+
+Find Epipoles, given $p_l$:
+\begin{itemize}
+    \item consider its epipolar line: $p_l, e_l$
+    \item find epipolar plane: $O_l, p_l, e_l$
+    \item intersect the epipolar plane with the right image plane
+    \item search for $p_r$ on the right epipolar line
+\end{itemize}
+Parallel Cameras: 
+\begin{itemize}
+    \item Epipoles are at infinity
+    \item Epipolar lines are parallel to the baseline
+\end{itemize}
+
+
+%------------------------------
+%------------------------------
+\subsection{Essential Matrix}
+
+The \textbf{ESSENTIAL} matrix is a $3\times3$ matrix that “encodes” the epipolar geometry of two views. Given a point in an image, multiplying by the Essential Matrix, will tell us the \textbf{EPIPOLAR} line in the second image where the corresponding point must be.\\
+\begin{equation*}
+    E=RS,\ P^T_rEP_l = 0,\ p^T_rEp_l = 0 
+\end{equation*}
+Essential matrix has rank 2, and depends only on the EXTRINSIC Parameters ($R$ \& $T$).
+\begin{equation*}
+T =\left[ \begin{array}{ccc}
+T_x & T_y & T_z
+\end{array} \right ], S = \left[ \begin{array}{ccc}
+0 & -T_z & T_y\\
+T_z & 0 & -T_x\\
+-T_y & T_x & 0
+\end{array} \right ]
+\end{equation*}
+$p_r$ belongs to epipolar line in the right image defined by
+\begin{equation*}
+    l_r = Ep_l
+\end{equation*}
+$p_l$ belongs to epipolar line in the left image defined by 
+\begin{equation*}
+    l_l = E^Tp_r
+\end{equation*}
+Epipoles belong to the epipolar lines, and they belong to all the epipolar lines:
+\begin{equation*}
+    e^T_rE=0, Ee_l=0
+\end{equation*}
+
+
+
+%------------------------------
+%------------------------------
+\subsection{Fundamental Matrix}
+The essential matrix uses \textbf{CAMERA} coordinates. To use image coordinates we must consider the \textbf{INTRINSIC} camera parameters.
+\begin{equation*}
+    p_l=M_l^{-1}\bar{p_l},\ p_r=M_r^{-1}\bar{p_r}, \bar{p_r}^TF\bar{p_l}=0,\ F=M_r^{-T}RSM^{-1}_l
+\end{equation*}
+
+
+Fundamental matrix has rank 2, and depends on the INTRINSIC and EXTRINSIC Parameters ($f$, etc ; $R$ \& $T$). Analogous to the Essential matrix, the Fundamental matrix also tells how points in each image are related to epipolar lines in the other image.
+
+
+%------------------------------
+%------------------------------
+\subsection{Eight Points Algorithm}
+\begin{itemize}
+    \item $F$ is a $3\times3$ matrix (9 entries) but rank 2
+    \item \textbf{HOMOGENEOUS} linear system with 9 unknowns
+    \item Need $m \geq 8$; solution will be up to a constant
+\end{itemize}
+\begin{equation*}
+    \left[ \begin{array}{ccc}
+x_1x'_1 & ... & x_mx'_m\\
+ x_1y'_1 & ... & x_my'_m \\
+ x_1 & ... & x_m\\
+ y_1x'_1 & ... & y_mx'_m\\
+ y_1y'_1 & ... & y_my'_m\\
+ y_1 & ... & y_m\\
+ x'_1 & ... & x'_m\\
+ y'_1 & ... & y'_m\\
+ 1 & ... & 1
+    \end{array} \right ]^T    \left[ \begin{array}{c}
+f_11\\
+f_21\\
+f_31\\
+f_12\\
+f_22\\
+f_32\\
+f_13\\
+f_23\\
+f_33
+    \end{array} \right ] = 0
+\end{equation*}
+Assume that we need to find the non trivial solution of:
+\begin{equation*}
+    Ax=0
+\end{equation*}
+with $m$ equations and $n$ unknowns, $m \geq n – 1$ and rank$(A) = n-1$. Since the norm of $x$ is arbitrary, we will look for a solution
+with norm $||x|| = 1$. We want $Ax$ as close to $0$ as possible and $||x|| =1$:
+\begin{equation*}
+    \min_x ||Ax||^2\ \ \text{s.t. } ||x||^2 = 1,\ ||Ax||^2 = x^TA^TAx
+\end{equation*}
+Define the following cost:
+
+
+%------------------------------
+\section{}
+
+
+
+
+%------------------------------
+\section{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%------------------------------
+\section{}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%------------------------------
+\section{}
+
+
+\end{multicols}
+\end{document}
+
