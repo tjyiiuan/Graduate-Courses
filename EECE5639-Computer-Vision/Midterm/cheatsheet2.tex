@@ -104,6 +104,460 @@
      \Large{\textbf{Computer Vision Midterm2}} \\
 \end{center}
 
+\section{Pinhole Camera Model}
+\subsection{Projection Equation}  $x = f X/Z$, $y = f X/Z$, $z = f$\\
+The $2D$ perspective images of $3D$ parallel lines that are not parallel to the image plane are not parallel and intersect at the ``vanishing point''.\\
+\subsection{3D Line Equations}
+$P(X_P, Y_P, Z_P), Q(X_Q, Y_Q, Z_Q), R(X, Y, Z)$\\
+$R=P+\lambda(Q-P)$\\
+$X=X_P + \lambda(X_Q - X_P)$\\
+$Y=Y_P + \lambda(Y_Q - Y_P)$\\
+$Z=Z_P + \lambda(Z_Q - Z_P)$\\
+$x=f[X_P + \lambda(X_Q - X_P)]/[Z_P + \lambda(Z_Q - Z_P)]$\\
+$y=f[Y_P + \lambda(Y_Q - Y_P)]/[Z_P + \lambda(Z_Q - Z_P)]$\\
+$z=f$\\
+Assuming that $Z_Q \neq Z_P$:\\
+$\lim\limits_{\lambda\to\infty}x \to f\frac{X_Q - X_P}{Z_Q - Z_P}$, $\lim\limits_{\lambda\to\infty}y \to f\frac{Y_Q - Y_P}{Z_Q - Z_P}$, $\lim\limits_{\lambda\to\infty}z \to f$\\
+When $Z_Q == Z_P:$\\
+$\lim\limits_{\lambda\to\infty}x \to \infty$, $\lim\limits_{\lambda\to\infty}y \to \infty$, $\lim\limits_{\lambda\to\infty}z \to f$\\
+The image of the IDEAL point of a line parallel to the
+image plane is an IDEAL point.\\
+The image of a circle is the intersection of a cone and
+the image plane and it is in general an ellipse.\\
+
+\section{2D Transformation}
+%------------
+\subsection{translation}
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+1
+\end{array} \right ] = \left[ \begin{array}{ccc}
+1&0&t_x\\
+0&1&t_y\\
+0&0&1
+\end{array} \right ]\left[ \begin{array}{c}
+x\\
+y\\
+1
+\end{array} \right ] 
+\end{equation*}
+$\#D.O.F \ : 2$
+Invariant:\\
+Preserves: orientation + ...
+%------------
+\subsection{Rigid(Euclidean)}
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+1
+\end{array} \right ] = \left[ \begin{array}{ccc}
+cos\theta & -sin\theta&t_x\\
+sin\theta&cos\theta&t_y\\
+0&0&1
+\end{array} \right ] \left[ \begin{array}{c}
+x\\
+y\\
+1
+\end{array} \right ] 
+\end{equation*}
+$\#D.O.F \ : 3$\\
+Invariant: lengths, areas\\
+Preserves: lengths + ...
+%------------
+\subsection{Similarity(scaled Euclidean)}
+
+\begin{equation*}
+\left[ \begin{array}{c}
+p'\\
+1
+\end{array} \right ] = \left[ \begin{array}{cc}
+sR&t\\
+0&1
+\end{array} \right ]\left[ \begin{array}{c}
+p\\
+1
+\end{array} \right ] 
+\end{equation*}
+$\#D.O.F \ : 4$\\
+Invariant: Ratios of lengths, angles\\
+Preserves: angles + ...
+%------------
+\subsection{affine}
+
+\begin{equation*}
+\left[ \begin{array}{c}
+p'\\
+1
+\end{array} \right ] = \left[ \begin{array}{cc}
+A&b\\
+0&1
+\end{array} \right ] \left[ \begin{array}{c}
+p\\
+1
+\end{array} \right ] 
+\end{equation*}
+$\#D.O.F \ : 6$\\
+Invariant: Parallellism, ratio of areas, ratio of lengths on parallel lines (e.g midpoints), linear combinations of vectors (centroids). \\
+Preserves: parallelism + ...
+%------------
+\subsection{projective}
+A projective transformation of Pn onto itself is completely determined by its action on n+2 points.\\
+\begin{equation*}
+\left[ \begin{array}{c}
+p'\\
+1
+\end{array} \right ] \sim \left[ \begin{array}{cc}
+A&b\\
+c^T&1
+\end{array} \right ] \left[ \begin{array}{c}
+p\\
+1
+\end{array} \right ] 
+\end{equation*}
+$\#D.O.F \ : 8$\\
+Invariant: Concurrency, collinearity, cross ratio\\
+Preserves: straight lines
+%------------
+%\subsection{Summary of 2D Transformation}
+\section{Coordinate Systems}
+$P_C = M_{ext}\times P_w$, $M_{ext} = R_{(X)}R_{(Y)}R_{(Z)}T$
+%------------
+\subsection{3D Rotation}
+\textbf{CLOCKWISE} Rotation around the coordinate axes (left hand):
+\begin{equation*}
+\left[ \begin{array}{c}
+X'\\
+Y'\\
+Z'
+\end{array} \right ] = R*\left[ \begin{array}{c}
+X\\
+Y\\
+Z
+\end{array} \right ]
+\end{equation*}
+
+\begin{equation*}
+R_x(\alpha) = \left[ \begin{array}{ccc}
+1&0&0\\
+0&cos\alpha & -sin\alpha\\
+0 & sin\alpha&cos\alpha
+\end{array} \right ]
+\end{equation*}
+
+\begin{equation*}
+R_y(\beta) = \left[ \begin{array}{ccc}
+cos\beta&0&sin\beta\\
+0&1&0\\
+-sin\beta&0&cos\beta
+\end{array} \right ]
+\end{equation*}
+
+\begin{equation*}
+R_z(\gamma) = \left[ \begin{array}{ccc}
+cos\gamma&-sin\gamma&0\\
+sin\gamma&cos\gamma&0\\
+0&0&1
+\end{array} \right ]
+\end{equation*}
+%------------
+\subsection{Translation}
+\begin{equation*}
+T = \left[ \begin{array}{cccc}
+1&0&0&t_x\\
+0&1&0&t_y\\
+0&0&1&t_z\\
+0&0&0&1
+\end{array} \right ]
+\end{equation*}
+
+%------------
+%------------
+
+
+
+
+
+\section{Image processing}
+
+%------------
+\subsection{Spatial Filtering}
+Low-pass filters eliminate/attenuate high frequency components in the frequency domain (sharp image details), and result in image blurring.\\
+High-pass filters attenuate/eliminate low-frequency components (resulting in sharpening edges and other sharp details).\\
+Band-pass filters remove selected frequency regions
+between low and high frequencies (for image restoration, not enhancement).\\
+
+%------------
+\subsection{Noise}
+Mean $\mu = \frac{1}{N}\sum^N_{i=1}x_i$\\
+Variance $\sigma^2 = \frac{1}{N-1} \sum^N_{i=1}(x_i - \mu)^2$\\
+Gaussian $N(\mu, \sigma^2) \sim \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{x\sigma^2}}$\\
+Additive noise $I(i,j) = \Hat{I}(i,j) + N(i,j)$\\
+Multiplicative noise  $I(i,j) = \Hat{I}(i,j) \times N(i,j)$\\
+Impulsive noise (salt and pepper): 
+\begin{equation*}  
+I(i,j) = \left\{  
+     \begin{array}{cc}  
+     \Hat{I}(i,j), & x < l\\  
+     i_{min} + y(i_{max} - i_{min}), & x \leq l\\   
+     \end{array}  
+\right.  
+\end{equation*}  
+
+%------------
+\subsection{Smoothing Filters}
+They are used for blurring and noise reduction. Blurring is performed as pre-processing to remove small detail or bridge curve gaps. Noise reduction can be done by linear or nonlinear filtering.\\
+Linear smoothing Filters are simply averaging filters. They compute the average of the filters under the mask. They reduce sharp transitions. They are low pass filters.\\
+
+\subsection{Linear Filtering}
+\begin{equation*}
+\text{BOX Filter: \   } \frac{1}{9}\left[ \begin{array}{ccc}
+1 & 1 & 1\\
+1 & 1 & 1\\
+1 & 1 & 1
+\end{array} 
+\right]
+\end{equation*}
+
+Reduce Noise:\\
+Expected value of a pixel $E[I_i] = \hat{I}_i \to \frac{1}{mn}\sum_i^{mn}\hat{I}_i$\\
+Variance of a pixel $E[(I_i - E[I_i])^2] = \sigma^2 \to \frac{\sigma^2}{mn}$\\
+The bigger the mask, more neighbors contribute; smaller noise variance of the output; bigger noise spread; more blurring; more expensive to compute.
+
+\begin{equation*}
+    \text{Weighted Average Filter: } w(s,t) = Ke^{\frac{s^2 + t^2}{2\sigma^2}}
+\end{equation*}
+Gives more weight at the central pixel and less weights to the neighbors. The farther away the neighbors, the smaller the weight. Less blurring of edges.\\
+Both, the BOX filter and the Gaussian filter are
+separable. First convolve each row with a 1D filter. Then convolve each column with a 1D filter.
+%------------
+\subsection{Nonlinear Filtering}
+Limitation of averaging: Signal frequencies shared with noise are lost, resulting in blurring. Impulsive noise is diffused but not removed. It spreads pixel values, resulting in blurring.\\
+Replace each pixel with the \textbf{MEDIAN} value of all the pixels in the neighborhood.\\
+Properties: Non-linear; Does not spread the noise
+Can remove spike noise; Expensive to run.
+
+
+\section{Image Features}
+%------------
+\subsection{Edge Detection}
+
+\subsubsection{Prewitt}
+\begin{equation*}
+\text{vertical: } \left[ \begin{array}{ccc}
+-1 & 0 & 1\\
+-1 & 0 & 1\\
+-1 & 0 & 1
+\end{array}  
+\right]
+\text{horizontal: } \left[ \begin{array}{ccc}
+-1 & -1 & -1\\
+0 & 0 & 0\\
+1 & 1 & 1
+\end{array} \right]
+\end{equation*}
+
+\subsubsection{Sobel}
+\begin{equation*}
+\text{vertical: } \left[ \begin{array}{ccc}
+-1 & 0 & 1\\
+-2 & 0 & 2\\
+-1 & 0 & 1
+\end{array}  
+\right]
+\text{horizontal: } \left[ \begin{array}{ccc}
+-1 & -2 & -1\\
+0 & 0 & 0\\
+1 & 2 & 1
+\end{array} \right]
+\end{equation*}
+
+\begin{equation*}
+\text{Magnitude  } G = \sqrt{G_x^2 + G_y^2}
+\end{equation*}
+\begin{equation*}
+\text{Orientation  } \Theta = \arctan(\frac{G_y}{G_x})
+\end{equation*}
+
+\subsubsection{CANNY ENHANCER}
+The input is image $I$; $G$ is a zero mean Gaussian filter (std = $\sigma$)\\
+1. $J = I \times G$ (smoothing)\\
+2. For each pixel $(i,j)$: (edge enhancement)\\
+Compute the image gradient $\nabla J(i,j) = (Jx(i,j),Jy(i,j))’$ \\
+Estimate edge strength
+$E_s(i,j) = \sqrt{(J_x^2(i,j) + J_y^2(i,j))}$\\
+Estimate edge orientation
+$E_o(i,j) = arctan(J_x(i,j)/J_y(i,j))$\\
+The output are images $E_s$ and $E_o$
+
+
+\subsubsection{NONMAX SUPRESSION}
+The inputs are $E_s$ \& $E_o$ (outputs of CANNY\_ENHANCER)\\
+Consider 4 directions $D = \{0, 45, 90, 135\}$ w.r.t. x\\
+For each pixel $(i,j)$ do:\\
+Find the direction $d\in D$ s.t. $d\sim E_o(i,j)$ (normal to the edge)\\
+If $E_s(i,j)$ is smaller than at least one of its neigh. along d\\
+$I_N(i,j)=0$\\
+Otherwise, $I_N(i,j)= E_s(i,j)$\\
+The output is the thinned edge image $I_N$
+
+\subsubsection{Thresholding}
+Edges are found by thresholding the output of NONMAX SUPRESSION. If the threshold is too high: Very few (none) edges High MISDETECTIONS, many gaps. If the threshold is too low: Too many (all pixels) edges High FALSE POSITIVES, many extra edges.
+
+\subsection{Corner}
+
+\subsubsection{Harris Corner Detection}
+Compute the Image Gradient\\
+$I_x = G_{x,s} \times I$, $Iy = G_{y,s} \times I$\\
+Compute products of derivatives at each pixel\\
+$I^2_x = I_x \cdot I_x$, $I^2_y = I_y \cdot I_y$ and $I_{xy} = I_x \cdot I_y$\\
+Compute the sums of the products at each pixel using a window averaging\\
+$S^2_x = Gs’ \times I^2_x$, $S^2_y = Gs’ \times I^2_y$, $S_{xy} = Gs’ \times I_{xy}$\\
+Define the Matrix at each pixel $M = [S^2_x\ \  S_{xy} ; S_{xy}\ \ S^2_y]$\\
+Compute the response $R = det(M) - k\ trace(M)^2$\\
+Threshold R \\
+Compute Nonmax suppression
+
+\section{Grouping edges}
+Edge detectors find “edges” (pixel level)
+To perform image analysis: edges must be grouped into entities such as contours (higher level). Canny does this to certain extent: the detector finds chains of edges.
+%------------
+\subsection{Hough Transform}
+Given a set of collinear edge points, each of them have associated a line in parameter space. These lines intersect at the point (m,n) corresponding to the parameters of the line in the image space. At each point of the (discrete) parameter space, count how many lines pass through it. Use an array of counters.Can be thought as a “parameter image”. The higher the count, the more edges are collinear in the image
+space. Find a peak in the counter array
+This is a “bright” point in the parameter image. It can be found by thresholding.
+
+\subsubsection{Normal equation}
+\begin{equation*}
+    \rho = x\ cos\theta + y\ sin\theta \text{\ \ \ \ $x,\ y$ on the line}
+\end{equation*}
+
+\begin{equation*}
+\left[ \begin{array}{cc}
+\rho<0\ \  \theta  < 0 & \rho>0\ \  \theta > 0\\
+\rho<0\ \  \theta > 0 & \rho>0\ \  \theta < 0
+\end{array} \right]-\frac{D}{2} \leq \rho \leq \frac{D}{2}\ -90\leq\theta\leq90
+\end{equation*}
+\begin{equation*}
+    y=k \to \rho = k, \theta = 90 \ \ \ \ \ \     x=k \to \rho = k, \theta = 0
+\end{equation*}
+
+\subsection{Mean Shift} 
+1. Choose a window size.\\
+2. Choose the initial location of the search window.\\
+3. Compute the mean location in the search window.\\
+4. Center the window at the location computed in 3.\\
+5. Repeat steps 3 and 4 until convergence.
+
+\subsection{Merging Algorithm}
+Consider two regions:\\
+Let $g_1$, $g_2$, $\dots$, $g_{m1}$ be the gray values in $R1$\\
+Let $g_{m1+1}$, $g_{m1+2}$, $\dots$, $g_{m1+m2}$ be the gray values in $R2$\\
+Assume regions are constant with uncorrelated zero mean Gaussian noise.\\
+Two possible HYPOTHESES:\\
+\textbf{$H_0$}: Both regions belong to the same object and the residual values have distribution $N(0, \sigma_0^2)$.\\
+\textbf{$H_1$}: Each region belongs to a different object and their residual values have distributions $N(0, \sigma_1^2)$ and $N(0, \sigma_2^2)$.\\
+Assume $H_0$ is \textbf{TRUE}: Estimate $\mu_0$ and $\sigma_0$:
+\begin{equation*}
+    \mu_0 = \frac{1}{m_1+m_2}\sum_{g_i\in R_1\cup R_2}g_i,\ \ \sigma^2_0 = \frac{1}{m_1+m_2}\sum_{g_i\in R_1\cup R_2}(g_i - \mu_0)^2
+\end{equation*}
+Compute the probability of independently drawing $g_1$, $g_2$, $\dots$, $g_{m1+m_2}$ with distribution $N(\mu_0,\sigma_0^2)$:
+\begin{equation*}
+\begin{aligned}
+P\left ( g_1, g_2,...,g_{m_1+m_2}|H_0 \right )&=\prod^{m_1+m_2}_{i=1}P(g_i|H_0)\\
+&=\frac{1}{(\sqrt{2\pi}\sigma_0)^{m_1+m_2}}e^{-(m_1+m_2)/2}
+\end{aligned}
+\end{equation*}
+
+Assume $H_1$ is \textbf{TRUE}: Estimate $\mu_1$ and $\sigma_1$, $\mu_2$ and $\sigma_2$:
+\begin{equation*}
+    \mu_j = \frac{1}{m_j}\sum_{g_i\in R_j}g_i,\ \ \sigma^2_0 = \frac{1}{m_j}\sum_{g_i\in R_j}(g_i - \mu_j)^2, \ \ j = 1,2
+\end{equation*}
+Compute the probability of independently drawing $g_1$, $g_2$, $\dots$, $g_{m1}$ with distribution $N(\mu_1,\sigma_1^2)$, and $g_{m1+1}$, $g_{m1+2}$, $\dots$, $g_{m1+m2}$ with
+distribution $N(\mu_2,\sigma_2^2)$:
+\begin{equation*}
+P\left (g_1,...,g_{m1}|H_1 \right )
+=\frac{1}{(\sqrt{2\pi}\sigma_1)^m_1}e^{-m_1/2}
+\end{equation*}
+
+\begin{equation*}
+P\left (g_{m_1 +1},...,g_{m1_m2}|H_1 \right )
+=\frac{1}{(\sqrt{2\pi}\sigma_2)^m_2}e^{-m_2/2}
+\end{equation*}
+
+\begin{equation*}
+P\left (g_1, g_2,...,g_{m_1+m_2}|H_1 \right )=\frac{1}{(\sqrt{2\pi})^{m_1+m_2}\sigma_1^{m1}\sigma_2^{m2}}e^{-(m_1+m_2)/2}
+\end{equation*}
+
+\begin{equation*}
+L = \frac{P\left (g_1, g_2,...,g_{m_1+m_2}|H_1 \right )}{P\left (g_1, g_2,...,g_{m_1+m_2}|H_0 \right )}=\frac{\sigma_0^{m+n}}{\sigma_1^m\sigma_2^n}
+\end{equation*}
+If $L < 1$, $H_0$ is more likely than $H_1$: Merge the regions!
+
+\subsection{Feature Matching}
+\begin{equation*}
+    SSD = \sum_{[i,j] \in R}(f(i,j) - g(i,j))^2
+\end{equation*}
+
+\begin{equation*}
+   c_{fg}= \sum_{[i,j] \in R}f(i,j)g(i,j)
+\end{equation*}
+\begin{equation*}
+N_{fg} = \sum_{[i, j]\in R}\hat{f}(i, j)\hat{g}(i, j),\ \ \hat{f} = \frac{f}{||f||}, \ \  \hat{g} = \frac{g}{||g||}
+\end{equation*}
+
+
+\subsection{SIFT + RANSAC for Homography}
+Choose 2 overlapping images.\\
+Find SIFT features for each image.\\
+Match SIFT features to get initial point correspondences.\\
+Run RANSAC:\\
+1. Select minimal number of points (4), find homography.\\
+2. Check number of data points consistent with this fit.\\
+3. Good enough?  $\to$ Find homography using all inliers.\\
+
+
+\subsection{Homograph Estimation}
+\begin{equation*}
+\left[ \begin{array}{c}
+x'\\
+y'\\
+1
+\end{array} \right] = \left[ \begin{array}{ccc}
+h_{11} & h_{12} & h_{13} \\
+h_{21} & h_{22} & h_{23} \\
+h_{31} & h_{32} & h_{33} 
+\end{array} \right]\left[ \begin{array}{c}
+x\\
+y\\
+1
+\end{array} \right] 
+\end{equation*}
+
+\begin{equation*}
+\left[ \begin{array}{cccccccc}
+x_1 & y_1 & 1 & 0 & 0 & 0 & -x_1x_1'& - y_1x_1'\\
+0 & 0 & 0 & x_1 & y_1 & 1 & -x1y_1'& -y_1y_1'\\
+...
+\end{array} \right] 
+\end{equation*}
+\begin{equation*}
+Ah=b \to h = (A^TA)^{-1}(A^Tb)
+\end{equation*}
+
+
+
+
+\subsection{Image (un)Warping}
+$I = (1-a)\ (1-b)\ I(i,j)+a\ (1-b)\ I(i+1,j)$\\
+ \ \   $+(1-a)\ b\ I(i,j+1)+a\ b\ I(i+1, j+1)$
+
+
+
+
+
 %------------------------------
 \section{Stereo Vision}
 The ability to infer information on the 3D structure and distance of a scene from two or more images taken from different viewpoints.
@@ -422,6 +876,9 @@ If object moves fast, the brightness changes quickly and small masks fail to est
 \textbf{Pyramids} is very useful for image representation. Built by using multiple copies at different resolutions. Each level in the pyramid is $1/4$ size of the previous level (half columns, half rows). The lowest level has the highest resolution. The highest level has the lowest resolution.\\
 Blur the image using a Gaussian filter, before \textbf{down-sampling}. Throw away every other row and column to create an image at $1/2$ of the scale. It happens when your sampling rate is not high enough to capture the amount of detail change.\\
 \textbf{Up-sampling}. Interpolation via Convolution: Nearest-neighbor / Linear / Gaussian interpolation.
+
+
+
 %------------------------------
 \section{Tracking}
 Basic Template Matching Assumptions:
@@ -431,7 +888,105 @@ Basic Template Matching Assumptions:
     \item Motion is mostly translational
 \end{itemize}
 
+%------------------------------
+%------------------------------
+\subsection{Lucas Kanade tracker}
+\begin{equation*}
+\left[ \begin{array}{cc}
+\sum I^2_x & \sum I_xI_y\\
+\sum I_xI_y & \sum I^2_y
+\end{array} \right] \left[ \begin{array}{c}
+V_x\\
+V_y
+\end{array} \right]= -\left[ \begin{array}{c}
+\sum I_xI_t\\
+\sum I_yI_t
+\end{array} \right]
+\end{equation*}
+This is the matrix used for corner detection! Assumptions: brightness constancy assumption; all points in the template moved the same.\\
+We can remove potential error sources by first normalizing the template and the local search window, by taking off the mean and dividing by the standard deviation.
 
+%------------------------------
+%------------------------------
+\subsection{Circulant tracker}
+\textbf{We want} to use a large number of samples (dense sampling); the samples themselves are high dimensional (hundreds, thousands of pixels); to learn a new classifier at each frame; test many unlabeled samples to find a “good” positive example.\\
+\textbf{Solution}: Use “circulant” matrices. Make computations in the \textbf{FREQUENCY} domain instead of multiplying matrices, we can multiply element by element
+instead of inverting matrices, we can divide element by element.\\
+\textbf{Price we pay}: We need to go to the Frequency domain and come back.\\
+$C(x)$ Circulant Matrix with constant diagonals.\\
+Permutation Matrix: $P^{-1} = R^T$.\\
+
+
+
+%------------------------------
+%------------------------------
+\subsection{Dynamics-based Tracking}
+Use dynamics to PREDICT and ESTIMATE the position of the target. Reduces search space for the target. Improves the estimates of the location since measurements are noisy.\\
+Get dynamics: Prior information, modeling, identification. Common assumptions: “random” walk; constant velocity; constant acceleration.\\
+“Simple” dynamics might fail if there is prolonged occlusion. We can use tools from system identification (Hankel matrix) to predict future measurements without assuming a dynamic model.\\
+Given a sequence of measurements of d-dimensional vectors $y_1,\ y_2,\ y_3$, its Hankel matrix is defined as:
+\begin{equation*}
+    H_y = \left [\begin{array}{cccc}
+        y_1 & y_2 & ... & y_p\\
+        y_2 & y_3 & ... & y_{p+1}\\
+        : & : & ... & :\\
+        y_m & y_{m+1} & ... & y_{m+p-1}
+    \end{array} \right ] _{m\times p}
+\end{equation*}
+Rank$(Hy)$ measures the complexity of the underlying
+dynamics: after we have “enough” measurements the rank of the Hankel matrix does not increase.\\
+Model the dynamics using a simple regressive model. Regressor：$y_k = \sum^{\text{Rank}(H_y)}_{i=1} a_iy_{k-i}$. Rank$(H) = n = $ Complexity of Dynamics.\\
+The new measurement should not increase the complexity of the dynamics. The last column must be a linear combination of the previous ones. (But we should know the order of the system $n-1$.)
+
+
+%------------------------------
+%------------------------------
+\subsection{Multi-camera tracking}
+
+
+
+
+
+
+
+
+
+%------------------------------
+%------------------------------
+\subsection{Multi-target tracking}
+CHALLENGE:
+\begin{itemize}
+    \item Distinguishing similar looking targets is hard
+    \item Trajectories not necessarily start/end at b image boundaries
+\end{itemize}
+
+
+
+%------------------------------
+\section{Other}
+The planar homography relates the transformation between two views when the scene is planar or the two views were generated by a camera rotating around its center of projection. It is a $3\times3$ matrix of rank 3. It has no information about the scene depth.\\
+
+The Essential and Fundamental matrices completely describe the geometric relationship between corresponding points of a stereo pair. They are $3\times3$ matrices of rank 2. They provide the epipolar line of second image to search along once given a point in first image.\\
+
+If two cameras have parallel optical axes and the line through the two centers of projection is perpendicular to the optic axes, the corresponding epipoles are at infinity.\\
+
+Since the combination of affine transformations is also an affine transformation, the projection of a point in a planar scene at world coordinates $(X, Y)$ to pixel coordinates
+$(u, v)$ in an image plane can be represented using a \textit{planar affine camera model}.\\
+
+The affine viewing condition is small depth variation in the scene along the optic axis compared to its average distance from the camera. There are 6 $D.O.F.$ in the model. Minimum of 3 calibration points are needed to estimate the transformation. When an affine transform is applied to two parallel lines, the transformed lines will also be parallel.\\
+
+Given a set of points $\textbf{p}_i = [x_i, y_i, 1]^T$ with $i = 1, ..., n$ from either side, we can define
+\begin{equation*}
+    \bar{x} = \frac{1}{n}\sum_{i=1}^nx_i,\ \bar{y} = \frac{1}{n}\sum_{i=1}^ny_i,\ \bar{d} = \frac{\sum_{i=1}^n\sqrt{(x_i - \bar{x})^2 + (y_i - \bar{y})^2 }}{n\sqrt{2}}
+\end{equation*}
+Solve $H\textbf{p}_i = \hat{\textbf{p}}_i$ for a $3\times3$ matrix $H$ with $\hat{\textbf{p}}_i = [(x_i - \bar{x})/d,\ (y_i - \bar{y})/d,\ i]^T$:
+\begin{equation*}
+H = \left[ \begin{array}{ccc}
+1/d & 0 & -\bar{x}/d \\
+0 & 1/d & -\bar{y}/d \\
+0 & 0 & 1
+\end{array} \right]
+\end{equation*}
 
 
 
