@@ -12,8 +12,38 @@
 \usepackage{bm}
 \usepackage{anysize}
 \usepackage{mathrsfs}
+% To make this come out properly in landscape mode, do one of the following
+% 1.
+%  pdflatex latexsheet.tex
+%
+% 2.
+%  latex latexsheet.tex
+%  dvips -P pdf  -t landscape latexsheet.dvi
+%  ps2pdf latexsheet.ps
 
 
+% If you're reading this, be prepared for confusion.  Making this was
+% a learning experience for me, and it shows.  Much of the placement
+% was hacked in; if you make it better, let me know...
+
+
+% 2008-04
+% Changed page margin code to use the geometry package. Also added code for
+% conditional page margins, depending on paper size. Thanks to Uwe Ziegenhagen
+% for the suggestions.
+
+% 2006-08
+% Made changes based on suggestions from Gene Cooperman. <gene at ccs.neu.edu>
+
+
+% To Do:
+% \listoffigures \listoftables
+% \setcounter{secnumdepth}{0}
+
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
 \ifthenelse{\lengthtest { \paperwidth = 11in}}
 	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
 	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
@@ -208,51 +238,202 @@ with norm $||x|| = 1$. We want $Ax$ as close to $0$ as possible and $||x|| =1$:
     \min_x ||Ax||^2\ \ \text{s.t. } ||x||^2 = 1,\ ||Ax||^2 = x^TA^TAx
 \end{equation*}
 Define the following cost:
-
-
-%------------------------------
-\section{}
-
-
-
-
-%------------------------------
-\section{}
-
-
-
-
-
-
-
-
-
-
+\begin{equation*}
+\mathscr{L}(x) = x^TA^TAx - \lambda(x^Tx - 1)
+\end{equation*}
+This cost is called the\textbf{ LAGRANGIAN cost} and $\lambda$ is called the \textbf{LAGRANGIAN multiplier}. The Lagrangian incorporates the constraints into the cost function by introducing extra variables.
+\begin{itemize}
+    \item Construct the $m \times 9$ matrix $A$
+    \item Find the SVD of $A$: $A = UDV^T$
+    \item The columns of $V$ are the eigenvectors of $A^TA$; the last one corresponds to the smallest eigenvalue
+    \item The entries of $F$ are the components of the last column of $V$ corresponding to the least s.v.
+\end{itemize}
+F must be singular. To enforce it:
+\begin{itemize}
+    \item Find the SVD of $F$: $F = U_fD_fV_f^T$
+    \item Set smallest s.v. of $F$ to $0$ to create $D’_f$
+    \item Recompute $F: F = U_fD’_fV_f^T$
+\end{itemize}
 
 
 
 %------------------------------
-\section{}
+%------------------------------
+\subsection{3D Reconstruction}
+Intrinsic:
+\begin{itemize}
+    \item $f_1$ and $f_2$: focal lengths
+    \item $c_1$ and $c_2$: principal points
+    \item Pixel size
+\end{itemize}
+•Extrinsic
+\begin{itemize}
+    \item Transformation $(R,T)$ between cameras
+\end{itemize}
 
 
+%------------------------------
+\section{Motion}
+
+%------------------------------
+%------------------------------
+\subsection{Time to Collision}
+An object of height $L$ moves with constant velocity $v$. 
+\begin{itemize}
+    \item At time $t=0$ the object is at $D(0) = D_0$
+    \item At time $t$ it is at $D(t) = D_0 - vt$
+    \item It will crash with the camera at time $\tau = D_0/v$
+\end{itemize}
 
 
+%------------------------------
+%------------------------------
+\subsection{Comparison}
+Stereo:
+\begin{itemize}
+    \item Two or more frames
+    \item Baseline is usually larger
+    \item Stereo images are taken at the same time
+\end{itemize}
 
-
-
-
-
-
-
-
+Motion
+\begin{itemize}
+    \item $N$ frames
+    \item Motion disparities tend to be smaller
+    \item Motion disparities can be due to scene motion
+    \item There can be more than 1 transf between frames
+\end{itemize}
 
 
 
 
 %------------------------------
-\section{}
+%------------------------------
+\subsection{Motion Field (MF)}
+The MF assigns a velocity vector to each pixel in the image.\\
+These velocities are INDUCED by the RELATIVE MOTION btw the camera and the 3D scene.\\
+The MF can be thought as the \textit{projection} of the 3D velocities on the image plane.\\
+The relative velocity of $P$ $w.r.t.$ camera:
+\begin{equation*}
+    V = - T - \omega \times P,\ T = \left[ \begin{array}{c}
+    T_x\\
+    T_y\\
+    T_z
+\end{array} \right ],\ \omega = \left[ \begin{array}{c}
+    \omega_x\\
+    \omega_y\\
+    \omega_z
+\end{array} \right ]
+\end{equation*}
+Translation velocity and rotation angular velocity.\\
+
+
+\subsubsection{The velocity of p}
+\begin{equation*}
+    v = f\frac{V}{Z} - p\frac{V_z}{Z}
+\end{equation*}
+
+\begin{equation*}
+    v_x = \frac{T_zx - T_xf}{Z} - \omega_yf + \omega_zy + \frac{\omega_xxy}{f} - \frac{\omega_yx^2}{f}
+\end{equation*}
+
+\begin{equation*}
+    v_y = \frac{T_zy - T_yf}{Z} + \omega_xf - \omega_zx - \frac{\omega_yxy}{f} + \frac{\omega_xy^2}{f}
+\end{equation*}
+
+Translational component and rotational component. The rotational component is independent of depth $Z$!
+
+\subsubsection{Pure Translation}
+
+
+\begin{equation*}
+    v_x = (x-x_0)\frac{T_z}{Z} ,\ v_y = (y-y_0)\frac{T_z}{Z} 
+\end{equation*}
+The motion field in this case is RADIAL. It consists of vectors passing through $p_0 = (x_0,y_0)$.
+
+$Tz > 0$, (camera moving towards object)
+\begin{itemize}
+    \item the vectors point away from $p_0$
+    \item $p_0$ is the POINT OF EXPANSION
+\end{itemize}
+
+$Tz < 0$, (camera moving away from object)
+\begin{itemize}
+    \item the vectors point towards $p_0$
+    \item $p_0$ is the POINT OF CONTRACTION
+\end{itemize}
+
+If $T_z\neq 0$ the MF is RADIAL with all vectors pointing towards (or away from) a single point $p_0$.
+If $T_z = 0$, all motion field vectors are parallel to each other and inversely proportional to depth. 
+The length of the MF vectors is inversely proportional to depth $Z$.
+If $T_z \neq 0$ it is also directly proportional to the distance between $p$ and $p_0$.
+\begin{equation*}
+    p_0 = \left[ \begin{array}{c}
+         x_0 \\
+         y_0\\
+         f
+    \end{array}\right]= \left[ \begin{array}{c}
+         fT_x/T_z \\
+         fT_y/T_z\\
+         f
+    \end{array}\right]
+\end{equation*}
+$p_0$ is the vanishing point of the direction of translation.
+$p_0$ is the intersection of the ray parallel to the translation vector and the image plane.
+
+
+%------------------------------
+%------------------------------
+\subsection{OPTICAL FLOW}
+We will use the apparent motion of brightness patterns observed in an image sequence. This motion is called OPTICAL FLOW.
+\textbf{MF $\neq$ OF.} Consider a smooth, lambertian, uniform sphere rotating around a diameter, in front of a camera. MF $\neq 0$ since the points on the sphere are moving; OF $= 0$ since there are no moving patterns in the images. \\
+\textbf{MF $\neq$ OF.} Consider a still, smooth, specular, uniform sphere, in front of a stationary camera and a moving light source. MF $= 0$ since the points on the sphere are not moving; OF $\neq 0$  since there is a moving pattern in the images. \\
+Never the less, keeping in mind that MF $\neq$ OF, we will assume that the apparent brightness of moving objects remains constant and hence we will estimate OF instead (since MF cannot really be observed!).\\
+The Image Brightness Constancy Assumption only provides the OF component in the direction of the spatial image gradient.
+\subsubsection{Differential Techniques}
+Based on spatial and temporal variations of the image brightness at all pixels. Used to compute DENSE OF.\\
+Assumptions:
+\begin{itemize}
+    \item Brightness Constancy: $(\nabla E)^Tv+E_t = \epsilon \sim 0$, where ε accounts for noise and model errors
+    \item OF is constant in small patches
+\end{itemize}
+\begin{equation*}
+\left[ \begin{array}{cc}
+\sum I^2_x & \sum I_xI_y\\
+\sum I_xI_y & \sum I^2_y
+\end{array} \right] \left[ \begin{array}{c}
+V_x\\
+V_y
+\end{array} \right]= -\left[ \begin{array}{c}
+\sum I_xI_t\\
+\sum I_yI_t
+\end{array} \right]
+\end{equation*}
+Aperture Problem：
+\begin{itemize}
+    \item One $e.v. = 0$ -> no corner, just an edge. At edges, $A^TA$ becomes singular.
+    \item Two $e.v. = 0$ -> no corner, homogeneous region. At homogeneous regions, $A^TA$ becomes 0 (0 eigenvalues).
+\end{itemize}
+
+\subsubsection{Matching Techniques}
+Estimates OF only at localized features. Produces SPARSE OF mappings.\\
+Fails for large motions. Traditional LK is just refining a position estimate. We must be close to the right answer, and it only finds a local min. We can increase range of LK methods by using a coarse to fine image pyramid, so at each level the refinement is small. \\
+If object moves fast, the brightness changes quickly and small masks fail to estimate the spatiotemporal derivatives. Pyramids can be used to compute large optical flow vectors.\\
+\textbf{Pyramids} is very useful for image representation. Built by using multiple copies at different resolutions. Each level in the pyramid is $1/4$ size of the previous level (half columns, half rows). The lowest level has the highest resolution. The highest level has the lowest resolution.\\
+Blur the image using a Gaussian filter, before \textbf{down-sampling}. Throw away every other row and column to create an image at $1/2$ of the scale. It happens when your sampling rate is not high enough to capture the amount of detail change.\\
+\textbf{Up-sampling}. Interpolation via Convolution: Nearest-neighbor / Linear / Gaussian interpolation.
+%------------------------------
+\section{Tracking}
+Basic Template Matching Assumptions:
+\begin{itemize}
+    \item A snapshot of the target can be used to describe it
+    \item Target does not change (much) between frames
+    \item Motion is mostly translational
+\end{itemize}
+
+
+
 
 
 \end{multicols}
 \end{document}
-
