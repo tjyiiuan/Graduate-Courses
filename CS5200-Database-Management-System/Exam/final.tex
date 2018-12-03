@@ -1,0 +1,320 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{MnSymbol}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+     language=Java,
+     aboveskip=3mm,
+     belowskip=3mm,
+     showstringspaces=false,
+     columns=flexible,
+     basicstyle = \ttfamily\small,
+     numbers=none,
+     numberstyle=\tiny\color{gray},
+     keywordstyle=\color{blue},
+     commentstyle=\color{dkgreen},
+     stringstyle=\color{mauve},
+     breaklines=true,
+     breakatwhitespace=true,
+     tabsize=3
+}
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+% Turn off header and footer
+\pagestyle{empty}
+ 
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{Database Final} $_{by\ \text{Xiaoyi  Ma}}$} \\
+\end{center}
+
+
+%----------------------------------------
+\section{Transactions}
+\begin{itemize}
+    \item Atomic - all or nothing
+    \item Consistency - transactions ensure database transitions between consistent states
+    \item Isolation - concurrent execution must be unaware of each other
+    \item Durability - committed transactions remain so, despite power loss or crashes
+\end{itemize}
+
+
+
+Several clients access DB server concurrently. Must not interfere with each other.\\
+\textbf{Dirty reads} Reading uncommitted Data.\\
+\textbf{Non-repeatable Reads }Unexpected changes to existing record.\\
+\textbf{Phantom Reads} Unexpected Changes to Number of Records.\\
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Isolation levels}
+\textbf{Read-Uncommitted}
+Lowest isolation level. 
+Dirty reads are allowed. 
+One transaction may see changes not-yet-committed by other transactions.
+Fastest.\\
+\textbf{Read Committed}
+Guarantees data read is committed.
+Restricts reader from reading intermediate, uncommitted, 'dirty' read.
+Data is free to change after read.
+If transaction re-issues read, it might have changed.
+Read/Write locks acquired on selected data.
+Released at end of transaction.
+Read locks released as soon as SELECT is performed.
+No range-locks are managed.
+Non-repeatable/Phantom reads can occur
+Slower.\\
+\textbf{Repeatable Reads}
+Read/Write locks acquired on selected data.
+Released at end of the transaction.
+No range-locks managed.
+Phantom reads can occur.
+Even slower.\\
+\textbf{Serializable}
+Highest isolation level.
+Read/Write locks acquired on selected data.
+Released at end of transaction.
+Range-locks acquired when SELECT uses ranged WHERE clause to avoid phantom reads.
+Locks everything, no problems, slowest.
+
+\begin{equation*}
+\begin{array}{cccc}
+& DR & NRR & PR \\
+RU & \text{Unsafe} & \text{Unsafe} & \text{Unsafe}\\
+RC & \text{Safe} & \text{Unsafe} & \text{Unsafe}\\
+RR & \text{Safe} & \text{Safe} & \text{Unsafe}\\
+S & \text{Safe} & \text{Safe} & \text{Safe}
+\end{array}
+\end{equation*}
+
+%----------------------------------------
+\section{Indexing}
+Query performance depends on table organization. Unsorted list $O(n)$; sorted \& organized $O(log_2n)$; hash data $O(1)$. 
+More organization, more efficiency.\\
+An \textbf{index} is a smaller, easier to maintain, copy of original table; file with index values, record identifiers (RIDs) referencing original records. Unique keyword identify index as referring to a key.\\
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Unique and Non-Unique Indexes}
+Queries on \textbf{unique indexes} refer to single record, i.e., searching for SID\_IDX for SId=10, refers to single record.\\
+
+Queries on \textbf{non unique indexes} may refer to several records, i.e., searching for MAJOR\_IDX for MajorId=10, may refer to several records
+
+
+%----------------------------------------
+\section{REST}
+Representational state transfer (REST) is a set of architectural conventions for creating Web services. 
+HTTP Web services conventions on HTTP operations (state transition)
+\begin{itemize}
+    \item POST: Create new instances
+    \item GET: Read existing instances
+    \item PUT: Update existing instances
+    \item DELETE: Delete existing instances
+\end{itemize}
+RESTful Web services map HTTP URL request path patterns to the structure of data served by a Web service.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Mapping URLs to a data model}
+$A \blacklozenge- B \blacklozenge- C \blacklozenge- D $\\
+Class A represents all instances of type A, referred to as entities. Instances can be implemented as records in a database or object instances in a running program. \\
+\textbf{POST}		/A			Create new entity of type A. Data in HTTP body\\
+\textbf{GET}		/A			Retrieve all instances of entity type A, e.g., array\\
+\textbf{GET}		/A/123		Retrieve single instance, whose ID is 123\\
+\textbf{PUT}		/A/234	Update instance, whose ID is 234. Data in body\\
+\textbf{DELETE}		/A/345		Delete existing instance, whose ID is 345\\
+URL paths hierarchy allows navigating through complex data structures.\\
+
+\textbf{POST}	/A/123/B	Create new instance of B related to instance of A whose ID is 123. Data for new B in HTTP body\\
+\textbf{GET}		/A/234/B	Retrieve all instances of B related to instance of A whose ID is 234. As an array or list.\\
+
+Referencing nested data instances has two alternatives.\\
+\textbf{GET} /A/123/B/234 Retrieve instance B with ID 234 related to instance A with ID 123. Useful if service needs context of A\\
+\textbf{GET} /B/234	Retrieve instance B with ID 234, regardless of A. Useful when context of A is unnecessary.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{JPA}
+JPA maps Java classes to database tables, properties to fields, and instances to records.\\
+
+\textbf{@Entity} annotate Java Class. For JPA to correctly map database tables into Java classes the concept of Entity was created. An Entity must be created to support the same database table structure; thus JPA handles table data modification through an entity.\\
+\textbf{@Id} annotation defines an identifier indicating the member field below is the primary key of current entity.\\
+\textbf{@GeneratedValue} annotation indicates that the identifier value should be automatically generated, and the specified strategy of IDENTITY indicates that an identity column should be used to generate the identifier. GenerationType.TABLE/ SEQUENCE/IDENTITY/AUTO.\\
+
+%----------------------------------------
+%----------------------------------------
+\subsection{@RequestParam v.s. @ParthVariable}
+\textbf{@PathVariable} is to obtain some placeholder from the URI. It identifies the pattern that is used in the URI for the incoming request. It extracts values from URI.\\
+\textbf{@RequestParam} is to obtain an parameter from the URI, also known as query parameters. \\
+
+%----------------------------------------
+\section{MongoDB}
+\begin{tabular}{@{}ll@{}}
+Start database server  & $mongod$ \\
+Connect to database &  $mongo$ \\
+Create a database  & $use\ <database>$ \\
+Operation & $db.<collection>.<cmd>(<data>)$ \\
+List existing collections & $show\ collections$\\
+\end{tabular}
+
+Commands includes \textbf{insert}(), \textbf{find}(), \textbf{update}(), \textbf{remove}().\\
+\ \\
+\textbf{insert}() inserts data into a collection. Inserting data creates collection if none existent. Data is formatted as JSON objects. \\
+\ \\
+\textbf{find}() matches all fields in first parameter.
+Second parameter selects fields. Mongo adds unique identifier field $\_id$. 
+Use the $pretty()$ command to pretty print queries.  $db.user.find().pretty()$. 
+Use \textbf{ObjecId} to filter by primary key $\_id$.
+Use sort() to sort query results.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Examples}
+\begin{lstlisting}
+> db.section.find({seats: {$gt: 30}})
+> db.section.find({
+    $and: [
+        {seats: {$gt: 30}},
+        {seats: {$lt: 40}}
+    ]})
+> db.section.find().sort({seats: 1})
+> db.section.find().sort({seats: -1})
+> db.section.update({name: '02'}, 
+    {$set: {seats: 22}})
+> db.section.remove({name: '02'})
+\end{lstlisting}
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Modeling Generalization}
+Model generalizations by flattening hierarchy and adding a type property, $aka$ denormalized strategy. Add a $Type$ field.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Many/One to Many}
+\begin{lstlisting}
+> db.enrollment.insert({
+    section: '5aa5bd55ab319d0f94089fd3',
+    student: '5aa9515ad982cb8e72af70ce'
+    })
+> db.section.update({
+    _id: ObjectId('5aa5bd55ab319d0f94089fd3')}, 
+    {$set: {
+        faculty: '5aa5ab73ab319d0f94089fc7'}
+    })
+
+\end{lstlisting}
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Embedded Objects}
+\begin{lstlisting}
+> db.modules.insert({name: 'module1',
+    lessons: [{name: 'lesson1'}]});
+> db.modules.update({name: 'module1'},
+    {$push: {lessons: {name: 'lesson2'}}});
+> db.modules.update({name: 'module1', 
+    'lessons.name': 'lesson1'}, 
+    {$set: {'lessons.$.topics': 
+        [{name: 'topic1'}]}})
+\end{lstlisting}
+The positional \$ operator identifies an element in an array to update without explicitly specifying the position of the element in the array. 
+
+
+%----------------------------------------
+\section{}
+
+
+
+
+
+
+\end{multicols}
+\end{document}
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{}

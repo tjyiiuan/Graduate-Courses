@@ -1,0 +1,510 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{ulem}
+\usepackage{bm}
+\usepackage{anysize}
+\usepackage{MnSymbol}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+     language=Java,
+     aboveskip=3mm,
+     belowskip=3mm,
+     showstringspaces=false,
+     columns=flexible,
+     basicstyle = \ttfamily\small,
+     numbers=none,
+     numberstyle=\tiny\color{gray},
+     keywordstyle=\color{blue},
+     commentstyle=\color{dkgreen},
+     stringstyle=\color{mauve},
+     breaklines=true,
+     breakatwhitespace=true,
+     tabsize=3
+}
+% To make this come out properly in landscape mode, do one of the following
+% 1.
+%  pdflatex latexsheet.tex
+%
+% 2.
+%  latex latexsheet.tex
+%  dvips -P pdf  -t landscape latexsheet.dvi
+%  ps2pdf latexsheet.ps
+
+
+% If you're reading this, be prepared for confusion.  Making this was
+% a learning experience for me, and it shows.  Much of the placement
+% was hacked in; if you make it better, let me know...
+
+
+% 2008-04
+% Changed page margin code to use the geometry package. Also added code for
+% conditional page margins, depending on paper size. Thanks to Uwe Ziegenhagen
+% for the suggestions.
+
+% 2006-08
+% Made changes based on suggestions from Gene Cooperman. <gene at ccs.neu.edu>
+
+
+% To Do:
+% \listoffigures \listoftables
+% \setcounter{secnumdepth}{0}
+
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+% Turn off header and footer
+\pagestyle{empty}
+ 
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{3}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{Database Midterm $_{by\ Xiaoyi \ Ma}$}} \\
+\end{center}
+%----------------------------------------
+\section{UML and Design}
+%--------------------------
+\subsection{Class diagrams} 
+
+\textbf{Cardinality} denotes how many entities participate in the relationship. In general cardinality is denoted as N..M\\
+* denotes zero or more participants. * $\sim$ 0..*, 1 $\sim$ 1..1\\
+
+\textbf{Multiplicity} [m..n]. m: minimum, n: maximum, *: unlimited.\\
+
+$<<$\textbf{enumeration}$>>$
+
+\textbf{Association} specified with a line between the two classes.\\
+
+Inheritance, Specialization/Generalization $\triangle$.\\
+
+If \textbf{lifecycle} of parts depends on container use composition $\blacklozenge$; else use aggregation $\lozenge$.\\
+
+Use \textbf{reification} to remove many-many.\\
+
+A relationship is \textbf{redundant} if removing it does not change the information content of the class diagram.\\
+
+%--------------------------
+\subsection{Relational Algebra}
+%-----------------
+\subsubsection{Single Table Operators}
+\textbf{Select}: returns same columns as input table, removes some rows
+\textbf{Project}: returns same rows as input table, removes some columns
+\textbf{Sort}: returns same input table, rows in different order
+\textbf{Rename}: returns same table, one column with a different name
+\textbf{Extend}: returns same table, additional column with computed value
+\textbf{Groupby}: returns table, one row for each group of input records
+%-----------------
+\subsubsection{Two Table Operators}
+\textbf{Product}: returns table containing all possible combinations of records from input tables
+\textbf{Join}: connects tables together. Equivalent to selection of a product
+\textbf{Semijoin}: returns table with records from input table1 that match some record in input table2
+\textbf{Antijoin}: returns table with records from input table1 that do not match records in input table2
+\textbf{Union}: returns table with records from both tables
+\textbf{Outer Join}: returns table with records of join, and with non-matching records padded with nulls
+
+
+%----------------------------------------
+\section{SQL}
+
+
+%--------------------------
+\subsection{Normalization: 1, 2, 3 NF}
+Organize fields and tables minimizing redundancy \& dependency. Usually split large tables into several smaller tables. And define relations between them.\\
+\textbf{1. The key}. A table is in first normal form if it contains no repeating fields/columns. $phone$\\
+\textbf{2. The whole key}. Second normal form refactors tables that have columns that do not depend on whole primary key. $course\ name$\\
+\textbf{3. Nothing but the key}. Every non-key attribute must provide a fact about the key, the whole key, and nothing but the key. $birthday$
+
+%--------------------------
+\subsection{Create}
+CREATE TABLE 'assignment2'.'page' (\\
+\ \ \ \ 'id' INT NOT NULL AUTO\_INCREMENT,\\
+\ \ \ \ 'title' VARCHAR(255) NULL,\\
+\ \ \ \ 'created' DATE NULL,\\
+\ \ \ \ 'website\_id' INT NULL,\\
+\ \ \ \ 'user\_agreement' TINYINT NULL DEFAULT 1,\\
+\ \ \ \ PRIMARY KEY ('id'),\\
+\ \ \ \ \# INDEX 'page\_website\_composition\_idx' ('website\_id' ASC),\\
+\ \ \ \ CONSTRAINT 'composition' FOREIGN KEY ('website\_id')\\
+\ \ \ \ REFERENCES 'assignment2'.'website' ('id')\\
+\ \ \ \ ON DELETE CASCADE ON UPDATE CASCADE\\
+);\\
+%--------------------------
+\subsection{Trigger}
+USE 'assignment2'\$\$\\
+DROP TRIGGER IF EXISTS 'widget\_BEFORE\_INSERT';\\
+DELIMITER \$\$\\
+CREATE DEFINER = CURRENT\_USER TRIGGER (-) 'assignment2'.'widget\_BEFORE\_INSERT' BEFORE INSERT (-) ON 'widget' FOR EACH ROW\\
+BEGIN\\
+IF NEW.type = `heading' THEN\\
+\ \ \ \ SET NEW.size = 2;\\
+END IF;\\
+END\$\$\\
+DELIMITER;\\
+%--------------------------
+\subsection{Insert}
+\textbf{INSERT INTO} 'assignment2'.'page' ('id', 'title', 'created', 'website\_id') \textbf{VALUES} (123, `Home', `2018-09-05', 567);
+%--------------------------
+\subsection{Retrieve}
+\textbf{SELECT} DISTINCT t.column\_name(s) \textbf{FROM} table\_name t;\\
+\textbf{SELECT}
+	'Student \#' $||$ s.SId \textbf{AS} NewSId,
+	s.SName,
+	CAST(s.GradYear/10 as integer) $\times$ 10
+		AS GradDecade\\
+\textbf{FROM} STUDENT s;\\
+\textbf{SELECT} a,
+	\textbf{CASE} a
+		\textbf{WHEN} 1 \textbf{THEN} 'one'
+		\textbf{WHEN} 2 \textbf{THEN} 'two'
+		\textbf{ELSE} 'other'
+	\textbf{END}
+\textbf{FROM} test;\\
+Q69 = \textbf{SELECT} s.*, extract(YEAR, current\_date) $-$ s.GradYear \textbf{AS} AlumYrs
+\textbf{FROM} STUDENT s;\\
+\textbf{SELECT} q.*,
+\textbf{if}(q.AlumYrs$>$0, 'alum', 'in school') \textbf{AS} GradStatus
+\textbf{FROM} Q69 q;\\
+
+%--------------------------
+\subsection{JOIN}
+\textbf{SELECT} column\_name(s) \textbf{FROM} table1 \textbf{JOIN} table2 \textbf{ON} table1.col1 = table2.col2;\\
+\textbf{SELECT} s.SName, k.Prof \textbf{FROM} STUDENT s, ENROLL e, SECTION k \textbf{WHERE} s.SId = e.StudentId \textbf{AND} e.SectionId = k.SectId;\\
+\textbf{LEFT JOIN} returns all rows from left table, even if there are no matches in the right table.\\
+\textbf{RIGHT JOIN} returns all rows from right table, even if no matches in left table.\\
+\textbf{FULL JOIN} returns rows when there is a match in either of the tables.\\
+
+
+%--------------------------
+\subsection{Update}
+\textbf{UPDATE} page\_role pr1 JOIN page\_role pr2 \\
+\textbf{SET} pr1.role = pr2.role, pr2.role = pr1.role\\
+\textbf{WHERE} pr1.develope\_id = (SELECT id
+        FROM
+            person p\\
+        WHERE
+            p.username = 'charlie')
+        AND pr2.developer\_id = (SELECT 
+            id
+        FROM
+            person p
+        WHERE
+            p.username = 'bob')
+        AND pr1.page\_id = (SELECT 
+            page.id
+        FROM
+            page
+                JOIN
+            website w ON page.website\_id = w.id
+        WHERE
+            page.title LIKE '\%Home\%'
+                AND w.name = 'CNET')
+        AND pr2.page\_id = (SELECT 
+            page.id
+        FROM
+            page
+                JOIN
+            website w ON page.website\_id = w.id
+        WHERE
+            page.title LIKE '\%Home\%'
+                AND w.name = 'CNET');
+
+%--------------------------
+\subsection{Delete}
+\textit{(Remove the last widget in the Contact page.)}\\
+\textbf{DELETE FROM} widget \textbf{WHERE} widget.id IN\\ 
+\ \ \ \ (SELECT * FROM\\
+\ \ \ \ \ \ \ \ \ (SELECT wd.id FROM widget wd\\
+\ \ \ \ \ \ \ \ \ JOIN page ON wd.page\_id = page.id\\
+\ \ \ \ \ \ \ \ \ AND page.title = 'Contact') AS wdid)\\
+\ \ \ \ AND widget.order = \\
+\ \ \ \ \ \ \ \ \ (SELECT o FROM (SELECT 
+            MAX(widget.order) AS o FROM
+            widget JOIN page ON widget.page\_id = page.id
+            AND page.title = 'Contact')\\
+\ \ \ \ \ \ \ \ \ AS ord) LIMIT 1;
+
+
+%--------------------------
+\subsection{Group By, Having}
+SELECT column\_name, aggregate\_function(column\_name)\\
+FROM table\_name WHERE column\_name operator value\\
+GROUP BY column\_name\\
+HAVING aggregate\_function(column\_name) operator value
+
+%--------------------------
+\subsection{Order By, Limit}
+SELECT column\_name(s)
+FROM table\_name
+\textbf{ORDER BY} column\_name(s) \textbf{ASC/DESC} \textbf{LIMIT} int\_number;
+
+
+
+%--------------------------
+\subsection{String}
+\textbf{lower}/\textbf{upper} \ turn characters lower/upper case\\
+\textbf{trim} \ remove leading and trailing spaces\\
+\textbf{char\_length} \ return number of characters in string\\
+\textbf{substring}('' from 2 for 4) \ Extract a specified substring\\
+\textbf{current\_user} \ return the name of the current user\\
+\textbf{$||$} \ concatenate two strings\\
+\textbf{like} \ Match a string against a pattern. \% zero or more characters.
+\_ exactly one character.
+[charlist] Any single character in charlist.
+[\^{}charlist] or [!charlist] Any single character not in charlist.
+
+%--------------------------
+\subsection{Date}
+\textbf{NOW()} the current date and time.
+\textbf{CURDATE()} the current date.
+\textbf{CURTIME()} the current time.
+\textbf{DATE()} Extracts the date part of a date or date/time expression.
+\textbf{EXTRACT()} a single part of a date/time.
+\textbf{DATE\_ADD()} Adds a specified time interval to a date.
+\textbf{DATE\_SUB()} Subtracts a specified time interval from a date.
+\textbf{DATEDIFF()} the number of days between two dates.
+\textbf{DATE\_FORMAT()} Displays date/time data in different formats.
+
+
+\subsection{Triggers, Functions \& Procedures}
+\textbf{Triggers}; Change Data; \textbf{Never }Return Data; \textbf{Event Driven} When Called.\\
+
+\textbf{Functions} \textbf{No} Change Data;  \textbf{Always} Return Data; \textbf{Part of Statement} When Called.\\
+
+\textbf{Procedures} Change Data; \textbf{Sometimes} Return Data; \textbf{Executed} When Called.\\
+
+%--------------------------
+\subsection{Other}
+SELECT column\_name(s)
+FROM table\_name
+WHERE column\_name
+\textbf{BETWEEN} value1 \textbf{AND} value2;\\
+SELECT column\_name(s)
+FROM table\_name
+WHERE column\_name
+\textbf{NOT BETWEEN} value1 \textbf{AND} value2;\\
+SELECT column\_name(s)
+FROM table\_name
+WHERE column\_name \textbf{IN} (value1, value2, ...);\\
+$<>$ Not equal. $>=$ Greater than/equal. $<=$ Less than/equal.
+
+
+%----------------------------------------
+\section{JDBC}
+%--------------------------
+\subsection{Connect to JDBC}
+\begin{lstlisting}[language=Java]
+import java.sql.*;
+public class StudentMajor {
+    public static void main(String[] args) {
+        Connection conn = null;
+     try {
+        Class.forName("com.mysql.jdbc.Driver");
+        conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/studentdb", "root", "password");
+\end{lstlisting}
+
+
+
+
+
+%--------------------------
+\subsection{Query}
+
+\begin{lstlisting}[language=Java]
+	...
+	Statement  statement = conn.createStatement();
+	String sql = "SELECT SName, DName FROM DEPT, STUDENT WHERE MajorId = DId";
+	ResultSet result = statement.executeQuery(sql);
+	...
+\end{lstlisting}
+
+
+
+
+
+
+%--------------------------
+\subsection{ResultSet}
+
+\begin{lstlisting}[language=Java]
+	System.out.println("Name\tMajor");
+	while (result.next()) {
+		String sname = result.getString("SName");
+		String dname = result.getString("DName");
+		System.out.println(...);
+	}
+	result.close();
+\end{lstlisting}
+
+
+
+
+
+
+
+%--------------------------
+\subsection{Update}
+
+\begin{lstlisting}[language=Java]
+...
+	Statement statement = conn.createStatement();
+	String sql ="UPDATE STUDENT SET MajorId=30 WHERE SName = `amy' ";
+	statement.executeUpdate(sql);
+	System.out.println("Amy is now a drama major.");
+...
+\end{lstlisting}
+
+
+
+%--------------------------
+\subsection{Disconnect}
+
+\begin{lstlisting}[language=Java]
+	try { ...
+	} catch(SQLException e) {
+		e.printStackTrace();
+	} finally {
+		try { 
+		    if (conn != null) conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			} 
+		} 
+	}
+\end{lstlisting}
+
+\subsection{Other}
+ResultSet represents a set of records resulting from a query.\\
+A SELECT statement used in a FROM clause is sometimes referred to as inline view.\\
+VIEW can be written in terms of select statement.\\
+All operations performed on a view actually affect the base table of the view.\\
+View can be written in terms of other views.\\
+User-defined functions cannot be used to perform actions that modify the database state.\\
+java.sql and javax.sql contain the JDBC classes.\\
+PreparedStatement can execute parameterized queries and take care of SQL injnjection.\\
+JDBC stands for Java DataBase Connectivity.\\
+JDBC is an API which defines how a client may access a relational databases.\\
+JDBC allows multiple implementations to exist and be used by the same application.\\
+Implement generalization using separate tables for each class, e.g., the \textbf{normalized }strategy. Name the constraint on the foreign keys using the following pattern: subclass\_superclass\_generalization, where subclass and superclass are the subclass and superclass in the diagram.\\
+Implement generalization using a single table, e.g., the \textbf{denormalized} strategy. Use a new field called DTYPE to discriminate for the type.\\
+\subsection{}
+\begin{lstlisting}
+
+<?xml version=”1.0” encoding=”UTF-8”?>
+<xsl: stylesheet version=”1.0”
+Xmlns:xsl=http://www.w3.org/1999/XSL/Transform>
+<xsl:output method=”xml”> indent=”yes”/>
+<xsl: template match=”flight”>
+<reservations>
+<xsl:>
+</reservations>
+</xsl:template>
+<xsl:template match=”flights”/flight/reservations/reservation”>
+<reservation>
+<xsl:attribute name=”transactionType”>
+<xsl:value-of select=”transactionType”/></xsl:attribute>
+<reservationId><xsl:value-of select=”@reservationId”/>
+</reservationId>
+<bookingAgent><xsl: value-of select=”@bookingAgent”/>
+<bookingAgent>
+</reservation>
+</xsl:template>
+</xsl:stylesheet>
+
+\end{lstlisting}
+
+\begin{lstlisting}
+public Movie findMovieByImbd(String id) {
+    Movie movie = null;
+    java.sql.Connection connection = null;
+    PreparedStatement statement = null;
+    ResultSet results = null;
+    try {
+        ...
+        connection = ...;
+        String sql = "SELECT * FROM movies WHERE imbdId = ?";
+        statemetn = conenction.prepareStatement(sql);
+        statement.setString(1, id);
+        results = statement.executeQuery();
+        if(results.next()){
+            String title = results.getString("title");
+            String imbdId = results.getString("imbdId");
+            String plot = results.getString("plot");
+            String poster = results.getString("poster");
+            movie = new Moive(imbdId, title, plot, poster);
+            }
+        } catch (ClassNotFOundException e){
+            ...}
+        return movie;
+    }
+\end{lstlisting}
+
+
+
+
+\end{multicols}
+\end{document}
