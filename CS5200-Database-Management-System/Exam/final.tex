@@ -94,8 +94,10 @@
 \setlength{\multicolsep}{1pt}
 \setlength{\columnsep}{2pt}
 
+% $_{by\ \text{Jiyu Tian}}$
+ 
 \begin{center}
-     \Large{\textbf{Database Final} $_{by\ \text{Xiaoyi  Ma}}$} \\
+     \Large{\textbf{Database Final}} \\
 \end{center}
 
 
@@ -176,6 +178,33 @@ Queries on \textbf{non unique indexes} may refer to several records, i.e., searc
 
 
 %----------------------------------------
+%----------------------------------------
+\subsection{Indexes Not Always Best}
+Sometimes it's faster to just use linear search.
+Non-unique indexes are less efficient than unique indexes, i.e., on primary keys.
+The more matching records, the less efficient indexes are.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Composite Indixes}
+If most select queries use both indexes, then consider a composite index.
+Column order defines sort-priority order.
+Add ASC or DESC next to column to define sort order.
+Easier to maintain one index on two cols then two separate indexes.
+Order of columns matters: Two indexes $\to$ two choices
+If both indexes in query, order doesn't matter.
+If only one index in where, then order matters.
+
+
+
+
+
+
+
+
+
+%----------------------------------------
 \section{REST}
 Representational state transfer (REST) is a set of architectural conventions for creating Web services. 
 HTTP Web services conventions on HTTP operations (state transition)
@@ -231,6 +260,7 @@ Connect to database &  $mongo$ \\
 Create a database  & $use\ <database>$ \\
 Operation & $db.<collection>.<cmd>(<data>)$ \\
 List existing collections & $show\ collections$\\
+List existing databases & $show\ dbs$\\
 \end{tabular}
 
 Commands includes \textbf{insert}(), \textbf{find}(), \textbf{update}(), \textbf{remove}().\\
@@ -242,6 +272,7 @@ Second parameter selects fields. Mongo adds unique identifier field $\_id$.
 Use the $pretty()$ command to pretty print queries.  $db.user.find().pretty()$. 
 Use \textbf{ObjecId} to filter by primary key $\_id$.
 Use sort() to sort query results.
+ascending: 1; descending: -1.
 
 
 %----------------------------------------
@@ -259,6 +290,8 @@ Use sort() to sort query results.
 > db.section.update({name: '02'}, 
     {$set: {seats: 22}})
 > db.section.remove({name: '02'})
+> db.student.update({username: 'bob'},
+    {$push:{sections: 'SEC01'}})
 \end{lstlisting}
 
 
@@ -302,15 +335,574 @@ The positional \$ operator identifies an element in an array to update without e
 
 
 %----------------------------------------
-\section{}
+\section{Mongoose}
+SchemaTypes: String, Number, Date, Buffer, Boolean, Mixed, ObjectId, Array, Decimal128, Map.
+
+%----------------------------------------
+%----------------------------------------
+\subsection{db.js}
+\begin{lstlisting}
+module.exports = function () {
+   const mongoose = require('mongoose');
+   const databaseName = 'whiteboard';
+   var   connectionString = 
+'mongodb://localhost/';
+   connectionString += databaseName;
+   mongoose.connect(connectionString);
+};
+\end{lstlisting}
+
+%----------------------------------------
+%----------------------------------------
+\subsection{user.schema.server.js}
+\begin{lstlisting}
+const mongoose = require('mongoose');
+const userSchema = mongoose.Schema({
+   firstName: String,
+   lastName: String,
+   role: {
+       type: String,
+       enum:["Student", "Faculty"], 
+       default: "Student"
+       }
+}, {collection: 'user'});
+module.exports = userSchema;
+\end{lstlisting}
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{user.model.server.js}
+\begin{lstlisting}
+const mongoose = require('mongoose');
+const userSchema = require('./user.schema.server');
+const userModel = mongoose.model('UserModel', userSchema);
+
+findAllUsers = () =>
+    userModel.find();
+findUserById = userId =>
+    userModel.findById(userId)
+findUserByUsername = username =>
+    userModel.find({username: username})
+  
+module.exports = {findAllUsers, findUserById, findUserById};
+\end{lstlisting}
 
 
 
+%----------------------------------------
+%----------------------------------------
+\subsection{enrollment.schema.server.js}
+\begin{lstlisting}
+const mongoose = require('mongoose');
+const enrollmentSchema = mongoose.Schema({
+ student: {ref: 'UserModel',
+  type: mongoose.Schema.Types.ObjectId},
+ section: {ref: 'SectionModel',
+  type: mongoose.Schema.Types.ObjectId}
+});
+module.exports = enrollmentSchema;
+\end{lstlisting}
+
+%----------------------------------------
+%----------------------------------------
+\subsection{test.js}
+\begin{lstlisting}
+require('./db')();
+var userDao = require('./models/user.dao.server');
+userDao.find((err, users) => {
+   console.log(users);
+});
+\end{lstlisting}
+
+
+
+
+%----------------------------------------
+\section{XML}
+XML is a markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable. \\
+\begin{itemize}
+    \item XML: Extendable Markup Language
+    \item Language: vocabulary, syntax, grammar
+    \item Markup: annotations providing meta-data, meaning, semantics, context
+    \item Extendable: can be used in any context
+    \item Elements: annotate data
+    \item Example: Persistence.xml, pom.xml - persitence, persistence-unit, provide, class
+    \item Element names are user friendly but easy for computer parsing
+\end{itemize}
+
+XML document constraints can be expressed as XML Schema documents. 
+XML schema describe valid XML document structures, data types, and relations.
+Document Type Definitions (DTDs) is a popular XML schema language.
+DTDs can be used to validate XML documents.
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{Example}
+
+\begin{lstlisting}
+<Enrollments gradyear="2009">
+	<CourseTaken sname="ian" title="pop culture"
+	yeartaken="2007" grade="B+" />
+	<CourseTaken sname="ben" title="shakespeare"
+	yeartaken="2006" grade="A-" />
+</Enrollments>
+\end{lstlisting}
+
+\begin{itemize}
+    \item Enrollments: root element, grouping element
+    \item CourseTaken – one element per course
+    \item Tags
+    \item Bracketed tags and Empty tags
+    \item Attributes
+    \item Semantics can be captured in tags and / or attributes
+    \item Sibling meanings can be captured in parent's context
+\end{itemize}
+All tags must be closed.
+Tags can be mixed case, but matching opening and closing tags must be capitalized the same way.
+Tags (or elements) can be arbitrarily nested, describing complex data structures.
+Tags, as well as nested tags, must be closed in the correct order.
+\begin{lstlisting}
+<GraduatingStudents>
+	<Student>
+		<SName>ian</SName>
+		<GradYear>2009</GradYear>
+		<Courses>
+			<Course>
+				<Title>calculus</Title>
+				<YearTaken>2006</YearTaken>
+				<Grade>A</Grade>
+			</Course>
+			<Course>
+				<Title>shakespeare</Title>
+				<YearTaken>2006</YearTaken>
+				<Grade>C</Grade>
+			</Course>…
+		</Courses>
+	</Student>...
+</GraduatingStudents>
+\end{lstlisting}
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{JAXB}
+
+\textbf{Create Data Model}
+
+\begin{lstlisting}
+Student.java
+public class Student {
+		private String id;
+	private String firstName;
+		private String lastName;
+}
+student.xml
+<student id="123">
+    <firstName>Alice</firstName>
+    <lastName>Wonderland</lastName>
+</student>
+\end{lstlisting}
+
+\textbf{Add Constructors}
+\begin{lstlisting}
+public Student(String id, String firstName,...) {
+	super();
+	this.id = id;
+	this.firstName = firstName;
+	this.lastName = lastName;
+}
+public Student() { // required
+	super();
+}
+\end{lstlisting}
+
+\textbf{Add Setters and Getters}
+\begin{lstlisting}
+public String getId() {
+return id;
+}
+public void setId(String id) {
+this.id = id;
+}
+public String getFirstName() {
+return firstName;
+}
+public void setFirstName(String firstName) {
+this.firstName = firstName;}...etc...
+\end{lstlisting}
+
+
+\textbf{Annotate Setters with JAXB}
+
+\begin{lstlisting}
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement
+public class Student {
+	@XmlAttribute
+	public void setId(String id) {
+		this.id = id;
+	}
+	@XmlElement
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	} ...etc...
+}
+\end{lstlisting}
+
+\textbf{Create JAXB Context \& Marshaller}
+
+\begin{lstlisting}
+public static void main(String[] args) {
+ Student alice = new Student("123","alice"...);
+ try {
+  JAXBContext jaxbContext = 
+JAXBContext.newInstance(Student.class);
+  Marshaller jaxbMarshaller = 
+jaxbContext.createMarshaller();
+ } catch (JAXBException e) {
+  e.printStackTrace();
+ }
+}
+\end{lstlisting}
+
+
+\textbf{Marshal Object to File}
+
+\begin{lstlisting}
+ try {
+  Marshaller jaxbMarshaller = ...
+  jaxbMarshaller
+    .setProperty(Marshaller
+      .JAXB_FORMATTED_OUTPUT, true);
+  File xmlFile = new File("src/.../alice.xml");
+  jaxbMarshaller.marshal(alice, xmlFile);
+} catch (JAXBException e) {
+  e.printStackTrace();
+}
+\end{lstlisting}
+
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{XSLT}
+When sharing data with non users, often need to generate / transform to suitable representation.
+Use XSLT to generate / transform XML documents.
+Stands for eXtendable Stylesheet Language Transformation
+Declarative programming.
+XSLT program - stylesheet, written in XML.
+Made up of elements / commands to transform.
+
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+%----------------------------------------
+\subsubsection{XML to HTML}
+XML just contains data, like a database
+It does not contain info on how data should be used
+We can transform XML into many other formats: HTML, SQL, PDF, DOC, ETC, ....
+
+\begin{lstlisting}
+<xsl:stylesheet xmlns:xsl="" version="2.0">
+<xsl:output method="html"/>
+
+<xsl:template match="GraduatingStudents">
+ <html><body>
+<table border="1" cellpadding="2">
+	<tr>	<th>Name</th> <th>Grad Year</th>
+			<th>Courses</th> </tr>
+		<xsl:apply-templates select="Student"/>
+ 	</table>
+ </body></html>
+</xsl:template>
+\end{lstlisting}
+
+
+
+
+\begin{lstlisting}
+<xsl:template match="Student">
+<tr> <td><xsl:value-of select="SName"/>
+</td>
+		<td><xsl:value-of select="GradYear"/>
+</td>
+<td><xsl:apply-templates
+select="Courses"/></td>
+</tr>
+</xsl:template>
+\end{lstlisting}
+
+
+
+\begin{lstlisting}
+<xsl:template match="Courses">
+	<table border="0" cellpadding="2"
+width="100%">
+<tr>	<th width="50%">Title</th>
+		<th>Year</th> <th>Grade</th> </tr>
+<xsl:apply-templates select="Course"/>
+	</table>
+</xsl:template>
+\end{lstlisting}
+
+
+
+
+\begin{lstlisting}
+<xsl:template match="Course">
+	<tr>	<td><xsl:value-of select="Title"/>
+</td>
+		 		<td><xsl:value-of select="YearTaken"/>
+</td>
+<td><xsl:value-of select="Grade"/>
+</td>
+  </tr>
+</xsl:template>
+</xsl:stylesheet>
+\end{lstlisting}
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+%----------------------------------------
+\subsubsection{Transform from normalized to denormalized}
+Consider this hierarchical (normalized) XML file:
+\begin{lstlisting}
+<AllProjects>
+<project project_id=”2″>
+<name>Brand New Browser</name>
+<phase id=”2.A”>
+<desc>Firefox Cleanup</desc>
+<task priority=”1″><resource>M</resource></task>
+<task priority=”2″><resource>M</resource></task>
+</phase>
+<phase id=”2.B”>
+<desc>Rebranding</desc>
+<task priority=”1″><resource>B007</resource></task>
+<task priority=”2″><resource>SC</resource></task>
+</phase>
+</project>
+………..
+</AllProjects>
+\end{lstlisting}
+
+
+Consider this corresponding denormalized XML file:
+\begin{lstlisting}
+
+<AllTasks>
+<task>
+<projectid>2</projectid>
+<projectname>Brand New Browser</projectname>
+<phaseid>2.A</phaseid>
+<phasedesc>Firefox Cleanup</phasedesc>
+<priority>1</priority>
+<resource>M</resource>
+</task>
+<task>
+<projectid>2</projectid>
+<projectname>Brand New Browser</projectname>
+<phaseid>2.A</phaseid>
+<phasedesc>Firefox Cleanup</phasedesc>
+<priority>2</priority>
+<resource>M</resource>
+</task>
+…
+<AllTasks>
+
+\end{lstlisting}
+
+
+This denormalization can be done very easily using an XSLT. The following XSLT conveys some concepts used in this:
+
+
+\begin{lstlisting}
+<?xml version = “1.0” encoding = “UTF-8”?>
+<xsl:transform xmlns:xsl = “http://www.w3.org/1999/XSL/Transform” version = “1.0”>
+<xsl:template match = “AllProjects”>
+<AllTasks>
+<xsl:apply-templates select = “project/phase/task”/>
+</AllTasks>
+</xsl:template>
+<xsl:template match = “task”>
+<xsl:element name = “task”>
+<projectid><xsl:value-of select=”../../@project_id”/></projectid>
+<projectname><xsl:value-of select=”../../name”/></projectname>
+<phaseid><xsl:value-of select=”../@id”/></phaseid>
+<phasedesc><xsl:value-of select=”../desc”/></phasedesc>
+<priority><xsl:value-of select=”@priority”/></priority>
+<resource><xsl:value-of select=”resource”/></resource>
+</xsl:element>
+</xsl:template>
+</xsl:transform>
+\end{lstlisting}
+
+
+
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+%----------------------------------------
+\subsubsection{XML 2 HTML}
+
+\textbf{students.xml}
+\begin{lstlisting}
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+<student id="123">
+<firstName>Alice</firstName>
+     <lastName>Wonderland</lastName>
+     <username>alice</username>
+</student>
+<student id="234">
+     <firstName>Bob</firstName>
+     <lastName>Marley</lastName>
+     <username>bob</username>
+</student>...		</students>
+\end{lstlisting}
+
+
+\textbf{studentsXml2Html.xsl}
+\begin{lstlisting}
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl= "http://www.w3.org/1999/XSL/Transform">
+	<xsl:output method="html"/>
+	<xsl:template match="/">
+		<H1>Students</H1>
+		<TABLE><THEAD><TR><TH>Id</TH><TH>Username</TH>
+    <TH>First Name</TH><TH>Last Name</TH>
+    </TR></THEAD>
+		<TBODY><xsl:apply-templates/></TBODY></TABLE>
+	</xsl:template>
+\end{lstlisting}
+
+
+
+\textbf{studentsXml2Html.xsl}
+
+\begin{lstlisting}
+	<xsl:template match="students/student">
+		<TR>
+			<TD><xsl:value-of select="@id"/></TD>
+			<TD><xsl:value-of select="username"/></TD>
+			<TD><xsl:value-of select="firstName"/></TD>
+			<TD><xsl:value-of select="lastName"/></TD>
+		</TR>
+	</xsl:template>
+</xsl:stylesheet>
+\end{lstlisting}
+
+
+
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+%----------------------------------------
+\subsubsection{Selecting Nodes in XPath}
+
+\begin{tabular}{@{}ll@{}}
+ \textbf{Path Expression} & \textbf{Result}\\
+nodename & Selects all nodes w/ name "nodename"\\
+/ & Selects from the root node\\
+// & Selects nodes in the document from the \\
+ & current node that match the selection \\
+ & no matter where they are\\
+. & Selects the current node\\
+.. & Selects the parent of the current node\\ 
+@ & Selects attributes\\
+\end{tabular}
+
+\begin{tabular}{@{}ll@{}}
+ \textbf{Path Expression} & \textbf{Result}\\
+bookstore & Selects all nodes w/ name "bookstore"\\
+/bookstore & Selects the root element bookstore\\
+bookstore/book & Selects all book elements that are children \\
+ & of bookstore\\
+//book & Selects all book elements no matter where \\
+ & they are in the document\\
+bookstore//book & Selects all book elements that are \\
+ & descendant of the bookstore element\\
+//@lang & Selects all attributes named lang\\
+
+\end{tabular}
+
+\begin{tabular}{@{}ll@{}}
+ \textbf{Path Expression} & \textbf{Result}\\
+/bookstore/book[1]  & Selects the first book element \\
+  & that is the child of the\\
+  & bookstore element\\
+/bookstore/book[last()] & Selects the last book \\
+/bookstore/book[last()-1] & Selects the last but one\\
+/bookstore/book[position()$<$3] & Selects the first two book\\
+//title[@lang]  & Selects all the title elements \\
+  & that have an attribute \\
+    & named lang\\
+//title[@lang='en'] & Selects all title elements that\\ 
+  & have an attribute lang with\\
+   & a value of 'en'\\
+/bookstore/book[price$>$35] & Selects all the book elements\\
+  & that have a price than 35\\
+/bookstore/book[price$>$35]/title & Selects all title elements with\\
+  & a value greater than 35\\
+
+\end{tabular}
+
+
+
+
+%----------------------------------------
+%----------------------------------------
+\subsection{DOM}
+The Document Object Model (\textbf{DOM}) is a programming interface for HTML and XML documents. It represents the page so that programs can change the document structure, style, and content. The DOM represents the document as nodes and objects. That way, programming languages can connect to the page.
 
 
 
 \end{multicols}
 \end{document}
+
+
+
+%----------------------------------------
+\section{Other}
+\begin{lstlisting}
+<?xml version=”1.0” encoding=”UTF-8”?>
+<xsl: stylesheet version=”1.0”
+Xmlns:xsl=http://www.w3.org/1999/XSL/Transform>
+<xsl:output method=”xml”> indent=”yes”/>
+<xsl: template match=”flight”>
+<reservations>
+<xsl:>
+</reservations>
+</xsl:template>
+<xsl:template match=”flights”/flight/reservations/reservation”>
+<reservation>
+<xsl:attribute name=”transactionType”>
+<xsl:value-of select=”transactionType”/></xsl:attribute>
+<reservationId><xsl:value-of select=”@reservationId”/>
+</reservationId>
+<bookingAgent><xsl: value-of select=”@bookingAgent”/>
+<bookingAgent>
+</reservation>
+</xsl:template>
+</xsl:stylesheet>
+\end{lstlisting}
+
 
 
 
