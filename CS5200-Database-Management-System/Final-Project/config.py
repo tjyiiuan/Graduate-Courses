@@ -1,73 +1,95 @@
-# -*- coding: utf-8 -*-
-import configparser
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-conf = configparser.ConfigParser()
-conf.read("./configuration.conf")
-
-# Database Config
-DB_HOST = conf.get("MySQL", "HOST")
-DB_PORT = conf.get("MySQL", "PORT")
-DB_USER = conf.get("MySQL", "USERNAME")
-DB_PSWD = conf.get("MySQL", "PASSWORD")
-DB_DEV = conf.get("MySQL", "DEV")
-DB_TEST = conf.get("MySQL", "TEST")
-DB_PROD = conf.get("MySQL", "PROD")
-
-# Mail Config
-M_SERVER = conf.get("Mail", "SERVER")
-M_PORT = conf.get("Mail", "PORT")
-M_USE_TLS = conf.get("Mail", "USE_TLS")
-M_USERNAME = conf.get("Mail", "USERNAME")
-M_PASSWORD = conf.get("Mail", "PASSWORD")
-M_DEFAULT_SENDER = conf.get("Mail", "SENDER")
-
-# Forum Config
-F_ADMIN = conf.get("Forum", "ADMIN")
-F_PPP = conf.get("Forum", "ADMIN")
-F_RPP = conf.get("Forum", "ADMIN")
-F_FPP = conf.get("Forum", "ADMIN")
-
-
-class Config(object):
-    SECRET_KEY = "hard to guess string"
+class Config:
+    CSRF_ENABLED = True
+    SECRET_KEY = 'you-guess'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAIL_SERVER = M_SERVER
-    MAIL_PORT = M_PORT
-    MAIL_USE_TLS = M_USE_TLS
-    MAIL_USERNAME = M_USERNAME
-    MAIL_PASSWORD = M_PASSWORD
-    MAIL_DEFAULT_SENDER = M_DEFAULT_SENDER
-    FORUM_ADMIN = F_ADMIN
-    FORUM_POSTS_PER_PAGE = F_PPP
-    FORUM_REPLIES_PER_PAGE = F_RPP
-    FORUM_FOLLOWERS_PER_PAGE = F_FPP
-    
+
+    BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
+
+    # Mail Support
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 25
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_SUBJECT_PREFIX = '[BMT]'
+    MAIL_SENDER = 'BMT_ADMIN'
+    # Admin Mail
+    ADMINMAIL = 'tjyiiuan@gmail.com'
+
+    POSTS_PER_PAGE = 10
+    FOLLOWERS_PER_PAGE = 50
+    COMMENTS_PER_PAGE = 20
+    MESSAGES_PER_PAGE = 20
+    WHOOSHEE_MIN_STRING_LEN = 1
+    SSL_DISABLE = True
+
+
     @staticmethod
     def init_app(app):
         pass
 
-
 class DevelopmentConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+                              'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = \
-        f"mysql://{DB_USER}:{DB_PSWD}@{DB_HOST}:{DB_PORT}/{DB_DEV}"
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = \
-        f"mysql://{DB_USER}:{DB_PSWD}@{DB_HOST}:{DB_PORT}/{DB_TEST}"
-            
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'data-test.sqlite')
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = \
-        f"mysql://{DB_USER}:{DB_PSWD}@{DB_HOST}:{DB_PORT}/{DB_PROD}"
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
+        # Send error to Admin
+        import logging
+        from logging.handlers import SMTPHandler
+        credentials = None
+        secure = None
+        if getattr(cls, 'MAIL_USERNAME', None) is not None:
+            credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
+            if getattr(cls, 'MAIL_USE_TLS', None):
+                secure = ()
+        mail_handler = SMTPHandler(
+            mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
+            fromaddr=cls.MAIL_SENDER,
+            toaddrs=[cls.ADMINMAIL],
+            subject=cls.MAIL_SUBJECT_PREFIX + ' Application Error',
+            credentials=credentials,
+            secure=secure)
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
+
+class HerokuConfig(ProductionConfig):
+    """Logs in Heroku must be written into stdout/stderr."""
+    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+        # output to stderr
+        import logging
+        from logging import StreamHandler
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.WARNING)
+        app.logger.addHandler(file_handler)
 
 config = {
-    "development": DevelopmentConfig,
-    "testing": TestingConfig,
-    "production": ProductionConfig,
-
-    "default": DevelopmentConfig
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig,
+    'heroku': HerokuConfig,
+    'default': DevelopmentConfig
 }
