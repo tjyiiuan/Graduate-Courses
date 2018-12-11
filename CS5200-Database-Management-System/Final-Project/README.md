@@ -61,18 +61,19 @@ Moderators can also use searching features to avoid improper discussions.
 
 ## Quickstart
 ### Virtual Environment
-Please make sure that the Python 3 `venv` package is installed. 
+Please make sure that you are using Python 3 and `venv` package is installed.  
 If you are using Ubuntu Linux system, you can install it as follows:
 ```
 $ sudo apt-get install python3-venv
 ```
-### Installation
+### Local Test
 ```
 $ git clone
 $ cd
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirement.txt
+$ python manage.py runserver --host 0.0.0.0
 ```
 ### Visit
 Navigate to http://localhost:5000/ .
