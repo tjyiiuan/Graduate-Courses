@@ -25,6 +25,20 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_moderator_timestamp'), 'moderator', ['timestamp'], unique=False)
+    op.create_table('monitor',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('notice', sa.String(length=25), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_monitor_timestamp'), 'monitor', ['timestamp'], unique=False)
+    op.create_table('noticer',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('notice', sa.String(length=25), nullable=True),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_noticer_timestamp'), 'noticer', ['timestamp'], unique=False)
     op.create_table('roles',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
@@ -130,4 +144,8 @@ def downgrade():
     op.drop_table('roles')
     op.drop_index(op.f('ix_moderator_timestamp'), table_name='moderator')
     op.drop_table('moderator')
+    op.drop_index(op.f('ix_monitor_timestamp'), table_name='monitor')
+    op.drop_table('monitor')
+    op.drop_index(op.f('ix_noticer_timestamp'), table_name='noticer')
+    op.drop_table('noticer')
     # ### end Alembic commands ###

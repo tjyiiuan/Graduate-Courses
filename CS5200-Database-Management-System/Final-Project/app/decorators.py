@@ -16,3 +16,9 @@ def permission_required(permission):
 
 def moderator_required(f):
     return permission_required(Permission.MODERATION)(f)
+
+def monitor_required(f):
+    return permission_required(Permission.MONITOR)(f)
+
+def noticer_required(f):
+    return permission_required(Permission.NOTICE)(f)
